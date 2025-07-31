@@ -2,6 +2,7 @@ import { HeroSection } from '@/components/hero-section';
 import { Navbar } from '@/components/navbar';
 import AboutMeSection from '@/components/about-me-section';
 import ProjectsSection from '@/components/projects-section';
+import SkillsSection from '@/components/skills-section';
 
 /**
  * Developer Portfolio Homepage
@@ -14,6 +15,7 @@ const Index = () => {
       <HeroSection />
       <AboutMeSection />
       <ProjectsSection />
+      <SkillsSection />
     </main>
   );
 };
