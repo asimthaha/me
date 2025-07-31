@@ -10,6 +10,7 @@ import {
   Search,
   Linkedin
 } from 'lucide-react';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 /**
  * Responsive Navbar Component
@@ -100,7 +101,7 @@ export const Navbar = () => {
                 })}
               </div>
 
-              {/* Desktop Social Links */}
+              {/* Desktop Social Links & Theme Switcher */}
               <div className="flex items-center space-x-4">
                 {navItems.slice(5).map((item) => {
                   const Icon = item.icon;
@@ -123,6 +124,7 @@ export const Navbar = () => {
                     </Button>
                   );
                 })}
+                <ThemeSwitcher />
               </div>
             </div>
           </div>
@@ -170,19 +172,24 @@ export const Navbar = () => {
             </div>
           </div>
 
-          {/* Separate Search Button */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="
-              rounded-full backdrop-blur-md bg-background/90 border-border/20
-              hover:bg-accent hover:text-accent-foreground
-              focus:ring-2 focus:ring-primary focus:ring-offset-2
-            "
-            aria-label="Search"
-          >
-            <Search className="h-5 w-5" />
-          </Button>
+          {/* Mobile Theme Switcher & Search */}
+          <div className="flex items-center space-x-3">
+            <div className="backdrop-blur-md bg-background/90 border border-border/20 rounded-full p-2">
+              <ThemeSwitcher />
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="
+                rounded-full backdrop-blur-md bg-background/90 border-border/20
+                hover:bg-accent hover:text-accent-foreground
+                focus:ring-2 focus:ring-primary focus:ring-offset-2
+              "
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </nav>
     </>
