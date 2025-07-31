@@ -1,5 +1,6 @@
 import { HeroSection } from '@/components/hero-section';
 import { Navbar } from '@/components/navbar';
+import AboutMeSection from '@/components/about-me-section';
 
 /**
  * Developer Portfolio Homepage
@@ -10,6 +11,7 @@ const Index = () => {
     <main className="bg-background">
       <Navbar />
       <HeroSection />
+      <AboutMeSection />
     </main>
   );
 };

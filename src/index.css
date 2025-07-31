@@ -170,13 +170,88 @@ All colors MUST be HSL.
     box-shadow: 0 8px 32px hsl(var(--foreground) / 0.1);
   }
 
+  /* About Me Section Styles */
+  .font-retro {
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Blinking cursor animation */
+  .blinking-cursor {
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Retro scanlines overlay */
+  .scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      hsl(var(--foreground) / 0.03) 2px,
+      hsl(var(--foreground) / 0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* Scroll reveal animation */
+  .reveal-on-scroll {
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-on-scroll.animate-reveal {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  /* Pixelated borders using CSS */
+  .pixelated-border {
+    border: 3px solid hsl(var(--border));
+    border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m3,3 h94 v94 h-94 z' fill='none' stroke='hsl(220%2013%25%2091%25)' stroke-width='3'/%3e%3c/svg%3e") 3;
+    position: relative;
+  }
+
+  .pixelated-border-button {
+    border: 2px solid hsl(var(--border));
+    border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m2,2 h96 v96 h-96 z' fill='none' stroke='hsl(220%2013%25%2091%25)' stroke-width='2'/%3e%3c/svg%3e") 2;
+    position: relative;
+  }
+
+  /* Retro progress bar styling */
+  .retro-progress {
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--muted));
+  }
+
+  .retro-progress [data-state="complete"] {
+    background-color: hsl(var(--primary));
+  }
+
   /* Accessibility: Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .animate-float,
     .animate-pulse-slow,
-    .transition-bounce {
+    .transition-bounce,
+    .reveal-on-scroll,
+    .blinking-cursor {
       animation: none;
       transition: none;
+    }
+    
+    .scanlines {
+      display: none;
     }
   }
 }
