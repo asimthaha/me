@@ -61,15 +61,13 @@ const AboutMeSection = () => {
 
         {/* Narrative Block 1 */}
         <div className="reveal-on-scroll opacity-0 translate-y-8">
-          <p className="font-retro text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+          <p className="font-retro text-lg md:text-xl text-muted-foreground leading-relaxed">
             I build things for the web. Sometimes they even work on the first
             try.
           </p>
         </div>
-
-        {/* Narrative Block 2 */}
         <div className="reveal-on-scroll opacity-0 translate-y-8">
-          <p className="font-retro text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+          <p className="font-retro text-lg md:text-xl text-muted-foreground leading-relaxed">
             With over 5 years in the game, I've journeyed through the full
             stack—from crafting snappy UIs with React to architecting robust
             backends with Node.js and Python.
