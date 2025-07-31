@@ -49,6 +49,10 @@ All colors MUST be HSL.
     --text-shadow: 0 2px 4px hsl(220 26% 14% / 0.1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Navbar glass effects */
+    --navbar-glass: hsla(var(--background) / 0.8);
+    --mobile-pill: hsla(var(--background) / 0.9);
 
     --sidebar-background: 0 0% 98%;
 
@@ -149,6 +153,21 @@ All colors MUST be HSL.
 
   .transition-bounce {
     transition: var(--transition-bounce);
+  }
+
+  /* Navbar glass effect styles */
+  .navbar-glass {
+    background: var(--navbar-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid hsl(var(--border) / 0.2);
+  }
+
+  .mobile-pill {
+    background: var(--mobile-pill);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px hsl(var(--foreground) / 0.1);
   }
 
   /* Accessibility: Respect reduced motion */
