@@ -51,7 +51,7 @@ const AboutMeSection = () => {
         <div className="scanlines" />
       </div>
 
-      <div className="max-w-4xl mx-auto space-y-16">
+      <div className="max-w-5xl mx-auto space-y-16">
         {/* Opening Line with blinking cursor */}
         <div className="reveal-on-scroll opacity-0 translate-y-8">
           <h1 className="font-retro text-4xl md:text-6xl lg:text-7xl text-foreground mb-4">
