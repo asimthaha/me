@@ -4,13 +4,14 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ThemeType, Theme, getTheme } from '@/lib/themes';
+import { ThemeType, Theme, getTheme, isDarkTheme } from '@/lib/themes';
 
 interface ThemeContextType {
   currentTheme: ThemeType;
   theme: Theme;
   setTheme: (theme: ThemeType) => void;
   toggleTheme: () => void;
+  isDark: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -22,12 +23,16 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
   children, 
-  defaultTheme = 'default' 
+  defaultTheme = 'light' 
 }) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(() => {
     // Try to get theme from localStorage first
     const savedTheme = localStorage.getItem('portfolio-theme') as ThemeType;
-    return savedTheme || defaultTheme;
+    if (savedTheme) return savedTheme;
+    
+    // Check system preference for light/dark
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
   });
 
   const theme = getTheme(currentTheme);
@@ -38,33 +43,33 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   };
 
   const toggleTheme = () => {
-    const themes: ThemeType[] = ['default', 'netflix', 'ey', 'github'];
+    const themes: ThemeType[] = ['light', 'dark', 'netflix', 'ey', 'github'];
     const currentIndex = themes.indexOf(currentTheme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);
   };
 
-  // Apply theme colors to CSS custom properties
+  // Apply theme colors to CSS custom properties and manage dark class
   useEffect(() => {
     const root = document.documentElement;
+    
+    // Apply dark class for CSS compatibility
+    const isDarkMode = isDarkTheme(currentTheme);
+    root.classList.toggle('dark', isDarkMode);
     
     Object.entries(theme.colors).forEach(([key, value]) => {
       // Convert camelCase to kebab-case for CSS variables
       const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-      
-      if (key === 'heroGradient' || key === 'blobShadow' || key === 'textShadow') {
-        root.style.setProperty(`--${cssKey}`, value);
-      } else {
-        root.style.setProperty(`--${cssKey}`, value);
-      }
+      root.style.setProperty(`--${cssKey}`, value);
     });
-  }, [theme]);
+  }, [theme, currentTheme]);
 
   const value: ThemeContextType = {
     currentTheme,
     theme,
     setTheme,
     toggleTheme,
+    isDark: isDarkTheme(currentTheme),
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

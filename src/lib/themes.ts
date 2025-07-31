@@ -3,7 +3,7 @@
  * Centralized theme definitions for easy management and extension
  */
 
-export type ThemeType = 'default' | 'netflix' | 'ey' | 'github';
+export type ThemeType = 'light' | 'dark' | 'netflix' | 'ey' | 'github';
 
 export interface Theme {
   id: ThemeType;
@@ -37,10 +37,10 @@ export interface Theme {
 }
 
 export const themes: Record<ThemeType, Theme> = {
-  default: {
-    id: 'default',
-    name: 'Default',
-    icon: '🎨',
+  light: {
+    id: 'light',
+    name: 'Light',
+    icon: '☀️',
     colors: {
       background: '0 0% 100%',
       foreground: '240 10% 3.9%',
@@ -64,6 +64,35 @@ export const themes: Record<ThemeType, Theme> = {
       heroGradient: 'linear-gradient(135deg, hsl(220 26% 14%) 0%, hsl(217 91% 60%) 100%)',
       blobShadow: '0 20px 40px -10px hsl(217 91% 60% / 0.15)',
       textShadow: '0 2px 4px hsl(220 26% 14% / 0.1)',
+    },
+  },
+  dark: {
+    id: 'dark',
+    name: 'Dark',
+    icon: '🌙',
+    colors: {
+      background: '220 13% 9%',
+      foreground: '220 13% 85%',
+      card: '220 13% 12%',
+      cardForeground: '220 13% 85%',
+      popover: '220 13% 12%',
+      popoverForeground: '220 13% 85%',
+      primary: '220 13% 85%',
+      primaryForeground: '220 13% 9%',
+      secondary: '220 13% 16%',
+      secondaryForeground: '220 13% 85%',
+      muted: '220 13% 16%',
+      mutedForeground: '220 13% 65%',
+      accent: '217 91% 60%',
+      accentForeground: '220 13% 9%',
+      destructive: '0 84.2% 60.2%',
+      destructiveForeground: '0 0% 98%',
+      border: '220 13% 18%',
+      input: '220 13% 18%',
+      ring: '217 91% 60%',
+      heroGradient: 'linear-gradient(135deg, hsl(220 13% 9%) 0%, hsl(217 91% 60%) 100%)',
+      blobShadow: '0 20px 40px -10px hsl(217 91% 60% / 0.25)',
+      textShadow: '0 2px 4px hsl(220 13% 9% / 0.3)',
     },
   },
   netflix: {
@@ -156,7 +185,11 @@ export const themes: Record<ThemeType, Theme> = {
 };
 
 export const getTheme = (themeId: ThemeType): Theme => {
-  return themes[themeId] || themes.default;
+  return themes[themeId] || themes.light;
+};
+
+export const isDarkTheme = (themeId: ThemeType): boolean => {
+  return themeId === 'dark' || themeId === 'netflix' || themeId === 'github';
 };
 
 export const getAllThemes = (): Theme[] => {

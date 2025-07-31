@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Github, Linkedin, ExternalLink, Moon, Sun } from 'lucide-react';
+import { Github, Linkedin, ExternalLink } from 'lucide-react';
 import profileImage from '@/assets/developer-profile.jpg';
 
 interface HeroSectionProps {
@@ -11,53 +11,17 @@ interface HeroSectionProps {
  * CRO-optimized Hero Section for software developer portfolio
  * Features:
  * - Mobile-first responsive design
- * - Dark mode support with theme toggle
  * - Accessibility optimized (ARIA labels, keyboard navigation)
  * - Performance optimized (lazy loading, efficient animations)
  * - A/B testing ready with modular structure
  */
 export function HeroSection({ className }: HeroSectionProps) {
-  const [isDark, setIsDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Handle theme toggle and persistence
-  useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    
-    setIsDark(shouldBeDark);
-    document.documentElement.classList.toggle('dark', shouldBeDark);
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    document.documentElement.classList.toggle('dark', newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-  };
-
-  // Prevent flash of unstyled content
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <section 
       className={`min-h-screen flex items-center justify-center px-4 py-16 ${className}`}
       aria-label="Hero section"
     >
-      {/* Theme toggle button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 z-50 bg-background/80 backdrop-blur-sm border border-border"
-        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-      >
-        {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      </Button>
 
       <div className="container max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
