@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface SnakeLoaderProps {
   isLoading: boolean;
@@ -29,22 +29,22 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
     if (!isLoading) return;
 
     const moveSnake = () => {
-      setSnake(currentSnake => {
+      setSnake((currentSnake) => {
         const newSnake = [...currentSnake];
         const head = { ...newSnake[0] };
-        
+
         // Update head position
         head.x += direction.x;
         head.y += direction.y;
-        
+
         // Wrap around screen edges
         if (head.x >= gameSize.width) head.x = 0;
         if (head.x < 0) head.x = gameSize.width - 1;
         if (head.y >= gameSize.height) head.y = 0;
         if (head.y < 0) head.y = gameSize.height - 1;
-        
+
         newSnake.unshift(head);
-        
+
         // Check if fruit is eaten
         if (head.x === fruit.x && head.y === fruit.y) {
           setFruit(generateFruit());
@@ -53,7 +53,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
           // Remove tail (snake maintains size)
           newSnake.pop();
         }
-        
+
         return newSnake;
       });
     };
@@ -68,14 +68,16 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
 
     const changeDirection = () => {
       const directions = [
-        { x: 1, y: 0 },  // right
+        { x: 1, y: 0 }, // right
         { x: -1, y: 0 }, // left
-        { x: 0, y: 1 },  // down
+        { x: 0, y: 1 }, // down
         { x: 0, y: -1 }, // up
       ];
-      
-      if (Math.random() < 0.3) { // 30% chance to change direction
-        const newDirection = directions[Math.floor(Math.random() * directions.length)];
+
+      if (Math.random() < 0.3) {
+        // 30% chance to change direction
+        const newDirection =
+          directions[Math.floor(Math.random() * directions.length)];
         setDirection(newDirection);
       }
     };
@@ -98,7 +100,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
   if (!isLoading && !isExiting) return null;
 
   return (
-    <div 
+    <div
       className={cn(
         "fixed inset-0 z-50 bg-background flex items-center justify-center",
         "transition-opacity duration-600 ease-out",
@@ -107,22 +109,22 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
       aria-label="Loading application"
     >
       {/* Background grid pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `
             linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
             linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px)
           `,
-          backgroundSize: '20px 20px'
+          backgroundSize: "20px 20px",
         }}
       />
-      
+
       <div className="text-center space-y-8 max-w-lg mx-auto px-4">
         {/* Brand */}
         <div className="space-y-2">
           <h1 className="font-mono text-2xl md:text-3xl font-bold text-primary tracking-wider">
-            DEV.PORTFOLIO
+            ASIM.DEV
           </h1>
           <p className="font-mono text-sm text-muted-foreground tracking-wide">
             CRAFTING CODE WITH PRECISION
@@ -131,7 +133,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
 
         {/* Snake Game Area */}
         <div className="relative mx-auto">
-          <div 
+          <div
             className="relative border border-primary/20 bg-background/50 backdrop-blur-sm"
             style={{
               width: `${gameSize.width * 12}px`,
@@ -144,29 +146,29 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
                 key={index}
                 className={cn(
                   "absolute transition-all duration-150 ease-linear",
-                  index === 0 
+                  index === 0
                     ? "bg-primary shadow-[0_0_10px_hsl(var(--primary))]" // Head with glow
                     : "bg-primary/70" // Body segments
                 )}
                 style={{
                   left: `${segment.x * 12}px`,
                   top: `${segment.y * 12}px`,
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: index === 0 ? '2px' : '1px',
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: index === 0 ? "2px" : "1px",
                 }}
               />
             ))}
-            
+
             {/* Fruit */}
             <div
               className="absolute bg-accent shadow-[0_0_8px_hsl(var(--accent))] animate-pulse"
               style={{
                 left: `${fruit.x * 12}px`,
                 top: `${fruit.y * 12}px`,
-                width: '10px',
-                height: '10px',
-                borderRadius: '50%',
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
               }}
             />
           </div>
@@ -184,7 +186,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
             ))}
           </div>
           <p className="font-mono text-xs text-muted-foreground tracking-widest">
-            INITIALIZING_SYSTEM
+            BOOTING_SYSTEM
           </p>
         </div>
       </div>
