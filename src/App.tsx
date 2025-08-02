@@ -14,13 +14,15 @@ const queryClient = new QueryClient();
 const App = () => {
   const { isLoading, completeLoading } = useLoading(2500);
 
+  if (isLoading) {
+    return <SnakeLoader isLoading={isLoading} onComplete={completeLoading} />;
+  }
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <SnakeLoader isLoading={isLoading} onComplete={completeLoading} />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

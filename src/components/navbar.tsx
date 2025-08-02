@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { 
-  Home, 
-  User, 
-  Code2, 
-  Mail, 
-  FileText, 
-  Github, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Home,
+  User,
+  Code2,
+  Mail,
+  FileText,
+  Github,
   Search,
-  Linkedin
-} from 'lucide-react';
-import { ThemeSwitcher } from '@/components/theme-switcher';
+  Linkedin,
+} from "lucide-react";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 /**
  * Responsive Navbar Component
@@ -19,35 +19,35 @@ import { ThemeSwitcher } from '@/components/theme-switcher';
 export const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState("home");
 
   // Scroll behavior for show/hide navbar
   useEffect(() => {
     const controlNavbar = () => {
       const currentScrollY = window.scrollY;
-      
+
       if (currentScrollY < lastScrollY || currentScrollY < 10) {
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', controlNavbar);
-    return () => window.removeEventListener('scroll', controlNavbar);
+    window.addEventListener("scroll", controlNavbar);
+    return () => window.removeEventListener("scroll", controlNavbar);
   }, [lastScrollY]);
 
   // Navigation items for desktop and mobile
   const navItems = [
-    { id: 'home', label: 'Home', icon: Home, href: '#home' },
-    { id: 'about', label: 'About', icon: User, href: '#about' },
-    { id: 'projects', label: 'Projects', icon: Code2, href: '#projects' },
-    { id: 'contact', label: 'Contact', icon: Mail, href: '#contact' },
-    { id: 'resume', label: 'Resume', icon: FileText, href: '#resume' },
-    { id: 'github', label: 'GitHub', icon: Github, href: '#github' },
-    { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, href: '#linkedin' }
+    { id: "home", label: "Home", icon: Home, href: "#home" },
+    { id: "about", label: "About", icon: User, href: "#about" },
+    { id: "projects", label: "Projects", icon: Code2, href: "#projects" },
+    { id: "contact", label: "Contact", icon: Mail, href: "#contact" },
+    { id: "resume", label: "Resume", icon: FileText, href: "#resume" },
+    { id: "github", label: "GitHub", icon: Github, href: "#github" },
+    { id: "linkedin", label: "LinkedIn", icon: Linkedin, href: "#linkedin" },
   ];
 
   const handleNavClick = (sectionId: string) => {
@@ -57,12 +57,12 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav 
+      <nav
         className={`
           fixed top-0 left-0 right-0 z-50 
           hidden md:block
           transition-transform duration-300 ease-in-out
-          ${isVisible ? 'translate-y-0' : '-translate-y-full'}
+          ${isVisible ? "translate-y-0" : "-translate-y-full"}
         `}
         role="navigation"
         aria-label="Main navigation"
@@ -73,7 +73,9 @@ export const Navbar = () => {
               {/* Logo/Brand */}
               <div className="flex items-center space-x-2">
                 <Code2 className="h-6 w-6 text-primary" aria-hidden="true" />
-                <span className="text-lg font-semibold text-foreground">Portfolio</span>
+                <span className="text-lg font-semibold text-foreground">
+                  Portfolio
+                </span>
               </div>
 
               {/* Desktop Navigation Links */}
@@ -90,7 +92,11 @@ export const Navbar = () => {
                         text-sm font-medium transition-all duration-200
                         hover:bg-accent hover:text-accent-foreground
                         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                        ${activeSection === item.id ? 'text-primary bg-accent/50' : 'text-muted-foreground'}
+                        ${
+                          activeSection === item.id
+                            ? "text-primary bg-accent/50"
+                            : "text-muted-foreground"
+                        }
                       `}
                       aria-label={`Navigate to ${item.label}`}
                     >
@@ -132,12 +138,14 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile Navbar */}
-      <nav 
+      <nav
         className={`
           fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50
           md:hidden
           transition-all duration-300 ease-in-out
-          ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'}
+          ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
+          }
         `}
         role="navigation"
         aria-label="Mobile navigation"
@@ -149,7 +157,7 @@ export const Navbar = () => {
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeSection === item.id;
-                
+
                 return (
                   <button
                     key={item.id}
@@ -158,7 +166,11 @@ export const Navbar = () => {
                       relative p-2 rounded-full transition-all duration-200
                       hover:bg-accent hover:text-accent-foreground
                       focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                      ${isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}
+                      ${
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground"
+                      }
                     `}
                     aria-label={`Navigate to ${item.label}`}
                   >
@@ -187,7 +199,7 @@ export const Navbar = () => {
               "
               aria-label="Search"
             >
-              <Search className="h-5 w-5" />
+              {/* <Search className="h-5 w-5" /> */}
             </Button>
           </div>
         </div>

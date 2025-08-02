@@ -44,12 +44,16 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     /* Custom tokens for hero section */
-    --hero-gradient: linear-gradient(135deg, hsl(220 26% 14%) 0%, hsl(217 91% 60%) 100%);
+    --hero-gradient: linear-gradient(
+      135deg,
+      hsl(220 26% 14%) 0%,
+      hsl(217 91% 60%) 100%
+    );
     --blob-shadow: 0 20px 40px -10px hsl(217 91% 60% / 0.15);
     --text-shadow: 0 2px 4px hsl(220 26% 14% / 0.1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    
+
     /* Navbar glass effects */
     --navbar-glass: hsla(var(--background) / 0.8);
     --mobile-pill: hsla(var(--background) / 0.9);
@@ -106,7 +110,11 @@ All colors MUST be HSL.
     --ring: 217 91% 60%;
 
     /* Dark mode custom tokens */
-    --hero-gradient: linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(217 91% 60%) 100%);
+    --hero-gradient: linear-gradient(
+      135deg,
+      hsl(240 10% 3.9%) 0%,
+      hsl(217 91% 60%) 100%
+    );
     --blob-shadow: 0 20px 40px -10px hsl(217 91% 60% / 0.25);
     --text-shadow: 0 2px 4px hsl(0 0% 0% / 0.2);
     --sidebar-background: 240 5.9% 10%;
@@ -118,6 +126,18 @@ All colors MUST be HSL.
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
+
+/* Apply globally */
+html,
+body {
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 @layer base {
@@ -172,11 +192,11 @@ All colors MUST be HSL.
 
   /* About Me Section Styles */
   .font-retro {
-    font-family: 'Press Start 2P', monospace;
+    font-family: "Press Start 2P", monospace;
   }
 
   .font-body {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   /* Blinking cursor animation */
@@ -185,8 +205,14 @@ All colors MUST be HSL.
   }
 
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
 
   /* Retro scanlines overlay */
@@ -219,13 +245,15 @@ All colors MUST be HSL.
   /* Pixelated borders using CSS */
   .pixelated-border {
     border: 3px solid hsl(var(--border));
-    border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m3,3 h94 v94 h-94 z' fill='none' stroke='hsl(220%2013%25%2091%25)' stroke-width='3'/%3e%3c/svg%3e") 3;
+    border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m3,3 h94 v94 h-94 z' fill='none' stroke='hsl(220%2013%25%2091%25)' stroke-width='3'/%3e%3c/svg%3e")
+      3;
     position: relative;
   }
 
   .pixelated-border-button {
     border: 2px solid hsl(var(--border));
-    border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m2,2 h96 v96 h-96 z' fill='none' stroke='hsl(220%2013%25%2091%25)' stroke-width='2'/%3e%3c/svg%3e") 2;
+    border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m2,2 h96 v96 h-96 z' fill='none' stroke='hsl(220%2013%25%2091%25)' stroke-width='2'/%3e%3c/svg%3e")
+      2;
     position: relative;
   }
 
@@ -249,7 +277,7 @@ All colors MUST be HSL.
       animation: none;
       transition: none;
     }
-    
+
     .scanlines {
       display: none;
     }
