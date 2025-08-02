@@ -104,9 +104,101 @@ export function HeroSection({ className }: HeroSectionProps) {
             </div>
           </div>
 
-          {/* Profile Image Section with Animated Blob */}
+          {/* Profile Image Section with Animated Blob and Clouds */}
           <div className="order-1 lg:order-2 flex justify-center">
             <div className="relative">
+              
+              {/* Cloud Elements - Background Layer */}
+              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                {/* Large background cloud - top left */}
+                <div 
+                  className="absolute opacity-5 text-muted-foreground animate-float"
+                  style={{
+                    top: '-20%',
+                    left: '-30%',
+                    animationDelay: '0s',
+                    animationDuration: '20s'
+                  }}
+                >
+                  <svg width="180" height="100" viewBox="0 0 180 100" fill="currentColor">
+                    <path d="M25 60c-8-2-15-10-15-20 0-12 10-22 22-22 2-8 9-14 18-14 6 0 11 3 14 7 3-1 6-2 9-2 12 0 22 10 22 22 0 5-2 10-5 13 8 2 14 9 14 18 0 10-8 18-18 18H32c-6 0-12-5-12-11 0-4 2-7 5-9z"/>
+                  </svg>
+                </div>
+
+                {/* Medium cloud - top right */}
+                <div 
+                  className="absolute opacity-8 text-muted-foreground/60 animate-float"
+                  style={{
+                    top: '-10%',
+                    right: '-25%',
+                    animationDelay: '3s',
+                    animationDuration: '25s'
+                  }}
+                >
+                  <svg width="120" height="70" viewBox="0 0 120 70" fill="currentColor">
+                    <path d="M20 45c-6-1-11-7-11-14 0-8 7-15 15-15 1-6 6-10 13-10 4 0 8 2 10 5 2-1 4-1 6-1 8 0 15 7 15 15 0 3-1 7-3 9 5 1 9 6 9 12 0 7-5 12-12 12H25c-4 0-8-3-8-7 0-3 1-5 3-6z"/>
+                  </svg>
+                </div>
+
+                {/* Small cloud - bottom left */}
+                <div 
+                  className="absolute opacity-6 text-muted-foreground/40 animate-float hidden sm:block"
+                  style={{
+                    bottom: '10%',
+                    left: '-20%',
+                    animationDelay: '7s',
+                    animationDuration: '18s'
+                  }}
+                >
+                  <svg width="80" height="50" viewBox="0 0 80 50" fill="currentColor">
+                    <path d="M15 30c-4-1-7-4-7-9 0-5 4-9 9-9 1-3 4-6 8-6 3 0 5 1 6 3 1 0 3-1 4-1 5 0 9 4 9 9 0 2-1 4-2 6 3 1 6 4 6 7 0 4-3 7-7 7H18c-2 0-5-2-5-4 0-2 1-3 2-3z"/>
+                  </svg>
+                </div>
+
+                {/* Small cloud - bottom right */}
+                <div 
+                  className="absolute opacity-7 text-muted-foreground/50 animate-float hidden lg:block"
+                  style={{
+                    bottom: '20%',
+                    right: '-15%',
+                    animationDelay: '12s',
+                    animationDuration: '22s'
+                  }}
+                >
+                  <svg width="90" height="55" viewBox="0 0 90 55" fill="currentColor">
+                    <path d="M18 35c-5-1-8-5-8-11 0-6 5-11 11-11 1-4 5-7 9-7 3 0 6 1 7 4 2-1 3-1 5-1 6 0 11 5 11 11 0 2-1 5-2 7 4 1 7 5 7 9 0 5-4 9-9 9H21c-3 0-6-2-6-5 0-2 1-4 3-4z"/>
+                  </svg>
+                </div>
+
+                {/* Tiny accent clouds */}
+                <div 
+                  className="absolute opacity-4 text-primary/30 animate-float"
+                  style={{
+                    top: '15%',
+                    left: '80%',
+                    animationDelay: '15s',
+                    animationDuration: '30s'
+                  }}
+                >
+                  <svg width="40" height="25" viewBox="0 0 40 25" fill="currentColor">
+                    <path d="M8 15c-2 0-4-2-4-5s2-5 4-5c1-2 3-3 5-3s4 1 5 3c1 0 2 0 3 0 3 0 5 2 5 5s-2 5-5 5H8z"/>
+                  </svg>
+                </div>
+
+                <div 
+                  className="absolute opacity-3 text-accent/40 animate-float"
+                  style={{
+                    top: '70%',
+                    left: '10%',
+                    animationDelay: '18s',
+                    animationDuration: '28s'
+                  }}
+                >
+                  <svg width="35" height="22" viewBox="0 0 35 22" fill="currentColor">
+                    <path d="M7 13c-2 0-3-1-3-3s1-3 3-3c0-1 2-2 3-2s3 1 3 2c1 0 1 0 2 0 2 0 3 1 3 3s-1 3-3 3H7z"/>
+                  </svg>
+                </div>
+              </div>
               
               {/* Animated blob background */}
               <div 
