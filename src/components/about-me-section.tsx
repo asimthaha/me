@@ -3,13 +3,19 @@
  * CRO-optimized, fully responsive section with scroll animations
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import PacManIntroOverlay from "./pacman-intro-overlay";
 
 const AboutMeSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const [showIntro, setShowIntro] = useState(true);
+
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -42,10 +48,16 @@ const AboutMeSection = () => {
   ];
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-screen bg-background py-20 px-4 overflow-hidden"
-    >
+    <>
+      {/* Pac-Man Intro Overlay */}
+      {showIntro && (
+        <PacManIntroOverlay onComplete={handleIntroComplete} />
+      )}
+      
+      <section
+        ref={sectionRef}
+        className="relative min-h-screen bg-background py-20 px-4 overflow-hidden"
+      >
       {/* Retro scanlines overlay */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="scanlines" />
@@ -160,6 +172,7 @@ const AboutMeSection = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
