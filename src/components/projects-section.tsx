@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { InteractiveProjectCard } from './interactive-project-card';
-import { ProjectModal } from './project-modal';
-import { ProjectCarousel } from './project-carousel';
-import { ForwardTimer } from './forward-timer';
-import { Sparkles, Rocket, Code2 } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { InteractiveProjectCard } from "./interactive-project-card";
+import { ProjectModal } from "./project-modal";
+import { ProjectCarousel } from "./project-carousel";
+import { ForwardTimer } from "./forward-timer";
+import { Sparkles, Rocket, Code2 } from "lucide-react";
 
 /**
  * Modern Interactive Projects Section
@@ -20,7 +20,7 @@ interface Project {
   demoUrl: string;
   codeUrl: string;
   caseStudyUrl?: string | null;
-  category: 'frontend' | 'fullstack' | 'webgl' | 'ai';
+  category: "frontend" | "fullstack" | "webgl" | "ai";
   featured?: boolean;
 }
 
@@ -28,72 +28,86 @@ const projects: Project[] = [
   {
     id: 1,
     title: "Three.js Portfolio Experience",
-    description: "Immersive 3D portfolio with WebGL shaders, particle systems, and interactive scenes built with Three.js and React Three Fiber.",
+    description:
+      "Immersive 3D portfolio with WebGL shaders, particle systems, and interactive scenes built with Three.js and React Three Fiber.",
     image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
     techStack: ["Three.js", "React Three Fiber", "WebGL", "GLSL", "TypeScript"],
     demoUrl: "#",
     codeUrl: "#",
     caseStudyUrl: "#",
     category: "webgl",
-    featured: true
+    featured: true,
   },
   {
     id: 2,
     title: "AI-Powered Design System",
-    description: "Intelligent design system that generates component variants using machine learning and automated testing.",
+    description:
+      "Intelligent design system that generates component variants using machine learning and automated testing.",
     image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800",
     techStack: ["React", "TensorFlow.js", "Node.js", "Storybook", "Jest"],
     demoUrl: "#",
     codeUrl: "#",
     caseStudyUrl: "#",
     category: "ai",
-    featured: true
+    featured: true,
   },
   {
     id: 3,
     title: "Real-time Collaboration Platform",
-    description: "Full-stack application with WebSocket connections, live cursors, and collaborative editing features.",
+    description:
+      "Full-stack application with WebSocket connections, live cursors, and collaborative editing features.",
     image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
     techStack: ["Next.js", "Socket.io", "PostgreSQL", "Redis", "Docker"],
     demoUrl: "#",
     codeUrl: "#",
     caseStudyUrl: "#",
-    category: "fullstack"
+    category: "fullstack",
   },
   {
     id: 4,
     title: "Interactive Data Visualization",
-    description: "Dynamic dashboard with D3.js charts, real-time data streams, and responsive animations.",
+    description:
+      "Dynamic dashboard with D3.js charts, real-time data streams, and responsive animations.",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
     techStack: ["D3.js", "React", "WebSockets", "Chart.js", "Tailwind"],
     demoUrl: "#",
     codeUrl: "#",
     caseStudyUrl: "#",
-    category: "frontend"
+    category: "frontend",
   },
   {
     id: 5,
     title: "WebGL Particle Engine",
-    description: "High-performance particle system with GPU computation, physics simulation, and interactive controls.",
+    description:
+      "High-performance particle system with GPU computation, physics simulation, and interactive controls.",
     image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
     techStack: ["WebGL", "Three.js", "GPU.js", "Canvas API", "ES6"],
     demoUrl: "#",
     codeUrl: "#",
-    category: "webgl"
+    category: "webgl",
   },
   {
     id: 6,
     title: "E-commerce Microservices",
-    description: "Scalable microservices architecture with containerization, API gateway, and automated deployment.",
+    description:
+      "Scalable microservices architecture with containerization, API gateway, and automated deployment.",
     image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
     techStack: ["Node.js", "Docker", "Kubernetes", "MongoDB", "GraphQL"],
     demoUrl: "#",
     codeUrl: "#",
-    category: "fullstack"
-  }
+    category: "fullstack",
+  },
 ];
 
-const StatsCounter = ({ label, value, delay }: { label: string; value: string; delay: number }) => {
+const StatsCounter = ({
+  label,
+  value,
+  delay,
+}: {
+  label: string;
+  value: string;
+  delay: number;
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -115,11 +129,11 @@ const StatsCounter = ({ label, value, delay }: { label: string; value: string; d
     <div
       ref={ref}
       className={`text-center space-y-2 transition-all duration-700 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
     >
       <div className="text-3xl md:text-4xl font-bold text-primary font-mono">
-        {isVisible ? value : '00'}
+        {isVisible ? value : "00"}
       </div>
       <div className="text-sm text-muted-foreground uppercase tracking-wide">
         {label}
@@ -138,8 +152,8 @@ const ProjectsSection = () => {
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Scroll reveal animation
@@ -148,16 +162,17 @@ const ProjectsSection = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const elements = entry.target.querySelectorAll('[data-reveal]');
+            const elements = entry.target.querySelectorAll("[data-reveal]");
             elements.forEach((el, index) => {
               setTimeout(() => {
-                el.classList.add('animate-fade-in');
+                el.classList.add("animate-fade-in");
               }, index * 150);
             });
+            observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+      { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
@@ -174,12 +189,12 @@ const ProjectsSection = () => {
     setTimeout(() => setSelectedProject(null), 300);
   };
 
-  const featuredProjects = projects.filter(p => p.featured);
+  const featuredProjects = projects.filter((p) => p.featured);
   const allProjects = projects;
 
   return (
     <>
-      <section 
+      <section
         ref={sectionRef}
         className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
         aria-labelledby="projects-title"
@@ -187,13 +202,16 @@ const ProjectsSection = () => {
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div
+            className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float"
+            style={{ animationDelay: "2s" }}
+          />
         </div>
-        
+
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Section Header */}
           <div className="text-center mb-20 space-y-6">
-            <div 
+            <div
               className="opacity-0 translate-y-8 transition-all duration-700"
               data-reveal
             >
@@ -201,7 +219,7 @@ const ProjectsSection = () => {
                 <Sparkles className="w-4 h-4" />
                 Featured Work
               </div>
-              <h2 
+              <h2
                 id="projects-title"
                 className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
               >
@@ -211,19 +229,20 @@ const ProjectsSection = () => {
                 </span>
               </h2>
             </div>
-            <p 
+            <p
               className="opacity-0 translate-y-8 transition-all duration-700 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
               data-reveal
             >
-              From interactive 3D experiences to scalable web applications, 
-              each project represents a journey of innovation and technical excellence.
+              From interactive 3D experiences to scalable web applications, each
+              project represents a journey of innovation and technical
+              excellence.
             </p>
           </div>
 
           {/* Featured Projects Section */}
           {featuredProjects.length > 0 && (
             <div className="mb-20">
-              <div 
+              <div
                 className="opacity-0 translate-y-8 transition-all duration-700 mb-12"
                 data-reveal
               >
@@ -231,12 +250,18 @@ const ProjectsSection = () => {
                   <Rocket className="w-6 h-6 text-primary" />
                   Featured Projects
                 </h3>
-                <p className="text-muted-foreground">Showcasing cutting-edge technology and creative solutions</p>
+                <p className="text-muted-foreground">
+                  Showcasing cutting-edge technology and creative solutions
+                </p>
               </div>
-              
+
               <div className="grid lg:grid-cols-2 gap-8 mb-12">
                 {featuredProjects.map((project, index) => (
-                  <div key={project.id} className="opacity-0 translate-y-8" data-reveal>
+                  <div
+                    key={project.id}
+                    className="opacity-0 translate-y-8"
+                    data-reveal
+                  >
                     <InteractiveProjectCard
                       project={project}
                       index={index}
@@ -250,7 +275,7 @@ const ProjectsSection = () => {
 
           {/* All Projects Section */}
           <div className="mb-20">
-            <div 
+            <div
               className="opacity-0 translate-y-8 transition-all duration-700 mb-12"
               data-reveal
             >
@@ -258,20 +283,26 @@ const ProjectsSection = () => {
                 <Code2 className="w-6 h-6 text-primary" />
                 All Projects
               </h3>
-              <p className="text-muted-foreground">A comprehensive look at my development journey</p>
+              <p className="text-muted-foreground">
+                A comprehensive look at my development journey
+              </p>
             </div>
 
             {isMobile ? (
               <div className="opacity-0 translate-y-8" data-reveal>
-                <ProjectCarousel 
-                  projects={allProjects} 
+                <ProjectCarousel
+                  projects={allProjects}
                   onProjectExpand={handleProjectExpand}
                 />
               </div>
             ) : (
               <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
                 {allProjects.map((project, index) => (
-                  <div key={project.id} className="opacity-0 translate-y-8" data-reveal>
+                  <div
+                    key={project.id}
+                    className="opacity-0 translate-y-8"
+                    data-reveal
+                  >
                     <InteractiveProjectCard
                       project={project}
                       index={index}
@@ -284,7 +315,7 @@ const ProjectsSection = () => {
           </div>
 
           {/* Stats Section */}
-          <div 
+          <div
             className="opacity-0 translate-y-8 transition-all duration-700 bg-background/60 backdrop-blur-xl border border-border/20 rounded-3xl p-8 md:p-12"
             data-reveal
           >
@@ -296,17 +327,29 @@ const ProjectsSection = () => {
                 Transforming ideas into powerful digital solutions
               </p>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <StatsCounter label="Projects Delivered" value="25+" delay={200} />
-              <StatsCounter label="Client Satisfaction" value="100%" delay={400} />
-              <StatsCounter label="Technologies Mastered" value="15+" delay={600} />
+              <StatsCounter
+                label="Projects Delivered"
+                value="25+"
+                delay={200}
+              />
+              <StatsCounter
+                label="Client Satisfaction"
+                value="100%"
+                delay={400}
+              />
+              <StatsCounter
+                label="Technologies Mastered"
+                value="15+"
+                delay={600}
+              />
               <StatsCounter label="Years Experience" value="3+" delay={800} />
             </div>
           </div>
 
           {/* CTA Section */}
-          <div 
+          <div
             className="opacity-0 translate-y-8 transition-all duration-700 text-center mt-20"
             data-reveal
           >
@@ -315,16 +358,17 @@ const ProjectsSection = () => {
                 Ready to Build Something Amazing?
               </h3>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Let's collaborate on your next project and create something extraordinary together.
+                Let's collaborate on your next project and create something
+                extraordinary together.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
+                <Button
                   size="lg"
                   className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
                 >
                   Start a Project
                 </Button>
-                <Button 
+                <Button
                   size="lg"
                   variant="outline"
                   className="border-border/20 bg-background/50 hover:bg-background"

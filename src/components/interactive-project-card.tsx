@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Github, FileText, Play } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ExternalLink, Github, FileText, Play } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Project {
   id: number;
@@ -13,7 +13,7 @@ interface Project {
   demoUrl: string;
   codeUrl: string;
   caseStudyUrl?: string | null;
-  category: 'frontend' | 'fullstack' | 'webgl' | 'ai';
+  category: "frontend" | "fullstack" | "webgl" | "ai";
   featured?: boolean;
 }
 
@@ -27,7 +27,11 @@ interface InteractiveProjectCardProps {
  * Interactive Project Card with micro-animations and glassmorphism design
  * Features hover effects, tilt animations, and interactive previews
  */
-export const InteractiveProjectCard = ({ project, index, onExpand }: InteractiveProjectCardProps) => {
+export const InteractiveProjectCard = ({
+  project,
+  index,
+  onExpand,
+}: InteractiveProjectCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [tiltStyle, setTiltStyle] = useState({});
   const cardRef = useRef<HTMLDivElement>(null);
@@ -41,7 +45,7 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
+
     const rotateX = (y - centerY) / 10;
     const rotateY = (centerX - x) / 10;
 
@@ -53,7 +57,8 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
   const handleMouseLeave = () => {
     setIsHovered(false);
     setTiltStyle({
-      transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)',
+      transform:
+        "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)",
     });
   };
 
@@ -63,7 +68,7 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
+            entry.target.classList.add("animate-fade-in");
           }
         });
       },
@@ -79,14 +84,14 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
 
   const getCategoryIcon = () => {
     switch (project.category) {
-      case 'webgl':
-        return '🎮';
-      case 'ai':
-        return '🤖';
-      case 'fullstack':
-        return '⚡';
+      case "webgl":
+        return "🎮";
+      case "ai":
+        return "🤖";
+      case "fullstack":
+        return "⚡";
       default:
-        return '💻';
+        return "💻";
     }
   };
 
@@ -94,7 +99,7 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
     <article
       ref={cardRef}
       className={cn(
-        "group relative bg-background/60 backdrop-blur-md border border-border/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 translate-y-8",
+        "group relative flex flex-col min-h-full bg-background/60 backdrop-blur-md border border-border/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 translate-y-8",
         "hover:border-primary/20 hover:bg-background/80"
       )}
       style={{
@@ -108,7 +113,10 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
       {/* Featured Badge */}
       {project.featured && (
         <div className="absolute top-4 left-4 z-10">
-          <Badge variant="default" className="bg-primary/90 text-primary-foreground">
+          <Badge
+            variant="default"
+            className="bg-primary/90 text-primary-foreground"
+          >
             Featured
           </Badge>
         </div>
@@ -127,15 +135,17 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
         />
-        
+
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-        
+
         {/* Interactive Preview Overlay */}
-        <div className={cn(
-          "absolute inset-0 flex items-center justify-center transition-all duration-500",
-          isHovered ? "opacity-100 backdrop-blur-sm" : "opacity-0"
-        )}>
+        <div
+          className={cn(
+            "absolute inset-0 flex items-center justify-center transition-all duration-500",
+            isHovered ? "opacity-100 backdrop-blur-sm" : "opacity-0"
+          )}
+        >
           <div className="flex gap-3">
             <Button
               size="sm"
@@ -158,9 +168,9 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-4">
+      <div className="p-6 space-y-4 flex-grow flex flex-col">
         {/* Title & Description */}
-        <div className="space-y-2">
+        <div className="space-y-2 flex-grow">
           <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
             {project.title}
           </h3>
@@ -189,32 +199,24 @@ export const InteractiveProjectCard = ({ project, index, onExpand }: Interactive
 
         {/* Action Buttons */}
         <div className="flex gap-2 pt-2">
-          <Button
-            size="sm"
-            className="flex-1"
-            asChild
-          >
+          <Button size="sm" className="flex-1" asChild>
             <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="w-4 h-4 mr-2" />
               Live Demo
             </a>
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            asChild
-          >
+          <Button size="sm" variant="outline" asChild>
             <a href={project.codeUrl} target="_blank" rel="noopener noreferrer">
               <Github className="w-4 h-4" />
             </a>
           </Button>
           {project.caseStudyUrl && (
-            <Button
-              size="sm"
-              variant="ghost"
-              asChild
-            >
-              <a href={project.caseStudyUrl} target="_blank" rel="noopener noreferrer">
+            <Button size="sm" variant="ghost" asChild>
+              <a
+                href={project.caseStudyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <FileText className="w-4 h-4" />
               </a>
             </Button>
