@@ -48,16 +48,12 @@ const AboutMeSection = () => {
   ];
 
   return (
-    <>
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen bg-background py-20 px-4 overflow-hidden"
+    >
       {/* Pac-Man Intro Overlay */}
-      {showIntro && (
-        <PacManIntroOverlay onComplete={handleIntroComplete} />
-      )}
-      
-      <section
-        ref={sectionRef}
-        className="relative min-h-screen bg-background py-20 px-4 overflow-hidden"
-      >
+      {showIntro && <PacManIntroOverlay onComplete={handleIntroComplete} />}
       {/* Retro scanlines overlay */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="scanlines" />
@@ -172,7 +168,6 @@ const AboutMeSection = () => {
         </div>
       </div>
     </section>
-    </>
   );
 };
 

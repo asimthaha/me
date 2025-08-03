@@ -16,7 +16,9 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
   const [showOverlay, setShowOverlay] = useState(true);
 
   // Check for reduced motion preference
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
 
   const handleStart = () => {
     if (prefersReducedMotion) {
@@ -27,7 +29,7 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
     }
 
     setIsAnimating(true);
-    
+
     // Start the eating animation sequence
     setTimeout(() => {
       // After animation completes, fade out overlay
@@ -41,18 +43,22 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
   if (!showOverlay) return null;
 
   return (
-    <div className={cn(
-      "fixed inset-0 z-50 bg-background flex items-center justify-center transition-opacity duration-500",
-      !showOverlay && "opacity-0 pointer-events-none"
-    )}>
+    <div
+      className={cn(
+        "absolute inset-0 z-50 bg-background flex items-center justify-center transition-opacity duration-500",
+        !showOverlay && "opacity-0 pointer-events-none"
+      )}
+    >
       <div className="relative w-full max-w-2xl mx-auto px-8">
         {/* Game Area */}
         <div className="relative h-32 mb-12 overflow-hidden">
           {/* Pac-Man */}
-          <div className={cn(
-            "absolute left-8 top-1/2 -translate-y-1/2 transition-transform duration-2000 ease-in-out",
-            isAnimating && "translate-x-96"
-          )}>
+          <div
+            className={cn(
+              "absolute left-8 top-1/2 -translate-y-1/2 transition-transform duration-2000 ease-in-out",
+              isAnimating && "translate-x-96"
+            )}
+          >
             <div className="pacman">
               <div className="pacman-mouth"></div>
             </div>
@@ -60,14 +66,18 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
 
           {/* Dots */}
           <div className="absolute right-32 top-1/2 -translate-y-1/2 flex gap-16">
-            <div className={cn(
-              "dot transition-opacity duration-300",
-              isAnimating && "opacity-0 delay-1000"
-            )}></div>
-            <div className={cn(
-              "dot transition-opacity duration-300",
-              isAnimating && "opacity-0 delay-1500"
-            )}></div>
+            <div
+              className={cn(
+                "dot transition-opacity duration-300",
+                isAnimating && "opacity-0 delay-3000"
+              )}
+            ></div>
+            <div
+              className={cn(
+                "dot transition-opacity duration-300",
+                isAnimating && "opacity-0 delay-4500"
+              )}
+            ></div>
           </div>
         </div>
 
