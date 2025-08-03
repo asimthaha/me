@@ -65,7 +65,7 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
     <>
       <div
         className={cn(
-          "absolute inset-0 z-50 bg-background flex items-center justify-center transition-opacity duration-500",
+          "absolute inset-0 z-50 bg-tertiary flex items-center justify-center transition-opacity duration-500",
           !showOverlay && "opacity-0 pointer-events-none"
         )}
       >

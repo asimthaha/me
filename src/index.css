@@ -26,6 +26,10 @@ All colors MUST be HSL.
     --secondary: 220 13% 91%;
     --secondary-foreground: 220 9% 46%;
 
+    /* Tertiary: Subtle white for supporting elements */
+    --tertiary: 0 0% 99%;
+    --tertiary-foreground: 0 0% 95%;
+
     /* Muted: Light backgrounds and subtle text */
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
