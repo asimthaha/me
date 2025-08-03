@@ -1,294 +1,352 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { ExternalLink, Github, FileText } from 'lucide-react';
+import { InteractiveProjectCard } from './interactive-project-card';
+import { ProjectModal } from './project-modal';
+import { ProjectCarousel } from './project-carousel';
+import { ForwardTimer } from './forward-timer';
+import { Sparkles, Rocket, Code2 } from 'lucide-react';
 
 /**
- * Projects Section - Retro Gaming Inspired Developer Portfolio
- * Features CRO-optimized project cards with pixelated aesthetics
+ * Modern Interactive Projects Section
+ * Features glassmorphism design, 3D interactions, and responsive carousel
  */
 
-const projects = [
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  techStack: string[];
+  demoUrl: string;
+  codeUrl: string;
+  caseStudyUrl?: string | null;
+  category: 'frontend' | 'fullstack' | 'webgl' | 'ai';
+  featured?: boolean;
+}
+
+const projects: Project[] = [
   {
     id: 1,
-    title: "E-Commerce Platform",
-    description: "Full-stack marketplace with real-time inventory and payment processing",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    techStack: ["React", "Node.js", "PostgreSQL", "Stripe"],
+    title: "Three.js Portfolio Experience",
+    description: "Immersive 3D portfolio with WebGL shaders, particle systems, and interactive scenes built with Three.js and React Three Fiber.",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
+    techStack: ["Three.js", "React Three Fiber", "WebGL", "GLSL", "TypeScript"],
     demoUrl: "#",
     codeUrl: "#",
-    caseStudyUrl: "#"
+    caseStudyUrl: "#",
+    category: "webgl",
+    featured: true
   },
   {
     id: 2,
-    title: "Task Management App",
-    description: "Collaborative workspace with drag-and-drop interface and team analytics",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    techStack: ["TypeScript", "React", "Firebase", "Tailwind"],
+    title: "AI-Powered Design System",
+    description: "Intelligent design system that generates component variants using machine learning and automated testing.",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800",
+    techStack: ["React", "TensorFlow.js", "Node.js", "Storybook", "Jest"],
     demoUrl: "#",
     codeUrl: "#",
-    caseStudyUrl: null
+    caseStudyUrl: "#",
+    category: "ai",
+    featured: true
   },
   {
     id: 3,
-    title: "AI Chat Interface",
-    description: "Real-time messaging platform with natural language processing",
-    image: "https://images.unsplash.com/photo-1487058792275-0ad449287219",
-    techStack: ["Python", "FastAPI", "OpenAI", "WebSocket"],
+    title: "Real-time Collaboration Platform",
+    description: "Full-stack application with WebSocket connections, live cursors, and collaborative editing features.",
+    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
+    techStack: ["Next.js", "Socket.io", "PostgreSQL", "Redis", "Docker"],
     demoUrl: "#",
     codeUrl: "#",
-    caseStudyUrl: "#"
+    caseStudyUrl: "#",
+    category: "fullstack"
   },
   {
     id: 4,
-    title: "Data Visualization Dashboard",
-    description: "Interactive analytics platform for business intelligence insights",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    techStack: ["React", "D3.js", "Node.js", "MongoDB"],
+    title: "Interactive Data Visualization",
+    description: "Dynamic dashboard with D3.js charts, real-time data streams, and responsive animations.",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
+    techStack: ["D3.js", "React", "WebSockets", "Chart.js", "Tailwind"],
     demoUrl: "#",
     codeUrl: "#",
-    caseStudyUrl: "#"
+    caseStudyUrl: "#",
+    category: "frontend"
+  },
+  {
+    id: 5,
+    title: "WebGL Particle Engine",
+    description: "High-performance particle system with GPU computation, physics simulation, and interactive controls.",
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+    techStack: ["WebGL", "Three.js", "GPU.js", "Canvas API", "ES6"],
+    demoUrl: "#",
+    codeUrl: "#",
+    category: "webgl"
+  },
+  {
+    id: 6,
+    title: "E-commerce Microservices",
+    description: "Scalable microservices architecture with containerization, API gateway, and automated deployment.",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
+    techStack: ["Node.js", "Docker", "Kubernetes", "MongoDB", "GraphQL"],
+    demoUrl: "#",
+    codeUrl: "#",
+    category: "fullstack"
   }
 ];
 
-const ProjectCard = ({ project, index }: { project: typeof projects[0], index: number }) => {
+const StatsCounter = ({ label, value, delay }: { label: string; value: string; delay: number }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [delay]);
+
   return (
-    <article 
-      className="reveal-on-scroll pixelated-border bg-card hover:bg-accent/5 transition-smooth group"
-      style={{ 
-        opacity: 0, 
-        transform: 'translateY(20px)',
-        transitionDelay: `${index * 100}ms`
-      }}
+    <div
+      ref={ref}
+      className={`text-center space-y-2 transition-all duration-700 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
     >
-      {/* Project Image */}
-      <div className="relative overflow-hidden">
-        <img 
-          src={project.image}
-          alt={`${project.title} preview`}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-smooth"
-          loading="lazy"
-        />
-        <div className="scanlines opacity-30"></div>
-        
-        {/* Hover Actions Overlay */}
-        <div className="absolute inset-0 bg-background/90 opacity-0 group-hover:opacity-100 transition-smooth flex items-center justify-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="pixelated-border-button font-retro text-xs"
-            asChild
-          >
-            <a href={project.demoUrl} aria-label={`View ${project.title} demo`}>
-              <ExternalLink className="w-3 h-3" />
-              DEMO
-            </a>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="pixelated-border-button font-retro text-xs"
-            asChild
-          >
-            <a href={project.codeUrl} aria-label={`View ${project.title} source code`}>
-              <Github className="w-3 h-3" />
-              CODE
-            </a>
-          </Button>
-          {project.caseStudyUrl && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="pixelated-border-button font-retro text-xs"
-              asChild
-            >
-              <a href={project.caseStudyUrl} aria-label={`Read ${project.title} case study`}>
-                <FileText className="w-3 h-3" />
-                CASE
-              </a>
-            </Button>
-          )}
-        </div>
+      <div className="text-3xl md:text-4xl font-bold text-primary font-mono">
+        {isVisible ? value : '00'}
       </div>
-
-      {/* Project Content */}
-      <div className="p-6 space-y-4">
-        {/* Title */}
-        <h3 className="font-retro text-lg text-foreground group-hover:text-accent transition-smooth">
-          {project.title}
-        </h3>
-
-        {/* Description */}
-        <p className="font-body text-sm text-muted-foreground leading-relaxed">
-          {project.description}
-        </p>
-
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2">
-          {project.techStack.map((tech) => (
-            <Badge 
-              key={tech}
-              variant="outline"
-              className="font-retro text-xs pixelated-border-button"
-            >
-              {tech}
-            </Badge>
-          ))}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-2 pt-2">
-          <Button
-            variant="hero"
-            size="sm"
-            className="font-retro text-xs flex-1"
-            asChild
-          >
-            <a href={project.demoUrl}>
-              <ExternalLink className="w-3 h-3" />
-              PLAY DEMO
-            </a>
-          </Button>
-          <Button
-            variant="hero-secondary"
-            size="sm"
-            className="font-retro text-xs"
-            asChild
-          >
-            <a href={project.codeUrl}>
-              <Github className="w-3 h-3" />
-              VIEW CODE
-            </a>
-          </Button>
-        </div>
+      <div className="text-sm text-muted-foreground uppercase tracking-wide">
+        {label}
       </div>
-    </article>
+    </div>
   );
 };
 
 const ProjectsSection = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // Detect mobile/tablet for carousel
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Scroll reveal animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const elements = entry.target.querySelectorAll('.reveal-on-scroll');
+            const elements = entry.target.querySelectorAll('[data-reveal]');
             elements.forEach((el, index) => {
               setTimeout(() => {
-                el.classList.add('animate-reveal');
-              }, index * 100);
+                el.classList.add('animate-fade-in');
+              }, index * 150);
             });
           }
         });
       },
-      {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      }
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
+    if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
 
+  const handleProjectExpand = (project: Project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedProject(null), 300);
+  };
+
+  const featuredProjects = projects.filter(p => p.featured);
+  const allProjects = projects;
+
   return (
-    <section 
-      ref={sectionRef}
-      className="py-24 px-4 bg-background relative"
-      aria-labelledby="projects-title"
-    >
-      {/* Background Scanlines */}
-      <div className="scanlines opacity-20"></div>
-      
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 
-            id="projects-title"
-            className="reveal-on-scroll font-retro text-4xl md:text-5xl text-foreground"
-            style={{ opacity: 0, transform: 'translateY(20px)' }}
-          >
-            🕹️ MISSIONS COMPLETED
-          </h2>
-          <p 
-            className="reveal-on-scroll font-body text-lg text-muted-foreground max-w-2xl mx-auto"
-            style={{ opacity: 0, transform: 'translateY(20px)', transitionDelay: '100ms' }}
-          >
-            From prototypes to production—these builds leveled me up.
-          </p>
+    <>
+      <section 
+        ref={sectionRef}
+        className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
+        aria-labelledby="projects-title"
+      >
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
         </div>
-
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-16">
-          {projects.map((project, index) => (
-            <ProjectCard 
-              key={project.id} 
-              project={project} 
-              index={index + 2} 
-            />
-          ))}
-        </div>
-
-        {/* Experience Progress Panel */}
-        <div 
-          className="reveal-on-scroll pixelated-border bg-card p-8 mb-12 relative"
-          style={{ opacity: 0, transform: 'translateY(20px)', transitionDelay: '600ms' }}
-        >
-          {/* Panel Title */}
-          <div className="absolute -top-3 left-6 bg-background px-3">
-            <span className="font-retro text-sm text-muted-foreground">[ DEV STATS ]</span>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Section Header */}
+          <div className="text-center mb-20 space-y-6">
+            <div 
+              className="opacity-0 translate-y-8 transition-all duration-700"
+              data-reveal
+            >
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <Sparkles className="w-4 h-4" />
+                Featured Work
+              </div>
+              <h2 
+                id="projects-title"
+                className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
+              >
+                Crafting Digital
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                  Experiences
+                </span>
+              </h2>
+            </div>
+            <p 
+              className="opacity-0 translate-y-8 transition-all duration-700 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+              data-reveal
+            >
+              From interactive 3D experiences to scalable web applications, 
+              each project represents a journey of innovation and technical excellence.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <span className="font-retro text-xs text-muted-foreground">// PROJECTS SHIPPED:</span>
-                <p className="font-body text-foreground">25+ applications in production</p>
+          {/* Featured Projects Section */}
+          {featuredProjects.length > 0 && (
+            <div className="mb-20">
+              <div 
+                className="opacity-0 translate-y-8 transition-all duration-700 mb-12"
+                data-reveal
+              >
+                <h3 className="text-2xl font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <Rocket className="w-6 h-6 text-primary" />
+                  Featured Projects
+                </h3>
+                <p className="text-muted-foreground">Showcasing cutting-edge technology and creative solutions</p>
               </div>
-              <div>
-                <span className="font-retro text-xs text-muted-foreground">// CLIENTS HAPPY:</span>
-                <p className="font-body text-foreground">100% satisfaction rate</p>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <span className="font-retro text-xs text-muted-foreground">// LOADING:</span>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-retro">PORTFOLIO.EXE</span>
-                    <span className="font-body">95%</span>
+              
+              <div className="grid lg:grid-cols-2 gap-8 mb-12">
+                {featuredProjects.map((project, index) => (
+                  <div key={project.id} className="opacity-0 translate-y-8" data-reveal>
+                    <InteractiveProjectCard
+                      project={project}
+                      index={index}
+                      onExpand={handleProjectExpand}
+                    />
                   </div>
-                  <Progress value={95} className="retro-progress h-2" />
-                </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* All Projects Section */}
+          <div className="mb-20">
+            <div 
+              className="opacity-0 translate-y-8 transition-all duration-700 mb-12"
+              data-reveal
+            >
+              <h3 className="text-2xl font-semibold text-foreground mb-2 flex items-center gap-2">
+                <Code2 className="w-6 h-6 text-primary" />
+                All Projects
+              </h3>
+              <p className="text-muted-foreground">A comprehensive look at my development journey</p>
+            </div>
+
+            {isMobile ? (
+              <div className="opacity-0 translate-y-8" data-reveal>
+                <ProjectCarousel 
+                  projects={allProjects} 
+                  onProjectExpand={handleProjectExpand}
+                />
+              </div>
+            ) : (
+              <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+                {allProjects.map((project, index) => (
+                  <div key={project.id} className="opacity-0 translate-y-8" data-reveal>
+                    <InteractiveProjectCard
+                      project={project}
+                      index={index}
+                      onExpand={handleProjectExpand}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Stats Section */}
+          <div 
+            className="opacity-0 translate-y-8 transition-all duration-700 bg-background/60 backdrop-blur-xl border border-border/20 rounded-3xl p-8 md:p-12"
+            data-reveal
+          >
+            <div className="text-center mb-12">
+              <h3 className="text-2xl font-semibold text-foreground mb-4">
+                Development Impact
+              </h3>
+              <p className="text-muted-foreground">
+                Transforming ideas into powerful digital solutions
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <StatsCounter label="Projects Delivered" value="25+" delay={200} />
+              <StatsCounter label="Client Satisfaction" value="100%" delay={400} />
+              <StatsCounter label="Technologies Mastered" value="15+" delay={600} />
+              <StatsCounter label="Years Experience" value="3+" delay={800} />
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div 
+            className="opacity-0 translate-y-8 transition-all duration-700 text-center mt-20"
+            data-reveal
+          >
+            <div className="space-y-6">
+              <h3 className="text-3xl font-bold text-foreground">
+                Ready to Build Something Amazing?
+              </h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Let's collaborate on your next project and create something extraordinary together.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  size="lg"
+                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
+                >
+                  Start a Project
+                </Button>
+                <Button 
+                  size="lg"
+                  variant="outline"
+                  className="border-border/20 bg-background/50 hover:bg-background"
+                >
+                  View All Work
+                </Button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div 
-          className="reveal-on-scroll text-center"
-          style={{ opacity: 0, transform: 'translateY(20px)', transitionDelay: '700ms' }}
-        >
-          <p className="font-body text-lg text-muted-foreground mb-6">
-            Ready to start your next project?
-          </p>
-          <Button 
-            variant="hero" 
-            size="hero"
-            className="font-retro pixelated-border-button"
-          >
-            &gt; VIEW ALL PROJECTS
-          </Button>
-        </div>
-      </div>
-    </section>
+        {/* Forward Timer */}
+        <ForwardTimer />
+      </section>
+
+      {/* Project Modal */}
+      <ProjectModal
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+      />
+    </>
   );
 };
 
