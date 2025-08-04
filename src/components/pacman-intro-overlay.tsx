@@ -69,7 +69,17 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
           !showOverlay && "opacity-0 pointer-events-none"
         )}
       >
-        <div className="relative w-full max-w-2xl mx-auto px-8">
+        {/* Organic Mold Background Animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="mold-blob mold-blob-1" />
+          <div className="mold-blob mold-blob-2" />
+          <div className="mold-blob mold-blob-3" />
+          <div className="mold-blob mold-blob-4" />
+          <div className="mold-blob mold-blob-5" />
+          <div className="mold-blob mold-blob-6" />
+        </div>
+
+        <div className="relative w-full max-w-2xl mx-auto px-8 z-10">
           {/* Game Area */}
           <div className="relative h-32 mb-12 overflow-hidden">
             {/* Pac-Man */}
