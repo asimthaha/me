@@ -71,9 +71,9 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
         )}
       >
         {/* Slime Mold Background Simulation */}
-        <SlimeMoldCanvas 
-          isAnimating={isAnimating || showOverlay} 
-          className="opacity-60" 
+        <SlimeMoldCanvas
+          isAnimating={isAnimating || showOverlay}
+          className="opacity-60"
         />
 
         <div className="relative w-full max-w-2xl mx-auto px-8 z-10">
