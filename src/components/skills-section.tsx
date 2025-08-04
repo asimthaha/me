@@ -179,7 +179,7 @@ const SkillsSection: React.FC = () => {
       skills: [
         { name: "Jest", level: "advanced", yearsOfExperience: 3 },
         { name: "Cypress", level: "intermediate", yearsOfExperience: 2 },
-        { name: "Testing Library", level: "advanced", yearsOfExperience: 3 },
+        { name: "Testing", level: "advanced", yearsOfExperience: 3 },
         { name: "ESLint", level: "advanced", yearsOfExperience: 4 },
         { name: "Prettier", level: "expert", yearsOfExperience: 4 },
         { name: "Figma", level: "intermediate", yearsOfExperience: 3 },

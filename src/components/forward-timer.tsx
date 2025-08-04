@@ -1,4 +1,4 @@
-import { useForwardTimer } from '@/hooks/use-forward-timer';
+import { useForwardTimer } from "@/hooks/use-forward-timer";
 
 /**
  * Forward Timer Component
@@ -9,7 +9,7 @@ export const ForwardTimer = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 bg-background/80 backdrop-blur-md border border-border/20 rounded-lg px-3 py-2 shadow-lg">
-      <div className="text-xs text-muted-foreground mb-1">Developer Since</div>
+      <div className="text-xs text-muted-foreground mb-1">Experience</div>
       <div className="font-mono text-sm text-foreground font-medium">
         {timeString}
       </div>

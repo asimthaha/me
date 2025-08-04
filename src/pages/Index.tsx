@@ -10,7 +10,7 @@ import SkillsSection from '@/components/skills-section';
  */
 const Index = () => {
   return (
-    <main className="bg-background">
+    <main className="relative bg-background">
       <Navbar />
       <HeroSection />
       <AboutMeSection />

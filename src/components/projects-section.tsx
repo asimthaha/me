@@ -224,9 +224,7 @@ const ProjectsSection = () => {
                 className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
               >
                 Crafting Digital
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                  Experiences
-                </span>
+                <span className="block text-gradient">Experiences</span>
               </h2>
             </div>
             <p
@@ -364,7 +362,7 @@ const ProjectsSection = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
+                  className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
                 >
                   Start a Project
                 </Button>

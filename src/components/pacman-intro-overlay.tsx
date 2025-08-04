@@ -14,9 +14,26 @@ interface PacManIntroOverlayProps {
 const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
+  const [dotsEaten, setDotsEaten] = useState([false, false]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for reduced motion preference and screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Check for reduced motion preference
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion =
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false;
 
   const handleStart = () => {
     if (prefersReducedMotion) {
@@ -27,7 +44,11 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
     }
 
     setIsAnimating(true);
-    
+
+    // Eat dots at specific intervals based on movement timing
+    setTimeout(() => setDotsEaten([true, false]), 1600); // First dot
+    setTimeout(() => setDotsEaten([true, true]), 2400); // Second dot
+
     // Start the eating animation sequence
     setTimeout(() => {
       // After animation completes, fade out overlay
@@ -35,62 +56,58 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
       setTimeout(() => {
         onComplete();
       }, 500); // Wait for fade out
-    }, 2500); // Animation duration
+    }, 3000); // Total animation duration
   };
 
   if (!showOverlay) return null;
 
   return (
-    <div className={cn(
-      "fixed inset-0 z-50 bg-background flex items-center justify-center transition-opacity duration-500",
-      !showOverlay && "opacity-0 pointer-events-none"
-    )}>
-      <div className="relative w-full max-w-2xl mx-auto px-8">
-        {/* Game Area */}
-        <div className="relative h-32 mb-12 overflow-hidden">
-          {/* Pac-Man */}
-          <div className={cn(
-            "absolute left-8 top-1/2 -translate-y-1/2 transition-transform duration-2000 ease-in-out",
-            isAnimating && "translate-x-96"
-          )}>
-            <div className="pacman">
-              <div className="pacman-mouth"></div>
+    <>
+      <div
+        className={cn(
+          "absolute inset-0 z-50 bg-tertiary flex items-center justify-center transition-opacity duration-500",
+          !showOverlay && "opacity-0 pointer-events-none"
+        )}
+      >
+        <div className="relative w-full max-w-2xl mx-auto px-8">
+          {/* Game Area */}
+          <div className="relative h-32 mb-12 overflow-hidden">
+            {/* Pac-Man */}
+            <div className="absolute left-8 top-1/2 -translate-y-1/2">
+              <div className={cn("pacman", isAnimating && "moving")} />
+            </div>
+
+            {/* Dots positioned for proper eating timing */}
+            <div className="absolute top-1/2 -translate-y-1/2 flex items-center gap-16">
+              <div
+                className={cn("dot", dotsEaten[0] && "eaten")}
+                style={{ marginLeft: "400px" }}
+              />
+              <div className={cn("dot", dotsEaten[1] && "eaten")} />
             </div>
           </div>
 
-          {/* Dots */}
-          <div className="absolute right-32 top-1/2 -translate-y-1/2 flex gap-16">
-            <div className={cn(
-              "dot transition-opacity duration-300",
-              isAnimating && "opacity-0 delay-1000"
-            )}></div>
-            <div className={cn(
-              "dot transition-opacity duration-300",
-              isAnimating && "opacity-0 delay-1500"
-            )}></div>
+          {/* START Button - keeping your existing styling */}
+          <div className="text-center">
+            <Button
+              onClick={handleStart}
+              disabled={isAnimating}
+              size="lg"
+              className="pixelated-border-button font-retro text-lg px-8 py-4 hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
+            >
+              {isAnimating ? "LOADING..." : "START"}
+            </Button>
           </div>
-        </div>
 
-        {/* START Button */}
-        <div className="text-center">
-          <Button
-            onClick={handleStart}
-            disabled={isAnimating}
-            size="lg"
-            className="pixelated-border-button font-retro text-lg px-8 py-4 hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
-          >
-            {isAnimating ? "LOADING..." : "START"}
-          </Button>
+          {/* Reduced motion message */}
+          {prefersReducedMotion && (
+            <p className="text-center text-sm text-muted-foreground mt-4 font-retro">
+              Animation disabled due to motion preferences
+            </p>
+          )}
         </div>
-
-        {/* Reduced motion message */}
-        {prefersReducedMotion && (
-          <p className="text-center text-sm text-muted-foreground mt-4 font-retro">
-            Animation disabled due to motion preferences
-          </p>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 
