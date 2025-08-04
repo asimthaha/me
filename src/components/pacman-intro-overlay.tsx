@@ -6,6 +6,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import SlimeMoldCanvas from "./slime-mold-canvas";
 
 interface PacManIntroOverlayProps {
   onComplete: () => void;
@@ -69,15 +70,11 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
           !showOverlay && "opacity-0 pointer-events-none"
         )}
       >
-        {/* Organic Mold Background Animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="mold-blob mold-blob-1" />
-          <div className="mold-blob mold-blob-2" />
-          <div className="mold-blob mold-blob-3" />
-          <div className="mold-blob mold-blob-4" />
-          <div className="mold-blob mold-blob-5" />
-          <div className="mold-blob mold-blob-6" />
-        </div>
+        {/* Slime Mold Background Simulation */}
+        <SlimeMoldCanvas 
+          isAnimating={isAnimating || showOverlay} 
+          className="opacity-60" 
+        />
 
         <div className="relative w-full max-w-2xl mx-auto px-8 z-10">
           {/* Game Area */}
