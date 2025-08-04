@@ -98,6 +98,10 @@ All colors MUST be HSL.
     --secondary: 240 4% 16%;
     --secondary-foreground: 0 0% 98%;
 
+    /* Tertiary:  Dark surface with light text */
+    --tertiary: 240 4% 8%;
+    --tertiary-foreground: 0 0% 98%;
+
     /* Muted: Subtle dark backgrounds */
     --muted: 240 4% 16%;
     --muted-foreground: 240 5% 64.9%;
