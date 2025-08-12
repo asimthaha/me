@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Home,
@@ -20,6 +21,8 @@ export const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [activeSection, setActiveSection] = useState("home");
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Scroll behavior for show/hide navbar
   useEffect(() => {
@@ -39,19 +42,61 @@ export const Navbar = () => {
     return () => window.removeEventListener("scroll", controlNavbar);
   }, [lastScrollY]);
 
+  // Track current active section based on route and hash
+  useEffect(() => {
+    if (location.pathname === '/projects') {
+      setActiveSection('projects');
+    } else if (location.pathname === '/') {
+      const hash = location.hash.replace('#', '') || 'home';
+      setActiveSection(hash);
+    }
+  }, [location]);
+
   // Navigation items for desktop and mobile
   const navItems = [
-    { id: "home", label: "Home", icon: Home, href: "#home" },
-    { id: "about", label: "About", icon: User, href: "#about" },
-    { id: "projects", label: "Projects", icon: Code2, href: "#projects" },
-    { id: "contact", label: "Contact", icon: Mail, href: "#contact" },
-    { id: "resume", label: "Resume", icon: FileText, href: "#resume" },
-    { id: "github", label: "GitHub", icon: Github, href: "#github" },
-    { id: "linkedin", label: "LinkedIn", icon: Linkedin, href: "#linkedin" },
+    { id: "home", label: "Home", icon: Home, type: "section" },
+    { id: "about", label: "About", icon: User, type: "section" },
+    { id: "projects", label: "Projects", icon: Code2, type: "page" },
+    { id: "contact", label: "Contact", icon: Mail, type: "section" },
+    { id: "resume", label: "Resume", icon: FileText, type: "external", href: "/resume.pdf" },
+    { id: "github", label: "GitHub", icon: Github, type: "external", href: "https://github.com/yourusername" },
+    { id: "linkedin", label: "LinkedIn", icon: Linkedin, type: "external", href: "https://linkedin.com/in/yourusername" },
   ];
 
-  const handleNavClick = (sectionId: string) => {
-    setActiveSection(sectionId);
+  const handleNavClick = (item: typeof navItems[0]) => {
+    if (item.type === "page") {
+      if (item.id === "projects") {
+        navigate('/projects');
+      }
+    } else if (item.type === "section") {
+      // Navigate to home page first if not already there
+      if (location.pathname !== '/') {
+        navigate('/');
+        // Wait for navigation to complete before scrolling
+        setTimeout(() => {
+          const element = document.getElementById(item.id);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      } else {
+        // Already on home page, just scroll to section
+        const element = document.getElementById(item.id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+        // Update URL hash
+        window.history.pushState(null, '', `#${item.id}`);
+      }
+      setActiveSection(item.id);
+    } else if (item.type === "external" && item.href) {
+      if (item.href.startsWith('http')) {
+        window.open(item.href, '_blank', 'noopener,noreferrer');
+      } else {
+        // Internal anchor link
+        window.location.href = item.href;
+      }
+    }
   };
 
   return (
@@ -80,31 +125,33 @@ export const Navbar = () => {
 
               {/* Desktop Navigation Links */}
               <div className="flex items-center space-x-8">
-                {navItems.slice(0, 4).map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <a
-                      key={item.id}
-                      href={item.href}
-                      onClick={() => handleNavClick(item.id)}
-                      className={`
-                        flex items-center space-x-2 px-3 py-2 rounded-lg
-                        text-sm font-medium transition-all duration-200
-                        hover:bg-accent hover:text-accent-foreground
-                        focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                        ${
-                          activeSection === item.id
-                            ? "text-primary bg-accent/50"
-                            : "text-muted-foreground"
-                        }
-                      `}
-                      aria-label={`Navigate to ${item.label}`}
-                    >
-                      <Icon className="h-4 w-4" aria-hidden="true" />
-                      <span>{item.label}</span>
-                    </a>
-                  );
-                })}
+                 {navItems.slice(0, 4).map((item) => {
+                   const Icon = item.icon;
+                   return (
+                     <button
+                       key={item.id}
+                       onClick={(e) => {
+                         e.preventDefault();
+                         handleNavClick(item);
+                       }}
+                       className={`
+                         flex items-center space-x-2 px-3 py-2 rounded-lg
+                         text-sm font-medium transition-all duration-200
+                         hover:bg-accent hover:text-accent-foreground
+                         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                         ${
+                           activeSection === item.id
+                             ? "text-primary bg-accent/50"
+                             : "text-muted-foreground"
+                         }
+                       `}
+                       aria-label={`Navigate to ${item.label}`}
+                     >
+                       <Icon className="h-4 w-4" aria-hidden="true" />
+                       <span>{item.label}</span>
+                     </button>
+                   );
+                 })}
               </div>
 
               {/* Desktop Social Links & Theme Switcher */}
@@ -159,10 +206,10 @@ export const Navbar = () => {
                 const isActive = activeSection === item.id;
 
                 return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`
+                   <button
+                     key={item.id}
+                     onClick={() => handleNavClick(item)}
+                     className={`
                       relative p-2 rounded-full transition-all duration-200
                       hover:bg-accent hover:text-accent-foreground
                       focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
