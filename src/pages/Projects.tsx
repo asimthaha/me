@@ -6,6 +6,7 @@ import { ProjectCarousel } from "@/components/project-carousel";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Code2, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * All Projects Page
@@ -100,12 +101,28 @@ const projects: Project[] = [
   },
 ];
 
+export function SkeletonProjectCard() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="w-full h-48 rounded-lg" />
+      <Skeleton className="h-6 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+    </div>
+  );
+}
+
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Detect mobile/tablet for carousel
   useEffect(() => {
@@ -159,7 +176,7 @@ const Projects = () => {
     <>
       <main className="relative bg-background min-h-screen">
         <Navbar />
-        
+
         <section
           ref={sectionRef}
           className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
@@ -213,8 +230,9 @@ const Projects = () => {
                 className="opacity-0 translate-y-8 transition-all duration-700 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
                 data-reveal
               >
-                Explore my full collection of projects, from experimental concepts to production applications.
-                Each project represents a unique challenge and learning experience.
+                Explore my full collection of projects, from experimental
+                concepts to production applications. Each project represents a
+                unique challenge and learning experience.
               </p>
             </div>
 
@@ -254,19 +272,23 @@ const Projects = () => {
                 </div>
               ) : (
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-                  {filteredProjects.map((project, index) => (
-                    <div
-                      key={project.id}
-                      className="opacity-0 translate-y-8"
-                      data-reveal
-                    >
-                      <InteractiveProjectCard
-                        project={project}
-                        index={index}
-                        onExpand={handleProjectExpand}
-                      />
-                    </div>
-                  ))}
+                  {loading
+                    ? Array.from({ length: 6 }).map((_, index) => (
+                        <SkeletonProjectCard key={index} />
+                      ))
+                    : filteredProjects.map((project, index) => (
+                        <div
+                          key={project.id}
+                          className="opacity-0 translate-y-8"
+                          data-reveal
+                        >
+                          <InteractiveProjectCard
+                            project={project}
+                            index={index}
+                            onExpand={handleProjectExpand}
+                          />
+                        </div>
+                      ))}
                 </div>
               )}
             </div>
@@ -281,7 +303,8 @@ const Projects = () => {
                   Let's Build Something Together
                 </h3>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Have a project in mind? I'd love to hear about it and discuss how we can bring your vision to life.
+                  Have a project in mind? I'd love to hear about it and discuss
+                  how we can bring your vision to life.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
