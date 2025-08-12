@@ -3,6 +3,7 @@ import { Navbar } from '@/components/navbar';
 import AboutMeSection from '@/components/about-me-section';
 import ProjectsSection from '@/components/projects-section';
 import SkillsSection from '@/components/skills-section';
+import ContactSection from '@/components/contact-section';
 
 /**
  * Developer Portfolio Homepage
@@ -24,12 +25,7 @@ const Index = () => {
       <section id="skills">
         <SkillsSection />
       </section>
-      <section id="contact" className="min-h-screen flex items-center justify-center bg-muted/30">
-        <div className="text-center space-y-4">
-          <h2 className="text-4xl font-bold text-foreground">Contact</h2>
-          <p className="text-muted-foreground">Contact section coming soon...</p>
-        </div>
-      </section>
+      <ContactSection />
     </main>
   );
 };
