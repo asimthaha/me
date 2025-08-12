@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Loader2, Send, CheckCircle } from "lucide-react";
 
 /**
@@ -80,10 +80,8 @@ const ContactSection: React.FC = () => {
    */
   const onSubmit = async (data: ContactFormData) => {
     if (!captchaValue) {
-      toast({
-        title: "reCAPTCHA Required",
+      toast.error("reCAPTCHA Required", {
         description: "Please complete the reCAPTCHA verification.",
-        variant: "destructive",
       });
       return;
     }
@@ -114,18 +112,15 @@ const ContactSection: React.FC = () => {
         setCaptchaValue(null);
         recaptchaRef.current?.reset();
 
-        toast({
-          title: "Message Sent Successfully!",
+        toast.success("Message Sent Successfully!", {
           description: "Thank you for your message. I'll get back to you soon.",
         });
       }
     } catch (error) {
       console.error("EmailJS Error:", error);
-      toast({
-        title: "Failed to Send Message",
+      toast.error("Failed to Send Message", {
         description:
           "There was an error sending your message. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);

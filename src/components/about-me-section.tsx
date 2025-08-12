@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import PacManIntroOverlay from "./pacman-intro-overlay";
 import { Progress } from "./ui/progress";
+import { skills } from "@/lib/data";
 
 const AboutMeSection = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -8,14 +9,6 @@ const AboutMeSection = () => {
   const handleIntroComplete = () => {
     setShowIntro(false);
   };
-  const skills = [
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Node.js",
-    "Python",
-    "SQL",
-  ];
   return (
     <section className="relative h-screen overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-background">
       {showIntro && <PacManIntroOverlay onComplete={handleIntroComplete} />}

@@ -3,8 +3,10 @@
  * Manages global theme state and provides theme switching functionality
  */
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import * as React from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ThemeType, Theme, getTheme, isDarkTheme } from "@/lib/themes";
+import { themes } from "@/lib/data";
 
 interface ThemeContextType {
   currentTheme: ThemeType;
@@ -45,7 +47,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   };
 
   const toggleTheme = () => {
-    const themes: ThemeType[] = ["light", "dark", "netflix", "ey", "github"];
     const currentIndex = themes.indexOf(currentTheme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);
