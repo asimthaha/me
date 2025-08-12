@@ -1,43 +1,13 @@
-/**
- * About Me Section - Retro Gaming Themed
- * CRO-optimized, fully responsive section with scroll animations
- */
-
 import { useEffect, useRef, useState } from "react";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import PacManIntroOverlay from "./pacman-intro-overlay";
+import { Progress } from "./ui/progress";
 
 const AboutMeSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
   const [showIntro, setShowIntro] = useState(true);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-reveal");
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
-      }
-    );
-
-    const elements = sectionRef.current?.querySelectorAll(".reveal-on-scroll");
-    elements?.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   const skills = [
     "JavaScript",
     "TypeScript",
@@ -46,54 +16,48 @@ const AboutMeSection = () => {
     "Python",
     "SQL",
   ];
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-screen bg-background py-20 px-4 overflow-hidden"
-    >
-      {/* Pac-Man Intro Overlay */}
+    <section className="relative h-screen overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-background">
       {showIntro && <PacManIntroOverlay onComplete={handleIntroComplete} />}
-      {/* Retro scanlines overlay */}
-      <div className="absolute inset-0 pointer-events-none">
+
+      {/* Scanlines Overlay */}
+      <div className="absolute inset-0 pointer-events-none z-10">
         <div className="scanlines" />
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-16">
-        {/* Opening Line with blinking cursor */}
-        <div className="reveal-on-scroll opacity-0 translate-y-8">
-          <h1 className="font-retro text-4xl md:text-6xl lg:text-7xl text-foreground mb-4">
+      {/* Individual Snap Cards */}
+      <div className="snap-start h-screen flex items-center justify-center px-4">
+        <div className="max-w-5xl w-full space-y-6 text-center">
+          <h1 className="font-retro text-4xl md:text-6xl lg:text-7xl text-foreground">
             Hey, I'm Alex<span className="blinking-cursor">_</span>
           </h1>
         </div>
+      </div>
 
-        {/* Narrative Block 1 */}
-        <div className="reveal-on-scroll opacity-0 translate-y-8">
-          <p className="font-retro text-sm md:text-base text-muted-foreground leading-relaxed">
+      <div className="snap-start h-screen flex items-center justify-center px-4">
+        <div className="max-w-2xl w-full space-y-4 text-center">
+          <p className="font-retro text-sm md:text-base text-muted-foreground">
             I build things for the web. Sometimes they even work on the first
             try.
           </p>
-        </div>
-        <div className="reveal-on-scroll opacity-0 translate-y-8">
-          <p className="font-retro text-sm md:text-base text-muted-foreground leading-relaxed">
+          <p className="font-retro text-sm md:text-base text-muted-foreground">
             With over 5 years in the game, I've journeyed through the full
-            stack—from crafting snappy UIs with React to architecting robust
-            backends with Node.js and Python.
+            stack...
           </p>
         </div>
+      </div>
 
-        {/* Status Panel */}
-        <div className="reveal-on-scroll opacity-0 translate-y-8">
+      <div className="snap-start h-screen flex items-center justify-center px-4">
+        <div className="max-w-4xl w-full">
+          {/* Status Panel */}
           <div className="relative">
-            {/* Status title on border */}
-            <div className="absolute -top-3 left-6 bg-background px-2">
+            <div className="absolute -top-3 left-6 bg-background px-2 z-20">
               <span className="font-retro text-sm text-primary">
                 [ STATUS ]
               </span>
             </div>
-
-            {/* Pixelated border container */}
             <div className="pixelated-border bg-card p-8 space-y-6">
+              {/* You can leave this part unchanged */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Current Mission */}
                 <div className="space-y-2">
@@ -151,21 +115,15 @@ const AboutMeSection = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Call to Action */}
-        <div className="reveal-on-scroll opacity-0 translate-y-8 space-y-6 text-center">
-          <p className="font-retro text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed mx-auto">
-            Think we could build something great together?
-          </p>
-
-          <Button
-            variant="outline"
-            size="lg"
-            className="pixelated-border-button font-retro text-sm hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            START
-          </Button>
-        </div>
+      <div className="snap-start h-screen flex flex-col justify-center items-center px-4">
+        <p className="font-retro text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed text-center">
+          Think we could build something great together?
+        </p>
+        <button className="mt-6 pixelated-border-button font-retro text-sm px-6 py-3 hover:bg-primary hover:text-primary-foreground transition-colors">
+          START
+        </button>
       </div>
     </section>
   );
