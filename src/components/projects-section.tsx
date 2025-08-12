@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { InteractiveProjectCard } from "./interactive-project-card";
 import { ProjectModal } from "./project-modal";
-import { ProjectCarousel } from "./project-carousel";
 import { ForwardTimer } from "./forward-timer";
-import { Sparkles, Rocket, Code2 } from "lucide-react";
+import { Sparkles, Rocket, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 /**
  * Modern Interactive Projects Section
@@ -271,45 +271,30 @@ const ProjectsSection = () => {
             </div>
           )}
 
-          {/* All Projects Section */}
+          {/* View All Projects CTA */}
           <div className="mb-20">
             <div
-              className="opacity-0 translate-y-8 transition-all duration-700 mb-12"
+              className="opacity-0 translate-y-8 transition-all duration-700 text-center bg-background/60 backdrop-blur-xl border border-border/20 rounded-3xl p-8 md:p-12"
               data-reveal
             >
-              <h3 className="text-2xl font-semibold text-foreground mb-2 flex items-center gap-2">
-                <Code2 className="w-6 h-6 text-primary" />
-                All Projects
-              </h3>
-              <p className="text-muted-foreground">
-                A comprehensive look at my development journey
-              </p>
-            </div>
-
-            {isMobile ? (
-              <div className="opacity-0 translate-y-8" data-reveal>
-                <ProjectCarousel
-                  projects={allProjects}
-                  onProjectExpand={handleProjectExpand}
-                />
-              </div>
-            ) : (
-              <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-                {allProjects.map((project, index) => (
-                  <div
-                    key={project.id}
-                    className="opacity-0 translate-y-8"
-                    data-reveal
+              <div className="space-y-6">
+                <h3 className="text-2xl font-semibold text-foreground">
+                  Want to See More?
+                </h3>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Explore my complete portfolio with detailed case studies, code examples, and interactive demos across all categories.
+                </p>
+                <Link to="/projects">
+                  <Button
+                    size="lg"
+                    className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
                   >
-                    <InteractiveProjectCard
-                      project={project}
-                      index={index}
-                      onExpand={handleProjectExpand}
-                    />
-                  </div>
-                ))}
+                    View All Projects
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Stats Section */}
@@ -366,13 +351,15 @@ const ProjectsSection = () => {
                 >
                   Start a Project
                 </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-border/20 bg-background/50 hover:bg-background"
-                >
-                  View All Work
-                </Button>
+                <Link to="/projects">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-border/20 bg-background/50 hover:bg-background"
+                  >
+                    View All Work
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
