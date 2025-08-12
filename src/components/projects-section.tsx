@@ -282,7 +282,8 @@ const ProjectsSection = () => {
                   Want to See More?
                 </h3>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Explore my complete portfolio with detailed case studies, code examples, and interactive demos across all categories.
+                  Explore my complete portfolio with detailed case studies, code
+                  examples, and interactive demos across all categories.
                 </p>
                 <Link to="/projects">
                   <Button
