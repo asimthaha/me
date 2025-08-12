@@ -12,7 +12,12 @@ interface Position {
 }
 
 export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
-  const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
+  const [snake, setSnake] = useState<Position[]>([
+    { x: 10, y: 10 }, // head
+    { x: 9, y: 10 }, // body segment 1
+    { x: 8, y: 10 }, // body segment 2
+  ]);
+
   const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
   const [fruit, setFruit] = useState<Position>({ x: 15, y: 10 });
   const [gameSize] = useState({ width: 30, height: 20 });
