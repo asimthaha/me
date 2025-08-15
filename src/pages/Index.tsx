@@ -13,7 +13,7 @@ import { ForwardTimer } from "@/components/forward-timer";
  */
 const Index = () => {
   return (
-    <main className="relative bg-background snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth">
+    <main className="relative bg-background snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth scrollbar-hide">
       <Navbar />
       <section id="home" className="snap-start h-screen" data-snap-section>
         <HeroSection />
