@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import emailjs from '@emailjs/browser';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { Button } from '@/components/ui/button';
+import { useState, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import emailjs from "@emailjs/browser";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,11 +13,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/hooks/use-toast';
-import { Loader2, Send, CheckCircle } from 'lucide-react';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Loader2, Send, CheckCircle } from "lucide-react";
 
 /**
  * Contact form validation schema
@@ -26,14 +26,12 @@ import { Loader2, Send, CheckCircle } from 'lucide-react';
 const contactSchema = z.object({
   name: z
     .string()
-    .min(2, 'Name must be at least 2 characters')
-    .regex(/^[a-zA-Z\s]+$/, 'Name must contain only letters and spaces'),
-  email: z
-    .string()
-    .email('Please enter a valid email address'),
+    .min(2, "Name must be at least 2 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Name must contain only letters and spaces"),
+  email: z.string().email("Please enter a valid email address"),
   description: z
     .string()
-    .max(500, 'Description must not exceed 500 characters')
+    .max(500, "Description must not exceed 500 characters")
     .optional(),
 });
 
@@ -53,17 +51,21 @@ const ContactSection: React.FC = () => {
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      description: '',
+      name: "",
+      email: "",
+      description: "",
     },
   });
 
-  const { watch, formState: { errors, isValid } } = form;
+  const {
+    watch,
+    formState: { errors, isValid },
+  } = form;
   const watchedFields = watch();
 
   // Check if form is ready for submission
-  const isFormReady = isValid && captchaValue && watchedFields.name && watchedFields.email;
+  const isFormReady =
+    isValid && captchaValue && watchedFields.name && watchedFields.email;
 
   /**
    * Handle reCAPTCHA verification
@@ -78,10 +80,8 @@ const ContactSection: React.FC = () => {
    */
   const onSubmit = async (data: ContactFormData) => {
     if (!captchaValue) {
-      toast({
-        title: 'reCAPTCHA Required',
-        description: 'Please complete the reCAPTCHA verification.',
-        variant: 'destructive',
+      toast.error("reCAPTCHA Required", {
+        description: "Please complete the reCAPTCHA verification.",
       });
       return;
     }
@@ -93,17 +93,17 @@ const ContactSection: React.FC = () => {
       const templateParams = {
         from_name: data.name,
         from_email: data.email,
-        message: data.description || 'No additional message provided.',
-        to_name: 'Website Admin',
-        'g-recaptcha-response': captchaValue,
+        message: data.description || "No additional message provided.",
+        to_name: "Website Admin",
+        "g-recaptcha-response": captchaValue,
       };
 
       // Send email via EmailJS
       const result = await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         templateParams,
-        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
 
       if (result.status === 200) {
@@ -111,18 +111,16 @@ const ContactSection: React.FC = () => {
         form.reset();
         setCaptchaValue(null);
         recaptchaRef.current?.reset();
-        
-        toast({
-          title: 'Message Sent Successfully!',
-          description: 'Thank you for your message. I\'ll get back to you soon.',
+
+        toast.success("Message Sent Successfully!", {
+          description: "Thank you for your message. I'll get back to you soon.",
         });
       }
     } catch (error) {
-      console.error('EmailJS Error:', error);
-      toast({
-        title: 'Failed to Send Message',
-        description: 'There was an error sending your message. Please try again.',
-        variant: 'destructive',
+      console.error("EmailJS Error:", error);
+      toast.error("Failed to Send Message", {
+        description:
+          "There was an error sending your message. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -141,15 +139,21 @@ const ContactSection: React.FC = () => {
 
   if (isSubmitted) {
     return (
-      <section id="contact" className="min-h-screen flex items-center justify-center bg-muted/30">
+      <section
+        id="contact"
+        className="min-h-screen flex items-center justify-center bg-muted/30"
+      >
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-md mx-auto text-center space-y-6">
             <div className="flex justify-center">
               <CheckCircle className="h-16 w-16 text-primary" />
             </div>
-            <h2 className="text-3xl font-bold text-foreground">Message Sent!</h2>
+            <h2 className="text-3xl font-bold text-foreground">
+              Message Sent!
+            </h2>
             <p className="text-muted-foreground">
-              Thank you for reaching out. I'll get back to you as soon as possible.
+              Thank you for reaching out. I'll get back to you as soon as
+              possible.
             </p>
             <Button onClick={resetForm} className="mt-4">
               Send Another Message
@@ -161,6 +165,11 @@ const ContactSection: React.FC = () => {
   }
 
   return (
+    <section
+      id="contact"
+      className="min-h-screen flex items-center justify-center bg-muted/30"
+    >
+      <div className="container mx-auto px-4 py-16">
     <section className="min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
       aria-labelledby="contact-title"
     >
@@ -189,7 +198,9 @@ const ContactSection: React.FC = () => {
                           placeholder="Your full name"
                           {...field}
                           aria-invalid={!!errors.name}
-                          aria-describedby={errors.name ? 'name-error' : undefined}
+                          aria-describedby={
+                            errors.name ? "name-error" : undefined
+                          }
                         />
                       </FormControl>
                       <FormMessage id="name-error" />
@@ -211,7 +222,9 @@ const ContactSection: React.FC = () => {
                           placeholder="your@email.com"
                           {...field}
                           aria-invalid={!!errors.email}
-                          aria-describedby={errors.email ? 'email-error' : undefined}
+                          aria-describedby={
+                            errors.email ? "email-error" : undefined
+                          }
                         />
                       </FormControl>
                       <FormMessage id="email-error" />
@@ -233,7 +246,11 @@ const ContactSection: React.FC = () => {
                         maxLength={500}
                         {...field}
                         aria-invalid={!!errors.description}
-                        aria-describedby={errors.description ? 'description-error' : 'description-help'}
+                        aria-describedby={
+                          errors.description
+                            ? "description-error"
+                            : "description-help"
+                        }
                       />
                     </FormControl>
                     <FormDescription id="description-help">
@@ -245,14 +262,14 @@ const ContactSection: React.FC = () => {
               />
 
               {/* reCAPTCHA Widget */}
-              <div className="flex justify-center">
+              {/* <div className="flex justify-center">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey="YOUR_RECAPTCHA_SITE_KEY" // Replace with your reCAPTCHA site key
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // Replace with your reCAPTCHA site key
                   onChange={onCaptchaChange}
                   theme="light"
                 />
-              </div>
+              </div> */}
 
               <Button
                 type="submit"
@@ -277,24 +294,24 @@ const ContactSection: React.FC = () => {
 
           <div className="mt-8 text-center text-sm text-muted-foreground">
             <p>
-              This form is protected by reCAPTCHA and the Google{' '}
-              <a 
-                href="https://policies.google.com/privacy" 
-                target="_blank" 
+              This form is protected by reCAPTCHA and the Google{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-foreground transition-colors"
               >
                 Privacy Policy
-              </a>{' '}
-              and{' '}
-              <a 
-                href="https://policies.google.com/terms" 
-                target="_blank" 
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://policies.google.com/terms"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-foreground transition-colors"
               >
                 Terms of Service
-              </a>{' '}
+              </a>{" "}
               apply.
             </p>
           </div>

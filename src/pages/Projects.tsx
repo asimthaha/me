@@ -6,110 +6,14 @@ import { ProjectCarousel } from "@/components/project-carousel";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Code2, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
 
 /**
  * All Projects Page
  * Comprehensive view of all development work and portfolio items
  */
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  techStack: string[];
-  demoUrl: string;
-  codeUrl: string;
-  caseStudyUrl?: string | null;
-  category: "frontend" | "fullstack" | "webgl" | "ai";
-  featured?: boolean;
-}
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Three.js Portfolio Experience",
-    description:
-      "Immersive 3D portfolio with WebGL shaders, particle systems, and interactive scenes built with Three.js and React Three Fiber.",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
-    techStack: ["Three.js", "React Three Fiber", "WebGL", "GLSL", "TypeScript"],
-    demoUrl: "#",
-    codeUrl: "#",
-    caseStudyUrl: "#",
-    category: "webgl",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "AI-Powered Design System",
-    description:
-      "Intelligent design system that generates component variants using machine learning and automated testing.",
-    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800",
-    techStack: ["React", "TensorFlow.js", "Node.js", "Storybook", "Jest"],
-    demoUrl: "#",
-    codeUrl: "#",
-    caseStudyUrl: "#",
-    category: "ai",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "Real-time Collaboration Platform",
-    description:
-      "Full-stack application with WebSocket connections, live cursors, and collaborative editing features.",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
-    techStack: ["Next.js", "Socket.io", "PostgreSQL", "Redis", "Docker"],
-    demoUrl: "#",
-    codeUrl: "#",
-    caseStudyUrl: "#",
-    category: "fullstack",
-  },
-  {
-    id: 4,
-    title: "Interactive Data Visualization",
-    description:
-      "Dynamic dashboard with D3.js charts, real-time data streams, and responsive animations.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
-    techStack: ["D3.js", "React", "WebSockets", "Chart.js", "Tailwind"],
-    demoUrl: "#",
-    codeUrl: "#",
-    caseStudyUrl: "#",
-    category: "frontend",
-  },
-  {
-    id: 5,
-    title: "WebGL Particle Engine",
-    description:
-      "High-performance particle system with GPU computation, physics simulation, and interactive controls.",
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
-    techStack: ["WebGL", "Three.js", "GPU.js", "Canvas API", "ES6"],
-    demoUrl: "#",
-    codeUrl: "#",
-    category: "webgl",
-  },
-  {
-    id: 6,
-    title: "E-commerce Microservices",
-    description:
-      "Scalable microservices architecture with containerization, API gateway, and automated deployment.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
-    techStack: ["Node.js", "Docker", "Kubernetes", "MongoDB", "GraphQL"],
-    demoUrl: "#",
-    codeUrl: "#",
-    category: "fullstack",
-  },
-];
-
-export function SkeletonProjectCard() {
-  return (
-    <div className="space-y-4">
-      <Skeleton className="w-full h-48 rounded-lg" />
-      <Skeleton className="h-6 w-3/4" />
-      <Skeleton className="h-4 w-1/2" />
-    </div>
-  );
-}
+import { projects, Project } from "@/lib/data";
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -140,9 +44,11 @@ const Projects = () => {
           if (entry.isIntersecting) {
             const elements = entry.target.querySelectorAll("[data-reveal]");
             elements.forEach((el, index) => {
-              setTimeout(() => {
-                el.classList.add("animate-fade-in");
-              }, index * 150);
+              if (el instanceof HTMLElement) {
+                setTimeout(() => {
+                  el.classList.add("animate-fade-in");
+                }, index * 150);
+              }
             });
             observer.unobserve(entry.target);
           }
