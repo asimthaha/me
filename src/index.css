@@ -136,23 +136,6 @@ All colors MUST be HSL.
   }
 }
 
-/* Apply globally with enhanced snap scrolling behavior */
-html,
-body {
-  overflow: auto;
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-body::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-body {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
 /* Enhanced snap scrolling behavior */
 .snap-container {
   scroll-behavior: smooth;
