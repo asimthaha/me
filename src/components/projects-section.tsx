@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { InteractiveProjectCard } from "./interactive-project-card";
 import { ProjectModal } from "./project-modal";
-import { ForwardTimer } from "./forward-timer";
 import { Sparkles, Rocket, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -365,9 +364,6 @@ const ProjectsSection = () => {
             </div>
           </div>
         </div>
-
-        {/* Forward Timer */}
-        <ForwardTimer />
       </section>
 
       {/* Project Modal */}
