@@ -167,13 +167,10 @@ const ContactSection: React.FC = () => {
   return (
     <section
       id="contact"
-      className="min-h-screen flex items-center justify-center bg-muted/30"
-    >
-      <div className="container mx-auto px-4 py-16">
-    <section className="min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
+      className="min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
       aria-labelledby="contact-title"
     >
-        <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-4xl font-bold text-foreground">Get In Touch</h2>
