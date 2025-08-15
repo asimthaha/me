@@ -1,19 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
-
-// Skill data structure
-interface Skill {
-  name: string;
-  level?: "beginner" | "intermediate" | "advanced" | "expert";
-  yearsOfExperience?: number;
-  icon?: string;
-}
-
-interface SkillCategory {
-  title: string;
-  skills: Skill[];
-}
-
+import { Skill, skillCategories } from "@/lib/data";
+import type { SkillCategory } from "@/lib/data";
 // Blueprint-style skill level indicators
 const SkillLevel: React.FC<{ level?: Skill["level"] }> = ({ level }) => {
   if (!level) return null;
@@ -134,61 +122,6 @@ const SkillCategory: React.FC<{ category: SkillCategory; index: number }> = ({
 
 // Main Skills Section component
 const SkillsSection: React.FC = () => {
-  const skillCategories: SkillCategory[] = [
-    {
-      title: "Frontend",
-      skills: [
-        { name: "React", level: "expert", yearsOfExperience: 5 },
-        { name: "TypeScript", level: "advanced", yearsOfExperience: 4 },
-        { name: "JavaScript", level: "expert", yearsOfExperience: 6 },
-        { name: "HTML5", level: "expert", yearsOfExperience: 8 },
-        { name: "CSS3", level: "expert", yearsOfExperience: 8 },
-        { name: "Tailwind", level: "advanced", yearsOfExperience: 3 },
-        { name: "Next.js", level: "advanced", yearsOfExperience: 3 },
-        { name: "Vue.js", level: "intermediate", yearsOfExperience: 2 },
-      ],
-    },
-    {
-      title: "Backend",
-      skills: [
-        { name: "Node.js", level: "advanced", yearsOfExperience: 4 },
-        { name: "Express", level: "advanced", yearsOfExperience: 4 },
-        { name: "Python", level: "intermediate", yearsOfExperience: 3 },
-        { name: "PostgreSQL", level: "advanced", yearsOfExperience: 3 },
-        { name: "MongoDB", level: "intermediate", yearsOfExperience: 2 },
-        { name: "Redis", level: "intermediate", yearsOfExperience: 2 },
-        { name: "GraphQL", level: "intermediate", yearsOfExperience: 2 },
-        { name: "REST APIs", level: "expert", yearsOfExperience: 5 },
-      ],
-    },
-    {
-      title: "DevOps & Tools",
-      skills: [
-        { name: "Git", level: "expert", yearsOfExperience: 6 },
-        { name: "Docker", level: "advanced", yearsOfExperience: 3 },
-        { name: "AWS", level: "intermediate", yearsOfExperience: 2 },
-        { name: "Vercel", level: "advanced", yearsOfExperience: 3 },
-        { name: "Netlify", level: "intermediate", yearsOfExperience: 2 },
-        { name: "GitHub", level: "intermediate", yearsOfExperience: 2 },
-        { name: "Webpack", level: "intermediate", yearsOfExperience: 3 },
-        { name: "Vite", level: "advanced", yearsOfExperience: 2 },
-      ],
-    },
-    {
-      title: "Testing & Quality",
-      skills: [
-        { name: "Jest", level: "advanced", yearsOfExperience: 3 },
-        { name: "Cypress", level: "intermediate", yearsOfExperience: 2 },
-        { name: "Testing", level: "advanced", yearsOfExperience: 3 },
-        { name: "ESLint", level: "advanced", yearsOfExperience: 4 },
-        { name: "Prettier", level: "expert", yearsOfExperience: 4 },
-        { name: "Figma", level: "intermediate", yearsOfExperience: 3 },
-        { name: "Storybook", level: "intermediate", yearsOfExperience: 2 },
-        { name: "Lighthouse", level: "advanced", yearsOfExperience: 3 },
-      ],
-    },
-  ];
-
   return (
     <section
       id="skills"
