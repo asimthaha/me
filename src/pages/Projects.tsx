@@ -4,7 +4,7 @@ import { InteractiveProjectCard } from "@/components/interactive-project-card";
 import { ProjectModal } from "@/components/project-modal";
 import { ProjectCarousel } from "@/components/project-carousel";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Code2, Filter } from "lucide-react";
+import { Code2, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
 
@@ -22,6 +22,7 @@ const Projects = () => {
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
@@ -81,8 +82,7 @@ const Projects = () => {
   return (
     <>
       <main className="relative bg-background min-h-screen">
-        <Navbar />
-
+        <Navbar scrollContainerRef={scrollContainerRef} />
         <section
           ref={sectionRef}
           className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
@@ -98,22 +98,6 @@ const Projects = () => {
           </div>
 
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Back Navigation */}
-            <div
-              className="opacity-0 translate-y-8 transition-all duration-700 mb-8"
-              data-reveal
-            >
-              <Link to="/">
-                <Button
-                  variant="outline"
-                  className="border-border/20 bg-background/50 hover:bg-background"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Home
-                </Button>
-              </Link>
-            </div>
-
             {/* Page Header */}
             <div className="text-center mb-20 space-y-6">
               <div

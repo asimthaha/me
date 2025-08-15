@@ -9,7 +9,7 @@ import { navItems } from "@/lib/data";
  * Responsive Navbar Component
  * Features scroll-based visibility, mobile pill design, and desktop horizontal layout
  */
-export const Navbar = () => {
+export const Navbar = ({ scrollContainerRef }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [activeSection, setActiveSection] = useState("home");
@@ -18,21 +18,21 @@ export const Navbar = () => {
 
   // Scroll behavior for show/hide navbar
   useEffect(() => {
-    const controlNavbar = () => {
-      const currentScrollY = window.scrollY;
+    const scrollContainer = scrollContainerRef.current;
 
+    if (!scrollContainer) return;
+    const controlNavbar = () => {
+      const currentScrollY = scrollContainer.scrollTop;
       if (currentScrollY < lastScrollY || currentScrollY < 10) {
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       }
-
       setLastScrollY(currentScrollY);
     };
-
-    window.addEventListener("scroll", controlNavbar);
-    return () => window.removeEventListener("scroll", controlNavbar);
-  }, [lastScrollY]);
+    scrollContainer.addEventListener("scroll", controlNavbar);
+    return () => scrollContainer.removeEventListener("scroll", controlNavbar);
+  }, [lastScrollY, scrollContainerRef]);
 
   // Track current active section based on route and hash
   useEffect(() => {

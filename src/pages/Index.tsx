@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { HeroSection } from "@/components/hero-section";
 import { Navbar } from "@/components/navbar";
 import AboutMeSection from "@/components/about-me-section";
@@ -12,9 +13,13 @@ import { ForwardTimer } from "@/components/forward-timer";
  * Optimized for accessibility, performance, and smooth navigation
  */
 const Index = () => {
+  const scrollContainerRef = useRef(null);
   return (
-    <main className="relative bg-background snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth scrollbar-hide">
-      <Navbar />
+    <main
+      ref={scrollContainerRef}
+      className="relative bg-background snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth scrollbar-hide"
+    >
+      <Navbar scrollContainerRef={scrollContainerRef} />
       <section id="home" className="snap-start h-screen" data-snap-section>
         <HeroSection />
       </section>
