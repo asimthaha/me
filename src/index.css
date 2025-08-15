@@ -136,7 +136,7 @@ All colors MUST be HSL.
   }
 }
 
-/* Apply globally */
+/* Apply globally with enhanced snap scrolling behavior */
 html,
 body {
   overflow: auto;
@@ -146,6 +146,35 @@ body {
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
+}
+
+/* Enhanced snap scrolling behavior */
+.snap-container {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Smooth scroll for reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .snap-container {
+    scroll-behavior: auto;
+  }
+  .snap-section {
+    scroll-snap-align: none;
+  }
+  
+  * {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @layer base {

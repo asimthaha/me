@@ -18,7 +18,7 @@ interface HeroSectionProps {
 export function HeroSection({ className }: HeroSectionProps) {
   return (
     <section
-      className={`min-h-screen flex items-center justify-center px-4 py-16 ${className}`}
+      className={`h-screen flex items-center justify-center px-4 py-16 ${className}`}
       aria-label="Hero section"
     >
       <div className="container max-w-6xl mx-auto">

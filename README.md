@@ -71,3 +71,44 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## 🎯 Portfolio Features
+
+### 🖱️ Snap Scrolling Experience
+This portfolio implements a smooth, immersive snap scrolling experience:
+
+- **Full-screen sections**: Each section occupies the viewport height for cinematic navigation
+- **Smooth transitions**: CSS scroll-snap with momentum scrolling
+- **Keyboard navigation**: Arrow keys, Page Up/Down, Home/End support  
+- **Accessibility compliant**: Respects `prefers-reduced-motion` preference
+- **Mobile optimized**: Touch-friendly with natural scroll behavior
+
+### 📱 Responsive & Accessible
+- Mobile-first design with CRO optimization
+- Lighthouse score > 90 target
+- Screen reader compatible
+- High contrast mode support
+- Keyboard navigation throughout
+
+### 🏗️ Snap Scrolling Implementation
+The main page uses CSS scroll-snap for smooth section transitions:
+
+```tsx
+// Main container
+className="snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth"
+
+// Each section
+className="snap-start min-h-screen"
+```
+
+### Accessibility Features
+Respects user motion preferences:
+```css
+@media (prefers-reduced-motion: reduce) {
+  .snap-container {
+    scroll-behavior: auto;
+  }
+}
+```
+
+The portfolio includes a custom `useSnapNavigation` hook for programmatic navigation and keyboard shortcuts, ensuring an accessible experience for all users.

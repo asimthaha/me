@@ -196,7 +196,7 @@ const ProjectsSection = () => {
     <>
       <section
         ref={sectionRef}
-        className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
+        className="min-h-screen flex flex-col justify-center py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
         aria-labelledby="projects-title"
       >
         {/* Animated Background Elements */}

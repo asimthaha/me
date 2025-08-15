@@ -192,7 +192,7 @@ const SkillsSection: React.FC = () => {
   return (
     <section
       id="skills"
-      className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative"
+      className="min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative"
       aria-labelledby="skills-heading"
     >
       {/* Blueprint background grid */}
