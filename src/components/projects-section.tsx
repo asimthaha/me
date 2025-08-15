@@ -208,34 +208,6 @@ const ProjectsSection = () => {
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          {/* Section Header */}
-          <div className="text-center mb-20 space-y-6">
-            <div
-              className="opacity-0 translate-y-8 transition-all duration-700"
-              data-reveal
-            >
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <Sparkles className="w-4 h-4" />
-                Featured Work
-              </div>
-              <h2
-                id="projects-title"
-                className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
-              >
-                Crafting Digital
-                <span className="block text-gradient">Experiences</span>
-              </h2>
-            </div>
-            <p
-              className="opacity-0 translate-y-8 transition-all duration-700 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-              data-reveal
-            >
-              From interactive 3D experiences to scalable web applications, each
-              project represents a journey of innovation and technical
-              excellence.
-            </p>
-          </div>
-
           {/* Featured Projects Section */}
           {featuredProjects.length > 0 && (
             <div className="mb-20">
@@ -287,7 +259,7 @@ const ProjectsSection = () => {
                 <Link to="/projects">
                   <Button
                     size="lg"
-                    className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
+                    className="btn-gradient hover:opacity-90 text-white shadow-lg"
                   >
                     View All Projects
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -347,7 +319,7 @@ const ProjectsSection = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   size="lg"
-                  className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
+                  className="btn-gradient hover:opacity-90 text-white shadow-lg"
                 >
                   Start a Project
                 </Button>

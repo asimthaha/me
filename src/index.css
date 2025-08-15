@@ -140,12 +140,17 @@ All colors MUST be HSL.
 html,
 body {
   overflow: auto;
-  scrollbar-width: none; /* Firefox */
 }
 
-html::-webkit-scrollbar,
+/* Hide scrollbar for Chrome, Safari and Opera */
 body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Enhanced snap scrolling behavior */
@@ -168,7 +173,7 @@ body::-webkit-scrollbar {
   .snap-section {
     scroll-snap-align: none;
   }
-  
+
   * {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
@@ -194,6 +199,9 @@ body::-webkit-scrollbar {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  .btn-gradient {
+    background-image: var(--hero-gradient);
   }
 
   .hero-shadow {
