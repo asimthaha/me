@@ -4,7 +4,7 @@ import { InteractiveProjectCard } from "@/components/interactive-project-card";
 import { ProjectModal } from "@/components/project-modal";
 import { ProjectCarousel } from "@/components/project-carousel";
 import { Button } from "@/components/ui/button";
-import { Code2, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
 
@@ -25,13 +25,40 @@ const Projects = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
+    // Simulate loading time for skeleton display
+    const timer = setTimeout(() => {
+      setLoading(false);
+      console.log("Loading complete, projects should now be visible");
+
+      // Fallback: trigger reveal animation after loading completes
+      setTimeout(() => {
+        if (sectionRef.current) {
+          const elements = sectionRef.current.querySelectorAll("[data-reveal]");
+          console.log(
+            "Fallback: Found data-reveal elements after loading:",
+            elements.length
+          );
+          elements.forEach((el, index) => {
+            if (el instanceof HTMLElement) {
+              setTimeout(() => {
+                el.classList.add("animate-fade-in");
+                console.log("Fallback: Added animate-fade-in to element");
+              }, index * 100);
+            }
+          });
+        }
+      }, 100);
+    }, 800); // Reduced from 1500ms for better UX
+
     return () => clearTimeout(timer);
   }, []);
 
   // Detect mobile/tablet for carousel
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+    };
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -42,10 +69,17 @@ const Projects = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          console.log(
+            "IntersectionObserver entry:",
+            entry.isIntersecting,
+            entry.target
+          );
           if (entry.isIntersecting) {
             const elements = entry.target.querySelectorAll("[data-reveal]");
+            console.log("Found data-reveal elements:", elements.length);
             elements.forEach((el, index) => {
               if (el instanceof HTMLElement) {
+                console.log("Adding animate-fade-in to element:", el);
                 setTimeout(() => {
                   el.classList.add("animate-fade-in");
                 }, index * 150);
@@ -58,7 +92,10 @@ const Projects = () => {
       { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
     );
 
-    if (sectionRef.current) observer.observe(sectionRef.current);
+    if (sectionRef.current) {
+      console.log("Setting up intersection observer on section");
+      observer.observe(sectionRef.current);
+    }
     return () => observer.disconnect();
   }, []);
 
@@ -67,17 +104,67 @@ const Projects = () => {
     setIsModalOpen(true);
   };
 
+  const handleFilterChange = (category: string) => {
+    console.log("Filter changed from", activeFilter, "to", category);
+    setActiveFilter(category);
+
+    // Reset animation states when filter changes
+    setTimeout(() => {
+      if (sectionRef.current) {
+        const elements = sectionRef.current.querySelectorAll("[data-reveal]");
+        console.log("Resetting animations for", elements.length, "elements");
+        elements.forEach((el, index) => {
+          if (el instanceof HTMLElement) {
+            // Remove existing animation class
+            el.classList.remove("animate-fade-in");
+            // Force reflow by accessing a property
+            void el.offsetHeight;
+            // Re-add animation class with delay
+            setTimeout(() => {
+              el.classList.add("animate-fade-in");
+            }, index * 100);
+          }
+        });
+      }
+    }, 50); // Small delay to allow state update
+  };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
     setTimeout(() => setSelectedProject(null), 300);
   };
+
+  const categories = ["all", "frontend", "fullstack", "webgl", "ai"];
 
   const filteredProjects =
     activeFilter === "all"
       ? projects
       : projects.filter((p) => p.category === activeFilter);
 
-  const categories = ["all", "frontend", "fullstack", "webgl", "ai"];
+  // Debug project data and filtering
+  console.log("Project data debug:", {
+    totalProjects: projects.length,
+    activeFilter,
+    filteredProjectsCount: filteredProjects.length,
+    isMobile,
+    loading,
+  });
+
+  // Debug filtering results
+  if (activeFilter !== "all") {
+    console.log("Filtering debug:", {
+      activeFilter,
+      filteredProjects: filteredProjects.map((p) => ({
+        id: p.id,
+        title: p.title,
+        category: p.category,
+      })),
+      originalProjects: projects.map((p) => ({
+        id: p.id,
+        category: p.category,
+      })),
+    });
+  }
 
   return (
     <>
@@ -100,22 +187,6 @@ const Projects = () => {
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Page Header */}
             <div className="text-center mb-20 space-y-6">
-              <div
-                className="opacity-0 translate-y-8 transition-all duration-700"
-                data-reveal
-              >
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-                  <Code2 className="w-4 h-4" />
-                  All Projects
-                </div>
-                <h1
-                  id="all-projects-title"
-                  className="text-4xl md:text-6xl font-bold text-foreground leading-tight"
-                >
-                  Complete
-                  <span className="block text-gradient">Portfolio</span>
-                </h1>
-              </div>
               <p
                 className="opacity-0 translate-y-8 transition-all duration-700 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
                 data-reveal
@@ -137,7 +208,7 @@ const Projects = () => {
                     key={category}
                     variant={activeFilter === category ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setActiveFilter(category)}
+                    onClick={() => handleFilterChange(category)}
                     className={`capitalize transition-all duration-300 ${
                       activeFilter === category
                         ? "bg-primary text-primary-foreground"
@@ -162,23 +233,34 @@ const Projects = () => {
                 </div>
               ) : (
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-                  {loading
-                    ? Array.from({ length: 6 }).map((_, index) => (
-                        <SkeletonProjectCard key={index} />
-                      ))
-                    : filteredProjects.map((project, index) => (
-                        <div
-                          key={project.id}
-                          className="opacity-0 translate-y-8"
-                          data-reveal
-                        >
-                          <InteractiveProjectCard
-                            project={project}
-                            index={index}
-                            onExpand={handleProjectExpand}
-                          />
-                        </div>
-                      ))}
+                  {loading ? (
+                    // Show skeletons while loading
+                    Array.from({ length: 6 }).map((_, index) => (
+                      <SkeletonProjectCard key={`skeleton-${index}`} />
+                    ))
+                  ) : filteredProjects.length > 0 ? (
+                    // Show projects when loaded
+                    filteredProjects.map((project, index) => (
+                      <div
+                        key={project.id}
+                        className="opacity-0 translate-y-8"
+                        data-reveal
+                      >
+                        <InteractiveProjectCard
+                          project={project}
+                          index={index}
+                          onExpand={handleProjectExpand}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    // Show message when no projects found
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-muted-foreground text-lg">
+                        No projects found for the selected filter.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

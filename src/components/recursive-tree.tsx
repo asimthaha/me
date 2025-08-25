@@ -31,22 +31,39 @@ const RecursiveTree = ({ size = 1, opacity = 1 }: RecursiveTreeProps) => {
         p.clear();
 
         // Calculate the angle based on the mouse position, maximum 90 degrees
-        angle = (p.mouseX / p.width) * 90;
+        angle = (p.mouseX / p.width) * 20;
         angle = p.min(angle, 90);
 
         // Start the tree from the bottom of the screen
         p.translate(p.width / 2, p.height);
 
-        // Move to the end of that line
+        // Draw the main trunk/base of the tree
+        const trunkColor = theme.colors.accent; // Use foreground color for trunk visibility
+        const trunkRGB = hslToRgb(trunkColor);
+        p.stroke(trunkRGB.r, trunkRGB.g, trunkRGB.b, 200); // More opaque for trunk
+        p.strokeWeight(2); // Thicker trunk
+        p.line(0, 0, 0, -80); // Draw main trunk
+
+        // Move to the end of the trunk
         p.translate(0, -80);
 
         // Start the recursive branching
         branch(80, 0);
+
+        // Reset transformation matrix to draw ground line in original coordinate system
+        p.resetMatrix();
+
+        // Draw ground line at the bottom of the canvas
+        p.strokeWeight(4);
+        const groundColor = theme.colors.muted; // Use muted color for ground
+        const groundRGB = hslToRgb(groundColor);
+        p.stroke(groundRGB.r, groundRGB.g, groundRGB.b, 220); // More visible opacity
+        p.line(0, p.height - 2, p.width, p.height - 2); // Horizontal line near bottom
       };
 
       const branch = (h: number, level: number) => {
         // Get current theme colors - parse HSL values for RGB conversion
-        const accentColor = theme.colors.accent; // HSL format like "217 91% 60%"
+        const accentColor = theme.colors.primary; // HSL format like "217 91% 60%"
         const mutedColor = theme.colors.muted; // HSL format like "220 14% 96%"
 
         // Convert HSL to RGB for p5.js

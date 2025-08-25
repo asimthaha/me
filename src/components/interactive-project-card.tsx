@@ -67,8 +67,10 @@ export const InteractiveProjectCard = ({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          console.log("Card intersection:", entry.isIntersecting, entry.target);
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-in");
+            console.log("Added animate-fade-in to card");
           }
         });
       },
@@ -76,6 +78,7 @@ export const InteractiveProjectCard = ({
     );
 
     if (cardRef.current) {
+      console.log("Setting up card observer for:", cardRef.current);
       observer.observe(cardRef.current);
     }
 

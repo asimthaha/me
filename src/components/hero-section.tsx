@@ -266,28 +266,35 @@ export function HeroSection({ className }: HeroSectionProps) {
                   decoding="async"
                 />
               </div>
+            </div>
+            {/* Recursive Trees All Around - Comprehensive Layout */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+              {/* Top Section Trees */}
+              <div className="absolute right-1/4 top-8 opacity-25 hidden md:block">
+                <RecursiveTree size={1.0} />
+              </div>
 
-              {/* Multiple Recursive Tree Animations - Responsive Design */}
-              <div className="mt-8 relative z-10 w-full">
-                {/* Large tree - center background - Hidden on mobile, visible on tablet+ */}
-                <div className="absolute left-1/2 top-8 transform -translate-x-1/2 opacity-30 hidden md:block">
-                  <RecursiveTree size={1.5} />
-                </div>
+              {/* Left Side Trees */}
+              {/* <div className="absolute left-2 top-1/4 opacity-20 hidden lg:block">
+                <RecursiveTree size={0.9} />
+              </div> */}
 
-                {/* Medium tree - left side - Adjust position for different screen sizes */}
-                <div className="absolute left-4 md:left-8 top-12 md:top-16 opacity-25">
-                  <RecursiveTree size={0.8} />
-                </div>
+              {/* Right Side Trees */}
+              <div className="absolute right-2 bottom-0 opacity-20 hidden lg:block">
+                <RecursiveTree size={0.8} />
+              </div>
 
-                {/* Small tree - right side - Adjust position for different screen sizes */}
-                <div className="absolute right-4 md:right-8 top-8 md:top-12 opacity-20">
-                  <RecursiveTree size={0.6} />
-                </div>
+              {/* Bottom Section Trees - Around Content */}
+              <div className="absolute right-4/8 bottom-0 opacity-25 hidden md:block">
+                <RecursiveTree size={0.8} />
+              </div>
 
-                {/* Mobile-optimized single tree - center, smaller size */}
-                <div className="absolute left-1/2 top-6 transform -translate-x-1/2 opacity-25 md:hidden">
-                  <RecursiveTree size={0.8} />
-                </div>
+              {/* Mobile-optimized trees */}
+              <div className="absolute left-4 top-8 opacity-20 md:hidden">
+                <RecursiveTree size={0.6} />
+              </div>
+              <div className="absolute right-4 bottom-8 opacity-20 md:hidden">
+                <RecursiveTree size={0.6} />
               </div>
             </div>
           </div>

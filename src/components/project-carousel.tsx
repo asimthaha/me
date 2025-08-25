@@ -1,6 +1,13 @@
-import { useState } from 'react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from '@/components/ui/carousel';
-import { InteractiveProjectCard } from './interactive-project-card';
+import { useState, useEffect } from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  CarouselApi,
+} from "@/components/ui/carousel";
+import { InteractiveProjectCard } from "./interactive-project-card";
 
 interface Project {
   id: number;
@@ -11,7 +18,7 @@ interface Project {
   demoUrl: string;
   codeUrl: string;
   caseStudyUrl?: string | null;
-  category: 'frontend' | 'fullstack' | 'webgl' | 'ai';
+  category: "frontend" | "fullstack" | "webgl" | "ai";
   featured?: boolean;
 }
 
@@ -24,10 +31,41 @@ interface ProjectCarouselProps {
  * Responsive Project Carousel with touch gestures and pagination
  * Optimized for mobile and tablet viewing
  */
-export const ProjectCarousel = ({ projects, onProjectExpand }: ProjectCarouselProps) => {
+export const ProjectCarousel = ({
+  projects,
+  onProjectExpand,
+}: ProjectCarouselProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
+
+  // Debug carousel props
+  console.log("ProjectCarousel debug:", {
+    projectsCount: projects.length,
+    projects: projects.map(p => ({ id: p.id, title: p.title, category: p.category }))
+  });
+
+  // Update current and count when carousel API changes
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap());
+
+    const onSelect = () => {
+      setCurrent(api.selectedScrollSnap());
+    };
+
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+
+    return () => {
+      api.off("select", onSelect);
+      api.off("reInit", onSelect);
+    };
+  }, [api]);
 
   return (
     <div className="w-full">
@@ -43,8 +81,8 @@ export const ProjectCarousel = ({ projects, onProjectExpand }: ProjectCarouselPr
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {projects.map((project, index) => (
-            <CarouselItem 
-              key={project.id} 
+            <CarouselItem
+              key={project.id}
               className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
             >
               <InteractiveProjectCard
@@ -55,23 +93,23 @@ export const ProjectCarousel = ({ projects, onProjectExpand }: ProjectCarouselPr
             </CarouselItem>
           ))}
         </CarouselContent>
-        
+
         {/* Navigation Controls */}
         <div className="flex items-center justify-between mt-8">
           <div className="flex gap-2">
             <CarouselPrevious className="relative inset-auto translate-y-0 bg-background/80 backdrop-blur-sm border-border/20 hover:bg-background" />
             <CarouselNext className="relative inset-auto translate-y-0 bg-background/80 backdrop-blur-sm border-border/20 hover:bg-background" />
           </div>
-          
+
           {/* Pagination Dots */}
           <div className="flex gap-2">
             {projects.map((_, index) => (
               <button
                 key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === current 
-                    ? 'bg-primary w-6' 
-                    : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                  index === current
+                    ? "bg-primary w-6"
+                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                 }`}
                 onClick={() => api?.scrollTo(index)}
                 aria-label={`Go to slide ${index + 1}`}
