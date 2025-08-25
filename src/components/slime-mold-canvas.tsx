@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "@/contexts/theme-context";
 
 interface SlimeMoldCanvasProps {
   isAnimating: boolean;
@@ -124,23 +125,7 @@ const SlimeMoldCanvas = ({
   const animationRef = useRef<number>();
   const agentsRef = useRef<Agent[]>([]);
   const trailMapRef = useRef<ImageData>();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    // Check for dark mode
-    setIsDarkMode(document.documentElement.classList.contains("dark"));
-
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(document.documentElement.classList.contains("dark"));
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const { currentTheme, theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -216,8 +201,12 @@ const SlimeMoldCanvas = ({
           agent.deposit(trailMap);
         });
 
-        // Clear canvas with very subtle background
-        ctx.fillStyle = isDarkMode
+        // Clear canvas with very subtle background based on theme
+        const isDark =
+          currentTheme === "dark" ||
+          currentTheme === "netflix" ||
+          currentTheme === "github";
+        ctx.fillStyle = isDark
           ? "rgba(0, 0, 0, 0.05)"
           : "rgba(255, 255, 255, 0.03)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -227,19 +216,49 @@ const SlimeMoldCanvas = ({
         for (let i = 0; i < trailMap.data.length; i += 4) {
           const intensity = trailMap.data[i] / 255;
 
-          if (isDarkMode) {
-            // Dark mode: subtle blue-green trails
-            imageData.data[i] = Math.floor(intensity * 200); // R
-            imageData.data[i + 1] = Math.floor(intensity * 255); // G
-            imageData.data[i + 2] = Math.floor(intensity * 230); // B
-            imageData.data[i + 3] = Math.floor(intensity * 150); // A
-          } else {
-            // Light mode: subtle gray trails
-            imageData.data[i] = Math.floor(intensity * 30); // R
-            imageData.data[i + 1] = Math.floor(intensity * 30); // G
-            imageData.data[i + 2] = Math.floor(intensity * 30); // B
-            imageData.data[i + 3] = Math.floor(intensity * 80); // A
+          // Theme-specific trail colors
+          let r = 30,
+            g = 30,
+            b = 30,
+            a = 80; // Default (light)
+
+          switch (currentTheme) {
+            case "light":
+              r = 30;
+              g = 30;
+              b = 30;
+              a = 80;
+              break;
+            case "dark":
+              r = 200;
+              g = 255;
+              b = 230;
+              a = 150; // Blue-green
+              break;
+            case "netflix":
+              r = 255;
+              g = 50;
+              b = 50;
+              a = 120; // Red accent
+              break;
+            case "ey":
+              r = 255;
+              g = 200;
+              b = 0;
+              a = 100; // Gold/yellow
+              break;
+            case "github":
+              r = 150;
+              g = 200;
+              b = 255;
+              a = 130; // Blue
+              break;
           }
+
+          imageData.data[i] = Math.floor(intensity * r); // R
+          imageData.data[i + 1] = Math.floor(intensity * g); // G
+          imageData.data[i + 2] = Math.floor(intensity * b); // B
+          imageData.data[i + 3] = Math.floor(intensity * a); // A
         }
 
         ctx.putImageData(imageData, 0, 0);
@@ -258,13 +277,20 @@ const SlimeMoldCanvas = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isAnimating, isDarkMode]);
+  }, [isAnimating, currentTheme]);
 
   return (
     <canvas
       ref={canvasRef}
       className={`absolute inset-0 w-full h-full pointer-events-none ${className}`}
-      style={{ mixBlendMode: isDarkMode ? "screen" : "multiply" }}
+      style={{
+        mixBlendMode:
+          currentTheme === "dark" ||
+          currentTheme === "netflix" ||
+          currentTheme === "github"
+            ? "screen"
+            : "multiply",
+      }}
     />
   );
 };

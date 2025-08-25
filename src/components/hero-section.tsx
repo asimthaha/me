@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, ExternalLink } from "lucide-react";
 import profileImage from "@/assets/developer-profile.jpg";
+import RecursiveTree from "./recursive-tree";
 
 interface HeroSectionProps {
   className?: string;
@@ -251,9 +252,9 @@ export function HeroSection({ className }: HeroSectionProps) {
               />
 
               {/* Static Concentric Circles */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full"></div>
+              {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full"></div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-accent/10 rounded-full"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/15 rounded-full"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/15 rounded-full"></div> */}
 
               {/* Profile image container */}
               <div className="relative z-10 w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden blob-shadow transition-smooth hover:scale-105">
@@ -264,6 +265,29 @@ export function HeroSection({ className }: HeroSectionProps) {
                   loading="eager"
                   decoding="async"
                 />
+              </div>
+
+              {/* Multiple Recursive Tree Animations - Responsive Design */}
+              <div className="mt-8 relative z-10 w-full">
+                {/* Large tree - center background - Hidden on mobile, visible on tablet+ */}
+                <div className="absolute left-1/2 top-8 transform -translate-x-1/2 opacity-30 hidden md:block">
+                  <RecursiveTree size={1.5} />
+                </div>
+
+                {/* Medium tree - left side - Adjust position for different screen sizes */}
+                <div className="absolute left-4 md:left-8 top-12 md:top-16 opacity-25">
+                  <RecursiveTree size={0.8} />
+                </div>
+
+                {/* Small tree - right side - Adjust position for different screen sizes */}
+                <div className="absolute right-4 md:right-8 top-8 md:top-12 opacity-20">
+                  <RecursiveTree size={0.6} />
+                </div>
+
+                {/* Mobile-optimized single tree - center, smaller size */}
+                <div className="absolute left-1/2 top-6 transform -translate-x-1/2 opacity-25 md:hidden">
+                  <RecursiveTree size={0.8} />
+                </div>
               </div>
             </div>
           </div>
