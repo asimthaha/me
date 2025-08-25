@@ -1,14 +1,31 @@
 /**
- * Slime Mold Canvas - Physarum simulation background
+ * Slime Mold Canvas - Responsive Physarum simulation background
  * Based on Jeff Jones algorithm for slime mold behavior
+ *
+ * Features:
+ * - Fully responsive canvas that adapts to container size changes
+ * - Device pixel ratio handling for crisp rendering on all displays
+ * - Performance scaling based on device capabilities and screen size
+ * - Smooth resize transitions with fade effects
+ * - Memory-efficient resource management
+ * - Mobile-optimized agent counts and rendering quality
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTheme } from "@/contexts/theme-context";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SlimeMoldCanvasProps {
   isAnimating: boolean;
   className?: string;
+}
+
+interface DeviceCapabilities {
+  isMobile: boolean;
+  pixelRatio: number;
+  screenWidth: number;
+  screenHeight: number;
+  isLowEnd: boolean;
 }
 
 class Agent {
@@ -23,7 +40,12 @@ class Agent {
   sensorDist: number;
   rotAngle: number;
 
-  constructor(width: number, height: number) {
+  constructor(
+    width: number,
+    height: number,
+    sensorDist: number = 9,
+    rotAngle: number = 45
+  ) {
     this.width = width;
     this.height = height;
 
@@ -36,8 +58,8 @@ class Agent {
     this.vy = Math.sin((this.heading * Math.PI) / 180);
 
     this.sensorAngle = 45;
-    this.sensorDist = 9;
-    this.rotAngle = 45;
+    this.sensorDist = sensorDist;
+    this.rotAngle = rotAngle;
   }
 
   update(trailMap: ImageData) {
@@ -117,6 +139,79 @@ class Agent {
   }
 }
 
+// Device capability detection and performance scaling utilities
+const detectDeviceCapabilities = (): DeviceCapabilities => {
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2x for performance
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+  const isMobile = screenWidth < 768;
+
+  // Detect low-end devices based on hardware concurrency and screen size
+  const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+  const isLowEnd = hardwareConcurrency < 4 || (isMobile && screenWidth < 480);
+
+  return {
+    isMobile,
+    pixelRatio,
+    screenWidth,
+    screenHeight,
+    isLowEnd,
+  };
+};
+
+const calculateOptimalAgentCount = (
+  canvasWidth: number,
+  canvasHeight: number,
+  capabilities: DeviceCapabilities
+): number => {
+  const baseCount = Math.floor((canvasWidth * canvasHeight) / 1000);
+
+  // Scale based on device capabilities
+  let scaleFactor = 1;
+
+  if (capabilities.isLowEnd) {
+    scaleFactor = 0.3; // Reduce to 30% on low-end devices
+  } else if (capabilities.isMobile) {
+    scaleFactor = 0.6; // Reduce to 60% on mobile
+  } else if (capabilities.screenWidth >= 1440) {
+    scaleFactor = 1.2; // Increase on large screens
+  }
+
+  return Math.max(50, Math.min(400, Math.floor(baseCount * scaleFactor)));
+};
+
+const getPerformanceSettings = (capabilities: DeviceCapabilities) => {
+  const baseSettings = {
+    renderScale: 1,
+    trailDecay: 0.99,
+    targetFPS: 30,
+    sensorDistance: 9,
+    rotationAngle: 45,
+  };
+
+  if (capabilities.isLowEnd) {
+    return {
+      ...baseSettings,
+      renderScale: 0.5,
+      trailDecay: 0.95,
+      targetFPS: 24,
+      sensorDistance: 6,
+      rotationAngle: 60,
+    };
+  } else if (capabilities.isMobile) {
+    return {
+      ...baseSettings,
+      renderScale: 0.7,
+      trailDecay: 0.97,
+      targetFPS: 30,
+      sensorDistance: 7,
+      rotationAngle: 45,
+    };
+  }
+
+  return baseSettings;
+};
+
 const SlimeMoldCanvas = ({
   isAnimating,
   className = "",
@@ -125,34 +220,71 @@ const SlimeMoldCanvas = ({
   const animationRef = useRef<number>();
   const agentsRef = useRef<Agent[]>([]);
   const trailMapRef = useRef<ImageData>();
-  const { currentTheme, theme } = useTheme();
+  const deviceCapabilitiesRef = useRef<DeviceCapabilities>();
+  const resizeObserverRef = useRef<ResizeObserver>();
+  const isInitializedRef = useRef(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const { currentTheme } = useTheme();
+  const isMobile = useIsMobile();
 
-  useEffect(() => {
+  // Initialize or update canvas with responsive settings
+  const initializeCanvas = useCallback((width: number, height: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas size
-    const rect = canvas.getBoundingClientRect();
-    const scale = window.devicePixelRatio || 1;
-    canvas.width = rect.width * scale * 0.5; // Reduce resolution for performance
-    canvas.height = rect.height * scale * 0.5;
-    ctx.scale(scale * 0.5, scale * 0.5);
+    // Detect device capabilities
+    const capabilities = detectDeviceCapabilities();
+    deviceCapabilitiesRef.current = capabilities;
 
-    // Initialize agents
-    const numAgents = Math.min(
-      300,
-      Math.floor((canvas.width * canvas.height) / 1000)
+    // Get performance settings based on device
+    const performanceSettings = getPerformanceSettings(capabilities);
+
+    // Calculate optimal canvas size with device pixel ratio
+    const canvasWidth = Math.floor(
+      width * capabilities.pixelRatio * performanceSettings.renderScale
     );
+    const canvasHeight = Math.floor(
+      height * capabilities.pixelRatio * performanceSettings.renderScale
+    );
+
+    // Set actual canvas dimensions
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    // Set display size (CSS pixels)
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    // Scale context to match device pixel ratio
+    ctx.scale(
+      capabilities.pixelRatio * performanceSettings.renderScale,
+      capabilities.pixelRatio * performanceSettings.renderScale
+    );
+
+    // Calculate optimal agent count
+    const numAgents = calculateOptimalAgentCount(
+      canvasWidth,
+      canvasHeight,
+      capabilities
+    );
+
+    // Initialize agents with performance-tuned parameters
     agentsRef.current = Array.from(
       { length: numAgents },
-      () => new Agent(canvas.width, canvas.height)
+      () =>
+        new Agent(
+          canvasWidth,
+          canvasHeight,
+          performanceSettings.sensorDistance,
+          performanceSettings.rotationAngle
+        )
     );
 
     // Initialize trail map
-    trailMapRef.current = ctx.createImageData(canvas.width, canvas.height);
+    trailMapRef.current = ctx.createImageData(canvasWidth, canvasHeight);
 
     // Fill with transparent pixels
     for (let i = 0; i < trailMapRef.current.data.length; i += 4) {
@@ -161,11 +293,62 @@ const SlimeMoldCanvas = ({
       trailMapRef.current.data[i + 2] = 0; // B
       trailMapRef.current.data[i + 3] = 0; // A
     }
+
+    isInitializedRef.current = true;
   }, []);
 
+  // Handle canvas resizing
+  const handleResize = useCallback(
+    (entries: ResizeObserverEntry[]) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const { width, height } = entry.contentRect;
+
+      // Skip if dimensions haven't changed significantly
+      if (
+        Math.abs(width - (canvasRef.current?.clientWidth || 0)) < 5 &&
+        Math.abs(height - (canvasRef.current?.clientHeight || 0)) < 5
+      ) {
+        return;
+      }
+
+      // Show resize feedback
+      setIsResizing(true);
+
+      // Debounce the actual resize to avoid too frequent updates
+      setTimeout(() => {
+        initializeCanvas(width, height);
+        setIsResizing(false);
+      }, 100);
+    },
+    [initializeCanvas]
+  );
+
+  // Setup ResizeObserver and initial canvas
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !isAnimating) {
+    if (!canvas) return;
+
+    // Get initial dimensions
+    const rect = canvas.getBoundingClientRect();
+    initializeCanvas(rect.width, rect.height);
+
+    // Setup ResizeObserver for dynamic resizing
+    resizeObserverRef.current = new ResizeObserver(handleResize);
+    resizeObserverRef.current.observe(canvas);
+
+    return () => {
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+      }
+    };
+  }, [initializeCanvas, handleResize]);
+
+  // Animation loop with performance optimization
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !isAnimating || !isInitializedRef.current) {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -173,7 +356,7 @@ const SlimeMoldCanvas = ({
     }
 
     const ctx = canvas.getContext("2d");
-    if (!ctx || !trailMapRef.current) return;
+    if (!ctx || !trailMapRef.current || !deviceCapabilitiesRef.current) return;
 
     // Check for reduced motion
     const prefersReducedMotion = window.matchMedia(
@@ -181,18 +364,23 @@ const SlimeMoldCanvas = ({
     ).matches;
     if (prefersReducedMotion) return;
 
+    // Get performance settings for current device
+    const capabilities = deviceCapabilitiesRef.current;
+    const performanceSettings = getPerformanceSettings(capabilities);
+
     let lastTime = 0;
-    const targetFPS = 30;
-    const frameInterval = 1000 / targetFPS;
+    const frameInterval = 1000 / performanceSettings.targetFPS;
 
     const animate = (currentTime: number) => {
       if (currentTime - lastTime >= frameInterval) {
-        // Decay trails
+        // Decay trails with device-specific decay rate
         const trailMap = trailMapRef.current!;
+        const decayRate = performanceSettings.trailDecay;
+
         for (let i = 0; i < trailMap.data.length; i += 4) {
-          trailMap.data[i] = Math.max(0, trailMap.data[i] * 0.99); // R
-          trailMap.data[i + 1] = Math.max(0, trailMap.data[i + 1] * 0.99); // G
-          trailMap.data[i + 2] = Math.max(0, trailMap.data[i + 2] * 0.99); // B
+          trailMap.data[i] = Math.max(0, trailMap.data[i] * decayRate); // R
+          trailMap.data[i + 1] = Math.max(0, trailMap.data[i + 1] * decayRate); // G
+          trailMap.data[i + 2] = Math.max(0, trailMap.data[i + 2] * decayRate); // B
         }
 
         // Update agents
@@ -277,12 +465,12 @@ const SlimeMoldCanvas = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isAnimating, currentTheme]);
+  }, [isAnimating, currentTheme, isMobile]);
 
   return (
     <canvas
       ref={canvasRef}
-      className={`absolute inset-0 w-full h-full pointer-events-none ${className}`}
+      className={`absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300 ${className}`}
       style={{
         mixBlendMode:
           currentTheme === "dark" ||
@@ -290,6 +478,9 @@ const SlimeMoldCanvas = ({
           currentTheme === "github"
             ? "screen"
             : "multiply",
+        opacity: isResizing ? 0.7 : 1,
+        transform: isResizing ? 'scale(0.98)' : 'scale(1)',
+        transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
       }}
     />
   );

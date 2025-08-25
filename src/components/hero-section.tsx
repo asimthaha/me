@@ -290,10 +290,10 @@ export function HeroSection({ className }: HeroSectionProps) {
               </div>
 
               {/* Mobile-optimized trees */}
-              <div className="absolute left-4 top-8 opacity-20 md:hidden">
+              <div className="absolute left-2 top-30 opacity-20 md:hidden">
                 <RecursiveTree size={0.6} />
               </div>
-              <div className="absolute right-4 bottom-8 opacity-20 md:hidden">
+              <div className="absolute right-1 top-9 opacity-20 md:hidden">
                 <RecursiveTree size={0.6} />
               </div>
             </div>

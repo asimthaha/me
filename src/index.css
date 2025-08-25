@@ -321,26 +321,11 @@ All colors MUST be HSL.
 
   /* Pac-Man Intro Animations */
   .pacman {
-    width: 60px;
-    height: 60px;
+    /* Size is now handled dynamically by JavaScript for full responsiveness */
     background-color: hsl(var(--accent));
     border-radius: 50%;
     animation: pacman-chomp-improved 0.3s infinite;
     position: relative;
-  }
-
-  @media (min-width: 640px) {
-    .pacman {
-      width: 80px;
-      height: 80px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .pacman {
-      width: 100px;
-      height: 100px;
-    }
   }
 
   @keyframes pacman-chomp-improved {
@@ -410,26 +395,11 @@ All colors MUST be HSL.
   }
 
   .dot {
-    width: 16px;
-    height: 16px;
+    /* Size is now handled dynamically by JavaScript for full responsiveness */
     background-color: hsl(var(--accent));
     border-radius: 50%;
     box-shadow: 0 0 10px hsl(var(--accent) / 0.5);
     transition: all 0.4s ease-out;
-  }
-
-  @media (min-width: 640px) {
-    .dot {
-      width: 20px;
-      height: 20px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .dot {
-      width: 24px;
-      height: 24px;
-    }
   }
 
   .dot.eaten {
