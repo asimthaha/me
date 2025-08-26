@@ -16,7 +16,7 @@ interface HeroSectionProps {
  * - Performance optimized (lazy loading, efficient animations)
  * - A/B testing ready with modular structure
  */
-export function HeroSection({ className }: HeroSectionProps) {
+export const HeroSection = React.memo(function HeroSection({ className }: HeroSectionProps) {
   return (
     <section
       className={`h-screen flex items-center justify-center px-4 py-16 ${className}`}
@@ -302,6 +302,6 @@ export function HeroSection({ className }: HeroSectionProps) {
       </div>
     </section>
   );
-}
+});
 
 export default HeroSection;

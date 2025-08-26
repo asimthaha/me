@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github, FileText, Play } from "lucide-react";
@@ -37,7 +37,7 @@ export const InteractiveProjectCard = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   // 3D tilt effect on mouse move
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
@@ -52,25 +52,23 @@ export const InteractiveProjectCard = ({
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`,
     });
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setIsHovered(false);
     setTiltStyle({
       transform:
         "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)",
     });
-  };
+  }, []);
 
   // Intersection Observer for reveal animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          console.log("Card intersection:", entry.isIntersecting, entry.target);
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-in");
-            console.log("Added animate-fade-in to card");
           }
         });
       },
@@ -78,14 +76,13 @@ export const InteractiveProjectCard = ({
     );
 
     if (cardRef.current) {
-      console.log("Setting up card observer for:", cardRef.current);
       observer.observe(cardRef.current);
     }
 
     return () => observer.disconnect();
   }, []);
 
-  const getCategoryIcon = () => {
+  const categoryIcon = useMemo(() => {
     switch (project.category) {
       case "webgl":
         return "🎮";
@@ -96,7 +93,7 @@ export const InteractiveProjectCard = ({
       default:
         return "💻";
     }
-  };
+  }, [project.category]);
 
   return (
     <article
@@ -127,7 +124,7 @@ export const InteractiveProjectCard = ({
 
       {/* Category Icon */}
       <div className="absolute top-4 right-4 z-10 text-2xl opacity-70 group-hover:opacity-100 transition-opacity">
-        {getCategoryIcon()}
+        {categoryIcon}
       </div>
 
       {/* Project Image with Interactive Overlay */}
@@ -232,3 +229,5 @@ export const InteractiveProjectCard = ({
     </article>
   );
 };
+
+export default memo(InteractiveProjectCard);

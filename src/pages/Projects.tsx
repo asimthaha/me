@@ -28,21 +28,15 @@ const Projects = () => {
     // Simulate loading time for skeleton display
     const timer = setTimeout(() => {
       setLoading(false);
-      console.log("Loading complete, projects should now be visible");
 
       // Fallback: trigger reveal animation after loading completes
       setTimeout(() => {
         if (sectionRef.current) {
           const elements = sectionRef.current.querySelectorAll("[data-reveal]");
-          console.log(
-            "Fallback: Found data-reveal elements after loading:",
-            elements.length
-          );
           elements.forEach((el, index) => {
             if (el instanceof HTMLElement) {
               setTimeout(() => {
                 el.classList.add("animate-fade-in");
-                console.log("Fallback: Added animate-fade-in to element");
               }, index * 100);
             }
           });
@@ -69,17 +63,10 @@ const Projects = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          console.log(
-            "IntersectionObserver entry:",
-            entry.isIntersecting,
-            entry.target
-          );
           if (entry.isIntersecting) {
             const elements = entry.target.querySelectorAll("[data-reveal]");
-            console.log("Found data-reveal elements:", elements.length);
             elements.forEach((el, index) => {
               if (el instanceof HTMLElement) {
-                console.log("Adding animate-fade-in to element:", el);
                 setTimeout(() => {
                   el.classList.add("animate-fade-in");
                 }, index * 150);
@@ -93,7 +80,6 @@ const Projects = () => {
     );
 
     if (sectionRef.current) {
-      console.log("Setting up intersection observer on section");
       observer.observe(sectionRef.current);
     }
     return () => observer.disconnect();
@@ -105,14 +91,12 @@ const Projects = () => {
   };
 
   const handleFilterChange = (category: string) => {
-    console.log("Filter changed from", activeFilter, "to", category);
     setActiveFilter(category);
 
     // Reset animation states when filter changes
     setTimeout(() => {
       if (sectionRef.current) {
         const elements = sectionRef.current.querySelectorAll("[data-reveal]");
-        console.log("Resetting animations for", elements.length, "elements");
         elements.forEach((el, index) => {
           if (el instanceof HTMLElement) {
             // Remove existing animation class
@@ -140,31 +124,6 @@ const Projects = () => {
     activeFilter === "all"
       ? projects
       : projects.filter((p) => p.category === activeFilter);
-
-  // Debug project data and filtering
-  console.log("Project data debug:", {
-    totalProjects: projects.length,
-    activeFilter,
-    filteredProjectsCount: filteredProjects.length,
-    isMobile,
-    loading,
-  });
-
-  // Debug filtering results
-  if (activeFilter !== "all") {
-    console.log("Filtering debug:", {
-      activeFilter,
-      filteredProjects: filteredProjects.map((p) => ({
-        id: p.id,
-        title: p.title,
-        category: p.category,
-      })),
-      originalProjects: projects.map((p) => ({
-        id: p.id,
-        category: p.category,
-      })),
-    });
-  }
 
   return (
     <>

@@ -259,14 +259,14 @@ const ContactSection: React.FC = () => {
               />
 
               {/* reCAPTCHA Widget */}
-              {/* <div className="flex justify-center">
+              <div className="flex justify-center">
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // Replace with your reCAPTCHA site key
                   onChange={onCaptchaChange}
                   theme="light"
                 />
-              </div> */}
+              </div>
 
               <Button
                 type="submit"

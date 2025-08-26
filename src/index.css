@@ -57,6 +57,8 @@ All colors MUST be HSL.
     --text-shadow: 0 2px 4px hsl(220 26% 14% / 0.1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-theme: background-color 0.2s ease, color 0.2s ease,
+      border-color 0.2s ease, box-shadow 0.2s ease;
 
     /* Navbar glass effects */
     --navbar-glass: hsla(var(--background) / 0.8);
@@ -201,6 +203,10 @@ All colors MUST be HSL.
 
   .transition-bounce {
     transition: var(--transition-bounce);
+  }
+
+  .transition-theme {
+    transition: var(--transition-theme);
   }
 
   /* Navbar glass effect styles */

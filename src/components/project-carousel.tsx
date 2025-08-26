@@ -39,12 +39,6 @@ export const ProjectCarousel = ({
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
 
-  // Debug carousel props
-  console.log("ProjectCarousel debug:", {
-    projectsCount: projects.length,
-    projects: projects.map(p => ({ id: p.id, title: p.title, category: p.category }))
-  });
-
   // Update current and count when carousel API changes
   useEffect(() => {
     if (!api) {
