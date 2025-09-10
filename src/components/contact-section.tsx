@@ -262,7 +262,10 @@ const ContactSection: React.FC = () => {
               <div className="flex justify-center">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // Replace with your reCAPTCHA site key
+                  sitekey={
+                    import.meta.env.VITE_RECAPTCHA_SITE_KEY ||
+                    "6LfiJaQrAAAAAJ1lAHrsE_BBGRj9eslmUXXMdcSG"
+                  }
                   onChange={onCaptchaChange}
                   theme="light"
                 />
