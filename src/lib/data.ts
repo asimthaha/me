@@ -1,4 +1,4 @@
-import { Home, User, Code2, Mail, FileText } from "lucide-react";
+import { Home, User, Code2, Mail, FileText, Briefcase } from "lucide-react";
 import { ThemeType } from "./themes";
 
 export interface Project {
@@ -118,6 +118,7 @@ const navItems = [
   { id: "home", label: "Home", icon: Home, type: "section" },
   { id: "about", label: "About", icon: User, type: "section" },
   { id: "projects", label: "Projects", icon: Code2, type: "page" },
+  { id: "services", label: "Services", icon: Briefcase, type: "page" },
   { id: "contact", label: "Contact", icon: Mail, type: "section" },
   {
     id: "resume",
