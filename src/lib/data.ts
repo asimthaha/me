@@ -1,4 +1,15 @@
-import { Home, User, Code2, Mail, FileText, Briefcase } from "lucide-react";
+import {
+  Home,
+  User,
+  Code2,
+  Mail,
+  FileText,
+  Briefcase,
+  Wrench,
+  Zap,
+  Users,
+  Palette,
+} from "lucide-react";
 import { ThemeType } from "./themes";
 
 export interface Project {
@@ -181,5 +192,101 @@ export const skillCategories: SkillCategory[] = [
       { name: "Storybook", level: "intermediate", yearsOfExperience: 1 },
       { name: "Lighthouse", level: "advanced", yearsOfExperience: 1 },
     ],
+  },
+];
+
+//services page
+interface Service {
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ComponentType<any>;
+  features: string[];
+  duration: string;
+  startingPrice: string;
+  popular?: boolean;
+}
+
+export const services: Service[] = [
+  {
+    id: 1,
+    title: "Web Development",
+    description:
+      "Custom web applications built with modern frameworks and best practices for performance and scalability.",
+    icon: Code2,
+    features: [
+      "React/TypeScript Development",
+      "Responsive Design",
+      "API Integration",
+      "Performance Optimization",
+      "SEO Implementation",
+    ],
+    duration: "2-8 weeks",
+    startingPrice: "Contact for quote",
+    popular: true,
+  },
+  {
+    id: 2,
+    title: "UI/UX Design",
+    description:
+      "User-centered design solutions that create intuitive interfaces and exceptional user experiences.",
+    icon: Palette,
+    features: [
+      "User Research & Testing",
+      "Wireframing & Prototyping",
+      "Design Systems",
+      "Accessibility Compliance",
+      "Mobile-First Design",
+    ],
+    duration: "1-4 weeks",
+    startingPrice: "Contact for quote",
+  },
+  {
+    id: 3,
+    title: "Technical Consulting",
+    description:
+      "Strategic guidance on architecture, technology choices, and development best practices.",
+    icon: Users,
+    features: [
+      "Architecture Planning",
+      "Technology Assessment",
+      "Code Reviews",
+      "Performance Audits",
+      "Team Training",
+    ],
+    duration: "Ongoing",
+    startingPrice: "Contact for quote",
+  },
+  {
+    id: 4,
+    title: "Performance Optimization",
+    description:
+      "Comprehensive analysis and optimization of web applications for speed, accessibility, and SEO.",
+    icon: Zap,
+    features: [
+      "Lighthouse Audits",
+      "Core Web Vitals",
+      "Bundle Optimization",
+      "Image & Asset Optimization",
+      "Caching Strategies",
+    ],
+    duration: "1-2 weeks",
+    startingPrice: "Contact for quote",
+  },
+  {
+    id: 5,
+    title: "Maintenance & Support",
+    description:
+      "Ongoing support, updates, and maintenance for existing web applications and websites.",
+    icon: Wrench,
+    features: [
+      "Bug Fixes & Updates",
+      "Security Monitoring",
+      "Content Management",
+      "Performance Monitoring",
+      "24/7 Support",
+    ],
+    duration: "Monthly retainer",
+    startingPrice: "Contact for quote",
   },
 ];
