@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import SlimeMoldCanvas from "@/components/slime-mold-canvas";
 import {
   Card,
   CardContent,
@@ -22,6 +23,7 @@ import { services } from "@/lib/data";
 const Services = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(true);
+  const [isSlimeAnimating, setIsSlimeAnimating] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,6 +43,11 @@ const Services = () => {
             }
           });
         }
+
+        // Start slime mold animation after reveals start
+        setTimeout(() => {
+          setIsSlimeAnimating(true);
+        }, 500);
       }, 100);
     }, 800);
 
@@ -84,9 +91,10 @@ const Services = () => {
       >
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
+          <SlimeMoldCanvas isAnimating={isSlimeAnimating} />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float z-10" />
           <div
-            className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float"
+            className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float z-10"
             style={{ animationDelay: "2s" }}
           />
         </div>

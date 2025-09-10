@@ -48,6 +48,8 @@ export const Navbar = ({ scrollContainerRef }) => {
     if (item.type === "page") {
       if (item.id === "projects") {
         navigate("/projects");
+      } else if (item.id === "services") {
+        navigate("/services");
       }
     } else if (item.type === "section") {
       // Navigate to home page first if not already there

@@ -13,7 +13,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import SlimeMoldCanvas from "./slime-mold-canvas";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PacManIntroOverlayProps {
@@ -142,12 +141,6 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
           !showOverlay && "opacity-0 pointer-events-none"
         )}
       >
-        {/* Slime Mold Background Simulation */}
-        <SlimeMoldCanvas
-          isAnimating={isAnimating || showOverlay}
-          className="opacity-60"
-        />
-
         <div
           ref={containerRef}
           className="relative w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 z-10"

@@ -197,14 +197,14 @@ const SlimeMoldCanvas = ({
         const trailMap = simulationRef.current!.update();
 
         if (trailMap) {
-          // Clear canvas with very subtle background based on theme
+          // Clear canvas with subtle background based on theme (increased opacity for visibility)
           const isDark =
             currentTheme === "dark" ||
             currentTheme === "netflix" ||
             currentTheme === "github";
           ctx.fillStyle = isDark
-            ? "rgba(0, 0, 0, 0.05)"
-            : "rgba(255, 255, 255, 0.03)";
+            ? "rgba(0, 0, 0, 0.08)"
+            : "rgba(255, 255, 255, 0.1)";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           // Draw trail map with theme-aware colors
@@ -212,42 +212,42 @@ const SlimeMoldCanvas = ({
           for (let i = 0; i < trailMap.data.length; i += 4) {
             const intensity = trailMap.data[i] / 255;
 
-            // Theme-specific trail colors
+            // Theme-specific trail colors (increased opacity for visibility)
             let r = 30,
               g = 30,
               b = 30,
-              a = 80; // Default (light)
+              a = 150; // Default (light) - increased opacity
 
             switch (currentTheme) {
               case "light":
                 r = 30;
                 g = 30;
                 b = 30;
-                a = 80;
+                a = 150; // increased opacity
                 break;
               case "dark":
                 r = 200;
                 g = 255;
                 b = 230;
-                a = 150; // Blue-green
+                a = 200; // Blue-green - increased opacity
                 break;
               case "netflix":
                 r = 255;
                 g = 50;
                 b = 50;
-                a = 120; // Red accent
+                a = 180; // Red accent - increased opacity
                 break;
               case "ey":
                 r = 255;
                 g = 200;
                 b = 0;
-                a = 100; // Gold/yellow
+                a = 170; // Gold/yellow - increased opacity
                 break;
               case "github":
                 r = 150;
                 g = 200;
                 b = 255;
-                a = 130; // Blue
+                a = 190; // Blue - increased opacity
                 break;
             }
 
