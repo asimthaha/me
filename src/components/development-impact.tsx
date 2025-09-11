@@ -12,7 +12,10 @@ const DevelopmentImpact = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const elements = entry.target.querySelectorAll("[data-reveal]");
-            console.log("DevelopmentImpact: Intersection observed, revealing elements:", elements);
+            console.log(
+              "DevelopmentImpact: Intersection observed, revealing elements:",
+              elements
+            );
             elements.forEach((el, index) => {
               setTimeout(() => {
                 (el as HTMLElement).style.opacity = "1";
@@ -30,7 +33,10 @@ const DevelopmentImpact = () => {
 
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
-      console.log("DevelopmentImpact: Observer set up for section:", sectionRef.current);
+      console.log(
+        "DevelopmentImpact: Observer set up for section:",
+        sectionRef.current
+      );
     }
 
     return () => {
@@ -39,7 +45,7 @@ const DevelopmentImpact = () => {
   }, []);
 
   return (
-    <div ref={sectionRef}>
+    <div ref={sectionRef} className="mb-20">
       {/* Stats Section */}
       <div
         className="opacity-0 translate-y-8 transition-all duration-700 bg-background/60 backdrop-blur-xl border border-border/20 rounded-3xl p-8 md:p-12"
