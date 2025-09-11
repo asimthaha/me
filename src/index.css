@@ -79,6 +79,14 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Premium Contact Section Tokens */
+    --contact-glass: hsla(var(--background) / 0.85);
+    --contact-border: hsla(var(--primary) / 0.15);
+    --contact-glow: 0 0 30px hsl(var(--accent) / 0.3);
+    --contact-field-focus: hsla(var(--accent) / 0.1);
+    --magnetic-distance: 100px;
+    --particle-color: hsl(var(--accent) / 0.6);
   }
 
   .dark {
@@ -135,6 +143,12 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Premium Contact Section Dark Mode */
+    --contact-glass: hsla(var(--background) / 0.9);
+    --contact-border: hsla(var(--primary) / 0.3);
+    --contact-glow: 0 0 40px hsl(var(--accent) / 0.4);
+    --contact-field-focus: hsla(var(--accent) / 0.15);
   }
 }
 
@@ -474,7 +488,50 @@ All colors MUST be HSL.
 .no-scrollbar {
   scrollbar-width: none; /* Firefox */
 }
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  /* Premium Contact Section Utilities */
+  .contact-glass {
+    background: var(--contact-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--contact-border);
+    box-shadow: var(--contact-glow);
+  }
+
+  .field-magnetic {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .field-magnetic:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--accent) / 0.15);
+  }
+
+  .floating-label {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .floating-label.active {
+    transform: translateY(-24px) scale(0.85);
+    color: hsl(var(--accent));
+  }
+
+  .progress-ring {
+    transition: stroke-dashoffset 0.3s ease;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .form-particles {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--particle-color);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+  }
 
