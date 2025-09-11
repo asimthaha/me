@@ -279,15 +279,16 @@ const PremiumContactSection: React.FC = () => {
   const isFormReady = isValid && captchaValue && watchedFields.name && watchedFields.email;
 
   /**
-   * Handle mouse movement for 3D tilt effect
+   * Handle mouse movement for subtle 3D tilt effect
    */
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    const rotateX = (e.clientY - centerY) / 10;
-    const rotateY = (centerX - e.clientX) / 10;
+    // Much more subtle rotation for better usability
+    const rotateX = (e.clientY - centerY) / 50;
+    const rotateY = (centerX - e.clientX) / 50;
     
     cardX.set(rotateY);
     cardY.set(rotateX);
