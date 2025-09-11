@@ -38,6 +38,10 @@ export const Navbar = ({ scrollContainerRef }) => {
   useEffect(() => {
     if (location.pathname === "/projects") {
       setActiveSection("projects");
+    } else if (location.pathname === "/services") {
+      setActiveSection("services");
+    } else if (location.pathname === "/contacts") {
+      setActiveSection("contact");
     } else if (location.pathname === "/") {
       const hash = location.hash.replace("#", "") || "home";
       setActiveSection(hash);
@@ -50,6 +54,8 @@ export const Navbar = ({ scrollContainerRef }) => {
         navigate("/projects");
       } else if (item.id === "services") {
         navigate("/services");
+      } else if (item.id === "contact") {
+        navigate("/contacts");
       }
     } else if (item.type === "section") {
       // Navigate to home page first if not already there
@@ -108,7 +114,7 @@ export const Navbar = ({ scrollContainerRef }) => {
 
               {/* Desktop Navigation Links */}
               <div className="flex items-center space-x-8">
-                {navItems.slice(0, 4).map((item) => {
+                {navItems.slice(0, 5).map((item) => {
                   const Icon = item.icon;
                   return (
                     <button

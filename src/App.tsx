@@ -8,6 +8,7 @@ import { useLoading } from "@/hooks/use-loading";
 import Index from "./pages/Index";
 import Projects from "./pages/Projects";
 import Services from "./pages/Services";
+import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/contacts" element={<Contacts />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

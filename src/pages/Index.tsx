@@ -4,8 +4,8 @@ import { Navbar } from "@/components/navbar";
 import AboutMeSection from "@/components/about-me-section";
 import ProjectsSection from "@/components/projects-section";
 import SkillsSection from "@/components/skills-section";
-import ContactSection from "@/components/contact-section";
 import { ForwardTimer } from "@/components/forward-timer";
+import DevelopmentImpact from "@/components/development-impact";
 
 /**
  * Developer Portfolio Homepage
@@ -40,12 +40,8 @@ const Index = () => {
       >
         <SkillsSection />
       </section>
-      <section
-        id="contact"
-        className="snap-start min-h-screen"
-        data-snap-section
-      >
-        <ContactSection />
+      <section id="development-impact" className="snap-start" data-snap-section>
+        <DevelopmentImpact />
       </section>
       {/* Forward Timer */}
       <ForwardTimer />
