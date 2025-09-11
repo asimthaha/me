@@ -6,6 +6,7 @@ import ProjectsSection from "@/components/projects-section";
 import SkillsSection from "@/components/skills-section";
 import { ForwardTimer } from "@/components/forward-timer";
 import DevelopmentImpact from "@/components/development-impact";
+import Footer from "@/components/footer";
 
 /**
  * Developer Portfolio Homepage
@@ -45,6 +46,9 @@ const Index = () => {
       </section>
       {/* Forward Timer */}
       <ForwardTimer />
+      
+      {/* Footer */}
+      <Footer />
     </main>
   );
 };
