@@ -19,7 +19,9 @@ interface HeroSectionProps {
  * - Performance optimized (lazy loading, efficient animations)
  * - A/B testing ready with modular structure
  */
-export const HeroSection = React.memo(function HeroSection({ className }: HeroSectionProps) {
+export const HeroSection = React.memo(function HeroSection({
+  className,
+}: HeroSectionProps) {
   const tiltRef = use3DTilt({ maxTilt: 8, scale: 1.02 });
 
   return (
@@ -35,10 +37,10 @@ export const HeroSection = React.memo(function HeroSection({ className }: HeroSe
             <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-heading leading-tight hero-shadow">
               <div className="block">Building</div>
               <div className="block text-gradient">
-                <TypewriterText 
-                  text="Digital Solutions" 
-                  speed={80}
-                  delay={500}
+                <TypewriterText
+                  text="Digital Solutions"
+                  speed={600}
+                  delay={10}
                   className="text-shimmer"
                 />
               </div>
@@ -282,9 +284,9 @@ export const HeroSection = React.memo(function HeroSection({ className }: HeroSe
             {/* Recursive Trees All Around - Comprehensive Layout */}
             <div className="absolute inset-0 w-full h-full overflow-hidden">
               {/* Top Section Trees */}
-              <div className="absolute right-1/4 top-8 opacity-25 hidden md:block">
+              {/* <div className="absolute right-1/4 top-8 opacity-25 hidden md:block">
                 <RecursiveTree size={1.0} />
-              </div>
+              </div> */}
 
               {/* Left Side Trees */}
               {/* <div className="absolute left-2 top-1/4 opacity-20 hidden lg:block">
