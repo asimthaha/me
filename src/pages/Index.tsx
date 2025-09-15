@@ -7,6 +7,7 @@ import SkillsSection from "@/components/skills-section";
 import { ForwardTimer } from "@/components/forward-timer";
 import DevelopmentImpact from "@/components/development-impact";
 import Footer from "@/components/footer";
+import { useSlingshotOverscroll } from "@/hooks/use-slingshot-overscroll";
 
 /**
  * Developer Portfolio Homepage
@@ -15,6 +16,10 @@ import Footer from "@/components/footer";
  */
 const Index = () => {
   const scrollContainerRef = useRef(null);
+  
+  // Enable slingshot overscroll effect
+  useSlingshotOverscroll();
+  
   return (
     <main
       ref={scrollContainerRef}
