@@ -126,11 +126,11 @@ export const Navbar = ({ scrollContainerRef }) => {
                       className={`
                          flex items-center space-x-2 px-3 py-2 rounded-lg
                          text-sm font-medium transition-all duration-200
-                         hover:bg-accent hover:text-accent-foreground
+                         hover:bg-accent/85 hover:text-accent-foreground
                          focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                          ${
                            activeSection === item.id
-                             ? "text-primary bg-accent/50"
+                             ? "text-primary bg-accent"
                              : "text-muted-foreground"
                          }
                        `}

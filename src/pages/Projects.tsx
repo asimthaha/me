@@ -171,7 +171,7 @@ const Projects = () => {
                     className={`capitalize transition-all duration-300 ${
                       activeFilter === category
                         ? "bg-primary text-primary-foreground"
-                        : "border-border/20 bg-background/50 hover:bg-background"
+                        : "border-border/20 bg-background/50 hover:bg-accent hover:text-accent-foreground"
                     }`}
                   >
                     <Filter className="w-4 h-4 mr-2" />

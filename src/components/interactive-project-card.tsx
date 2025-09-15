@@ -3,19 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github, FileText, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  techStack: string[];
-  demoUrl: string;
-  codeUrl: string;
-  caseStudyUrl?: string | null;
-  category: "frontend" | "fullstack" | "webgl" | "ai";
-  featured?: boolean;
-}
+import { Project } from "@/lib/data";
 
 interface InteractiveProjectCardProps {
   project: Project;

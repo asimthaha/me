@@ -66,6 +66,12 @@ const ProjectsSection = () => {
 
   return (
     <>
+      {/* Project Modal */}
+      <ProjectModal
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+      />
       <section
         ref={sectionRef}
         className="min-h-screen flex flex-col justify-center py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
@@ -83,18 +89,35 @@ const ProjectsSection = () => {
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Featured Projects Section */}
           {featuredProjects.length > 0 && (
-            <div className="mb-20">
-              <div
-                className="opacity-0 translate-y-8 transition-all duration-700 mb-12"
-                data-reveal
-              >
-                <h3 className="text-2xl font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Rocket className="w-6 h-6 text-primary" />
-                  Featured Projects
-                </h3>
-                <p className="text-muted-foreground">
-                  Showcasing cutting-edge technology and creative solutions
-                </p>
+            <div className="">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div
+                  className="opacity-0 translate-y-8 transition-all duration-700 mb-5"
+                  data-reveal
+                >
+                  <h3 className="text-2xl font-semibold text-foreground flex items-center gap-2">
+                    <Rocket className="w-6 h-6 text-primary" />
+                    Featured Projects
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Showcasing cutting-edge technology and creative solutions
+                  </p>
+                </div>
+                <div
+                  className="opacity-0 translate-y-8 transition-all duration-700"
+                  data-reveal
+                  style={{ transitionDelay: "300ms" }}
+                >
+                  <Link to="/projects">
+                    <Button
+                      size="lg"
+                      className="btn-gradient hover:opacity-90 text-white shadow-lg"
+                    >
+                      View All Projects
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
 
               <div className="grid lg:grid-cols-2 gap-8 mb-12">
@@ -114,42 +137,8 @@ const ProjectsSection = () => {
               </div>
             </div>
           )}
-
-          {/* View All Projects CTA */}
-          <div className="mb-20">
-            <div
-              className="opacity-0 translate-y-8 transition-all duration-700 text-center bg-background/60 backdrop-blur-xl border border-border/20 rounded-3xl p-8 md:p-12"
-              data-reveal
-            >
-              <div className="space-y-6">
-                <h3 className="text-2xl font-semibold text-foreground">
-                  Want to See More?
-                </h3>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Explore my complete portfolio with detailed case studies, code
-                  examples, and interactive demos across all categories.
-                </p>
-                <Link to="/projects">
-                  <Button
-                    size="lg"
-                    className="btn-gradient hover:opacity-90 text-white shadow-lg"
-                  >
-                    View All Projects
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
-
-      {/* Project Modal */}
-      <ProjectModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-      />
     </>
   );
 };

@@ -8,19 +8,7 @@ import {
   CarouselApi,
 } from "@/components/ui/carousel";
 import { InteractiveProjectCard } from "./interactive-project-card";
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  techStack: string[];
-  demoUrl: string;
-  codeUrl: string;
-  caseStudyUrl?: string | null;
-  category: "frontend" | "fullstack" | "webgl" | "ai";
-  featured?: boolean;
-}
+import { Project } from "@/lib/data";
 
 interface ProjectCarouselProps {
   projects: Project[];
@@ -103,7 +91,7 @@ export const ProjectCarousel = ({
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   index === current
                     ? "bg-primary w-6"
-                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                    : "bg-muted-foreground/90 hover:bg-muted-foreground/50"
                 }`}
                 onClick={() => api?.scrollTo(index)}
                 aria-label={`Go to slide ${index + 1}`}
