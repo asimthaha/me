@@ -49,25 +49,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const theme = getTheme(currentTheme);
 
-  const setTheme = useCallback(
-    (newTheme: ThemeType) => {
-      console.log(
-        `[ThemeSwitch] Switching from ${currentTheme} to ${newTheme}`
-      );
-
-      // Measure memory before theme switch
-      const memoryBefore = getMemoryUsage();
-      if (memoryBefore) {
-        console.log(
-          `[ThemeSwitch] Memory before: ${memoryBefore.usedMB}MB used`
-        );
-      }
-
-      setCurrentTheme(newTheme);
-      localStorage.setItem("portfolio-theme", newTheme);
-    },
-    [currentTheme]
-  );
+  const setTheme = useCallback((newTheme: ThemeType) => {
+    // Measure memory before theme switch
+    const memoryBefore = getMemoryUsage();
+    setCurrentTheme(newTheme);
+    localStorage.setItem("portfolio-theme", newTheme);
+  }, []);
 
   const toggleTheme = useCallback(() => {
     const currentIndex = themes.indexOf(currentTheme);
@@ -85,13 +72,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       const isDarkMode = isDarkTheme(currentTheme);
       root.classList.toggle("dark", isDarkMode);
 
-      // Log CSS properties being set
-      console.log(
-        `[ThemeSwitch] Setting ${
-          Object.keys(theme.colors).length
-        } CSS properties for ${currentTheme}`
-      );
-
       Object.entries(theme.colors).forEach(([key, value]) => {
         // Convert camelCase to kebab-case for CSS variables
         const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
@@ -99,15 +79,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       });
     });
 
-    console.log(
-      `[ThemeSwitch] CSS update took ${cssUpdateDuration.toFixed(2)}ms`
-    );
-
     // Measure memory after theme switch
     const memoryAfter = getMemoryUsage();
-    if (memoryAfter) {
-      console.log(`[ThemeSwitch] Memory after: ${memoryAfter.usedMB}MB used`);
-    }
   }, [currentTheme]);
 
   const value = useMemo<ThemeContextType>(

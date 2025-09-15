@@ -119,7 +119,6 @@ const Contacts = () => {
         });
       }
     } catch (error) {
-      console.error("EmailJS Error:", error);
       toast.error("Failed to Send Message", {
         description:
           "There was an error sending your message. Please try again.",

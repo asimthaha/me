@@ -12,10 +12,6 @@ const DevelopmentImpact = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const elements = entry.target.querySelectorAll("[data-reveal]");
-            console.log(
-              "DevelopmentImpact: Intersection observed, revealing elements:",
-              elements
-            );
             elements.forEach((el, index) => {
               setTimeout(() => {
                 (el as HTMLElement).style.opacity = "1";
@@ -33,10 +29,6 @@ const DevelopmentImpact = () => {
 
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
-      console.log(
-        "DevelopmentImpact: Observer set up for section:",
-        sectionRef.current
-      );
     }
 
     return () => {

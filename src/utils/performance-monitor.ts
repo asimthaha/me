@@ -16,13 +16,11 @@ class PerformanceMonitor {
   startMark(name: string) {
     const startTime = performance.now();
     this.marks.set(name, { name, startTime });
-    console.log(`[Performance] Started: ${name}`);
   }
 
   endMark(name: string) {
     const mark = this.marks.get(name);
     if (!mark) {
-      console.warn(`[Performance] Mark "${name}" not found`);
       return;
     }
 
@@ -37,9 +35,6 @@ class PerformanceMonitor {
 
     this.measures.push(completedMark);
     this.marks.delete(name);
-
-    console.log(`[Performance] Completed: ${name} (${duration.toFixed(2)}ms)`);
-
     return duration;
   }
 
@@ -112,7 +107,6 @@ export const measureThemeSwitch = async (
   themeName: string,
   switchFn: () => Promise<void>
 ) => {
-  console.log(`[ThemeSwitch] Starting theme switch to: ${themeName}`);
   const totalStart = performance.now();
 
   // Measure the actual theme switch
@@ -121,19 +115,7 @@ export const measureThemeSwitch = async (
   const totalEnd = performance.now();
   const totalDuration = totalEnd - totalStart;
 
-  console.log(
-    `[ThemeSwitch] Total theme switch time: ${totalDuration.toFixed(2)}ms`
-  );
-
   const summary = perfMonitor.getSummary();
-  console.log(`[ThemeSwitch] Performance Summary:`, {
-    totalTime: summary.totalTime.toFixed(2) + "ms",
-    operations: summary.operations,
-    averageTime: summary.averageTime.toFixed(2) + "ms",
-    maxTime: summary.maxTime.toFixed(2) + "ms",
-    minTime: summary.minTime.toFixed(2) + "ms",
-  });
-
   return {
     totalDuration,
     summary,
