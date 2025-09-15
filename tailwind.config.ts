@@ -18,6 +18,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
+        'jetbrains': ['JetBrains Mono', 'monospace'],
+        'retro': ['Press Start 2P', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -123,6 +128,38 @@ export default {
             opacity: "0.8",
           },
         },
+        "tilt": {
+          "0%": {
+            transform: "rotateY(0deg) rotateX(0deg)",
+          },
+          "100%": {
+            transform: "rotateY(10deg) rotateX(5deg)",
+          },
+        },
+        "glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 5px hsl(var(--primary) / 0.2)",
+          },
+          "50%": {
+            boxShadow: "0 0 20px hsl(var(--primary) / 0.4), 0 0 30px hsl(var(--primary) / 0.2)",
+          },
+        },
+        "magnetic": {
+          "0%": {
+            transform: "translate(0, 0) scale(1)",
+          },
+          "100%": {
+            transform: "translate(-2px, -2px) scale(1.05)",
+          },
+        },
+        "typewriter": {
+          "from": {
+            width: "0",
+          },
+          "to": {
+            width: "100%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -131,6 +168,10 @@ export default {
         float: "float 6s ease-in-out infinite",
         blob: "blob 10s ease-in-out infinite",
         "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        "tilt": "tilt 0.3s ease-out forwards",
+        "glow": "glow 2s ease-in-out infinite",
+        "magnetic": "magnetic 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        "typewriter": "typewriter 2s steps(20) forwards",
       },
     },
   },

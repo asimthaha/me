@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { SnakeLoader } from "@/components/snake-loader";
+import { PremiumCursor } from "@/components/premium-cursor";
 import { useLoading } from "@/hooks/use-loading";
 import Index from "./pages/Index";
 import Projects from "./pages/Projects";
@@ -23,6 +24,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
+          <PremiumCursor />
           <Sonner />
           <BrowserRouter>
             <Routes>

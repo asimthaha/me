@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Github, Linkedin, ExternalLink } from "lucide-react";
 import profileImage from "@/assets/developer-profile.jpg";
 import RecursiveTree from "./recursive-tree";
+import { TypewriterText } from "./typewriter-text";
+import { ParallaxContainer } from "./parallax-container";
+import { use3DTilt } from "@/hooks/use-3d-tilt";
 
 interface HeroSectionProps {
   className?: string;
@@ -17,6 +20,8 @@ interface HeroSectionProps {
  * - A/B testing ready with modular structure
  */
 export const HeroSection = React.memo(function HeroSection({ className }: HeroSectionProps) {
+  const tiltRef = use3DTilt({ maxTilt: 8, scale: 1.02 });
+
   return (
     <section
       className={`h-screen flex items-center justify-center px-4 py-16 ${className}`}
@@ -26,15 +31,22 @@ export const HeroSection = React.memo(function HeroSection({ className }: HeroSe
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content Section - Mobile First */}
           <div className="text-center lg:text-left order-2 lg:order-1 space-y-6 animate-fade-in">
-            {/* Main Headline - CRO Optimized */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight hero-shadow">
-              <span className="block">Building</span>
-              <span className="block text-gradient">Digital Solutions</span>
-              <span className="block">That Matter</span>
-            </h1>
+            {/* Main Headline - CRO Optimized with Typewriter Effect */}
+            <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-heading leading-tight hero-shadow">
+              <div className="block">Building</div>
+              <div className="block text-gradient">
+                <TypewriterText 
+                  text="Digital Solutions" 
+                  speed={80}
+                  delay={500}
+                  className="text-shimmer"
+                />
+              </div>
+              <div className="block">That Matter</div>
+            </div>
 
             {/* Supporting Subheadline */}
-            <p className="text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed font-body">
               Full-stack developer with 5+ years crafting scalable web
               applications. Specialized in React, Node.js, and cloud
               architecture.
@@ -46,7 +58,7 @@ export const HeroSection = React.memo(function HeroSection({ className }: HeroSe
               <Button
                 variant="hero"
                 size="hero-lg"
-                className="group"
+                className="group magnetic premium-glow hover-lift"
                 aria-label="View my work portfolio"
               >
                 View My Work
