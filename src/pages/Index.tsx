@@ -23,6 +23,7 @@ const Index = () => {
   return (
     <main
       ref={scrollContainerRef}
+      data-snap-container
       className="relative bg-background snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth scrollbar-hide"
     >
       <Navbar scrollContainerRef={scrollContainerRef} />

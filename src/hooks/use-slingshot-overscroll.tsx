@@ -1,32 +1,57 @@
 import { useEffect, useRef, useCallback } from 'react';
 
 /**
- * Custom hook for slingshot overscroll effect
- * Detects overscroll past footer and smoothly navigates back to hero section
+ * Snap-Aware Slingshot Overscroll Hook
+ * Detects overscroll past footer using intersection observer
+ * Temporarily disables snap-scrolling during slingshot animation
  * Optimized for performance and cross-browser compatibility
  */
 export const useSlingshotOverscroll = () => {
   const isSlingshotting = useRef(false);
   const overscrollTimeout = useRef<NodeJS.Timeout>();
   const animationFrame = useRef<number>();
+  const footerObserver = useRef<IntersectionObserver | null>(null);
+  const isFooterVisible = useRef(false);
+  const lastScrollY = useRef(0);
+  const scrollVelocity = useRef(0);
 
   /**
-   * Smooth slingshot animation back to hero section
-   * Uses elastic easing for natural feel
+   * Temporarily disable snap scrolling during slingshot animation
+   */
+  const disableSnapScrolling = useCallback(() => {
+    const scrollContainer = document.querySelector('[data-snap-container]');
+    if (scrollContainer) {
+      scrollContainer.classList.add('snap-disabled');
+    }
+  }, []);
+
+  /**
+   * Re-enable snap scrolling after animation
+   */
+  const enableSnapScrolling = useCallback(() => {
+    const scrollContainer = document.querySelector('[data-snap-container]');
+    if (scrollContainer) {
+      scrollContainer.classList.remove('snap-disabled');
+    }
+  }, []);
+
+  /**
+   * Enhanced slingshot animation with snap-scrolling awareness
    */
   const performSlingshot = useCallback(() => {
     if (isSlingshotting.current) return;
     
     isSlingshotting.current = true;
     
-    // Get current scroll position
+    // Temporarily disable snap scrolling
+    disableSnapScrolling();
+    
     const startPosition = window.scrollY;
     const startTime = performance.now();
-    const duration = 1200; // 1.2s for smooth elastic feel
+    const duration = 1200;
 
     /**
-     * Elastic easing function for slingshot effect
-     * Creates a bounce-back feel similar to rubber band
+     * Enhanced elastic easing with more pronounced slingshot feel
      */
     const elasticEaseOut = (t: number): number => {
       const c4 = (2 * Math.PI) / 3;
@@ -37,68 +62,107 @@ export const useSlingshotOverscroll = () => {
         : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
     };
 
-    /**
-     * Animation loop for smooth scroll with elastic easing
-     */
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      // Apply elastic easing
       const easedProgress = elasticEaseOut(progress);
-      
-      // Calculate current position with overshoot effect
       const currentPosition = startPosition * (1 - easedProgress);
       
+      // Use transform3d for hardware acceleration
       window.scrollTo({
         top: currentPosition,
-        behavior: 'auto' // Use auto to prevent interference with our custom animation
+        behavior: 'auto'
       });
 
       if (progress < 1) {
         animationFrame.current = requestAnimationFrame(animate);
       } else {
-        // Animation complete - ensure we're at top
+        // Animation complete
         window.scrollTo({ top: 0, behavior: 'auto' });
-        isSlingshotting.current = false;
+        
+        // Re-enable snap scrolling after a brief delay
+        setTimeout(() => {
+          enableSnapScrolling();
+          isSlingshotting.current = false;
+        }, 100);
       }
     };
 
-    // Start animation
     animationFrame.current = requestAnimationFrame(animate);
-  }, []);
+  }, [disableSnapScrolling, enableSnapScrolling]);
 
   /**
-   * Detect overscroll past footer with debouncing
+   * Enhanced overscroll detection with momentum tracking
    */
   const handleOverscroll = useCallback(() => {
-    // Prevent multiple triggers during animation
     if (isSlingshotting.current) return;
 
-    const scrollTop = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    
-    // Check if user has scrolled past the bottom with some threshold
-    const overscrollThreshold = 50; // 50px past the bottom
-    const isOverscrolled = scrollTop + windowHeight >= documentHeight + overscrollThreshold;
-    
-    if (isOverscrolled) {
-      // Clear any existing timeout
-      clearTimeout(overscrollTimeout.current);
+    // Track scroll velocity
+    const currentScrollY = window.scrollY;
+    scrollVelocity.current = currentScrollY - lastScrollY.current;
+    lastScrollY.current = currentScrollY;
+
+    // Only trigger if footer is visible and user is scrolling down with momentum
+    if (isFooterVisible.current && scrollVelocity.current > 0) {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
       
-      // Debounce the slingshot effect (wait 100ms for scroll to settle)
-      overscrollTimeout.current = setTimeout(() => {
-        performSlingshot();
-      }, 100);
+      // More precise overscroll detection
+      const overscrollThreshold = 30;
+      const isOverscrolled = scrollTop + windowHeight >= documentHeight - overscrollThreshold;
+      
+      if (isOverscrolled) {
+        clearTimeout(overscrollTimeout.current);
+        overscrollTimeout.current = setTimeout(() => {
+          performSlingshot();
+        }, 80);
+      }
     }
   }, [performSlingshot]);
 
   /**
-   * Throttled scroll handler for performance
+   * Enhanced touch handler with momentum detection
+   */
+  const handleTouchEnd = useCallback((event: TouchEvent) => {
+    if (isSlingshotting.current || !isFooterVisible.current) return;
+    
+    const touches = event.changedTouches[0];
+    if (touches) {
+      // Check if at bottom and has downward momentum
+      const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 20;
+      
+      if (isAtBottom && scrollVelocity.current > 5) {
+        setTimeout(() => {
+          performSlingshot();
+        }, 50);
+      }
+    }
+  }, [performSlingshot]);
+
+  /**
+   * Enhanced wheel handler for trackpad/mouse
+   */
+  const handleWheel = useCallback((event: WheelEvent) => {
+    if (isSlingshotting.current || !isFooterVisible.current) return;
+    
+    // Detect strong downward scroll at bottom
+    if (event.deltaY > 10) {
+      const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 20;
+      
+      if (isAtBottom) {
+        setTimeout(() => {
+          performSlingshot();
+        }, 50);
+      }
+    }
+  }, [performSlingshot]);
+
+  /**
+   * Throttled scroll handler with momentum tracking
    */
   const throttledScrollHandler = useCallback(() => {
-    // Use RAF for smooth 60fps handling
     if (animationFrame.current) return;
     
     animationFrame.current = requestAnimationFrame(() => {
@@ -107,31 +171,30 @@ export const useSlingshotOverscroll = () => {
     });
   }, [handleOverscroll]);
 
-  /**
-   * Touch and wheel event handlers for mobile/trackpad support
-   */
-  const handleTouchEnd = useCallback((event: TouchEvent) => {
-    // Only trigger on upward swipe at bottom of page
-    if (isSlingshotting.current) return;
-    
-    const touches = event.changedTouches[0];
-    if (touches && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10) {
-      setTimeout(handleOverscroll, 50);
-    }
-  }, [handleOverscroll]);
-
-  const handleWheel = useCallback((event: WheelEvent) => {
-    // Detect downward scroll at bottom
-    if (isSlingshotting.current) return;
-    
-    if (event.deltaY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10) {
-      setTimeout(handleOverscroll, 50);
-    }
-  }, [handleOverscroll]);
-
   useEffect(() => {
     // Set overscroll behavior for modern browsers
     document.body.style.overscrollBehavior = 'contain';
+    
+    // Setup intersection observer for footer detection
+    footerObserver.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target.tagName.toLowerCase() === 'footer') {
+            isFooterVisible.current = entry.isIntersecting;
+          }
+        });
+      },
+      {
+        rootMargin: '50px 0px',
+        threshold: 0.1
+      }
+    );
+
+    // Observe footer element
+    const footerElement = document.querySelector('footer');
+    if (footerElement && footerObserver.current) {
+      footerObserver.current.observe(footerElement);
+    }
     
     // Add event listeners with passive option for performance
     window.addEventListener('scroll', throttledScrollHandler, { passive: true });
@@ -141,6 +204,12 @@ export const useSlingshotOverscroll = () => {
     return () => {
       // Cleanup
       document.body.style.overscrollBehavior = '';
+      
+      // Disconnect intersection observer
+      if (footerObserver.current) {
+        footerObserver.current.disconnect();
+      }
+      
       window.removeEventListener('scroll', throttledScrollHandler);
       window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('wheel', handleWheel);

@@ -382,6 +382,16 @@ All colors MUST be HSL.
     }
   }
 
+  /* Slingshot Overscroll - Snap Scrolling Control */
+  .snap-disabled {
+    scroll-snap-type: none !important;
+  }
+
+  .snap-disabled > * {
+    scroll-snap-align: unset !important;
+  }
+}
+
   @keyframes move-pacman-mobile {
     0% {
       transform: translateX(0);
@@ -455,7 +465,6 @@ All colors MUST be HSL.
       display: none;
     }
   }
-}
 @keyframes fadeIn {
   from {
     opacity: 0;
