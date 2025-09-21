@@ -13,9 +13,9 @@ interface Position {
 
 export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
   const [snake, setSnake] = useState<Position[]>([
-    { x: 10, y: 10 }, // head
-    { x: 9, y: 10 }, // body segment 1
-    { x: 8, y: 10 }, // body segment 2
+    { x: 10, y: 10 },
+    { x: 9, y: 10 },
+    { x: 8, y: 10 },
   ]);
 
   const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
@@ -29,7 +29,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
     y: Math.floor(Math.random() * gameSize.height),
   });
 
-  // Move snake
+  // Move snake based on the current direction
   useEffect(() => {
     if (!isLoading) return;
 
@@ -38,7 +38,6 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
         const newSnake = [...currentSnake];
         const head = { ...newSnake[0] };
 
-        // Update head position
         head.x += direction.x;
         head.y += direction.y;
 
@@ -53,9 +52,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
         // Check if fruit is eaten
         if (head.x === fruit.x && head.y === fruit.y) {
           setFruit(generateFruit());
-          // Keep tail (snake grows)
         } else {
-          // Remove tail (snake maintains size)
           newSnake.pop();
         }
 
@@ -67,35 +64,55 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
     return () => clearInterval(interval);
   }, [direction, fruit, gameSize, isLoading]);
 
-  // Auto-change direction occasionally for dynamic movement
+  // **CORRECTED LOGIC**: Intelligently change direction to chase the fruit
   useEffect(() => {
     if (!isLoading) return;
 
     const changeDirection = () => {
-      const directions = [
+      const head = snake[0];
+      if (!head) return;
+
+      const possibleMoves = [
         { x: 1, y: 0 }, // right
         { x: -1, y: 0 }, // left
         { x: 0, y: 1 }, // down
         { x: 0, y: -1 }, // up
       ];
 
-      if (Math.random() < 0.3) {
-        // 30% chance to change direction
-        const newDirection =
-          directions[Math.floor(Math.random() * directions.length)];
-        setDirection(newDirection);
+      // 1. Filter out the move that would be a direct reversal to prevent the snake from eating itself.
+      const validMoves = possibleMoves.filter(
+        (move) => move.x !== -direction.x || move.y !== -direction.y
+      );
+
+      let bestMove = direction;
+      let minDistance = Infinity;
+
+      // 2. Evaluate each valid move to find which one gets the head closest to the fruit.
+      for (const move of validMoves) {
+        const newHeadPos = { x: head.x + move.x, y: head.y + move.y };
+        // Using Manhattan distance for performance: |x2 - x1| + |y2 - y1|
+        const distance =
+          Math.abs(newHeadPos.x - fruit.x) + Math.abs(newHeadPos.y - fruit.y);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          bestMove = { x: move.x, y: move.y };
+        }
       }
+
+      // 3. Set the best move as the new direction.
+      setDirection(bestMove);
     };
 
-    const interval = setInterval(changeDirection, 800);
+    // Re-evaluate the direction at the same speed as the snake's movement for optimal pathfinding.
+    const interval = setInterval(changeDirection, 150);
     return () => clearInterval(interval);
-  }, [isLoading]);
+  }, [isLoading, snake, fruit, direction]);
 
   // Handle loading completion
   useEffect(() => {
     if (!isLoading && !isExiting) {
       setIsExiting(true);
-      // Wait for exit animation to complete
       setTimeout(() => {
         onComplete?.();
       }, 600);
@@ -104,6 +121,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
 
   if (!isLoading && !isExiting) return null;
 
+  // The JSX for rendering remains the same
   return (
     <div
       className={cn(
@@ -113,7 +131,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
       )}
       aria-label="Loading application"
     >
-      {/* Background grid pattern */}
+      {/* ... rest of the JSX ... */}
       <div
         className="absolute inset-0 opacity-5"
         style={{
@@ -124,9 +142,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
           backgroundSize: "20px 20px",
         }}
       />
-
       <div className="text-center space-y-8 max-w-lg mx-auto px-4">
-        {/* Brand */}
         <div className="space-y-2">
           <h1 className="font-mono text-2xl md:text-3xl font-bold text-primary tracking-wider">
             ASIM.DEV
@@ -135,8 +151,6 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
             CRAFTING CODE WITH PRECISION
           </p>
         </div>
-
-        {/* Snake Game Area */}
         <div className="relative mx-auto">
           <div
             className="relative border border-primary/20 bg-background/50 backdrop-blur-sm"
@@ -145,15 +159,14 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
               height: `${gameSize.height * 12}px`,
             }}
           >
-            {/* Snake segments */}
             {snake.map((segment, index) => (
               <div
                 key={index}
                 className={cn(
                   "absolute transition-all duration-150 ease-linear",
                   index === 0
-                    ? "bg-primary shadow-[0_0_10px_hsl(var(--primary))]" // Head with glow
-                    : "bg-primary/70" // Body segments
+                    ? "bg-primary shadow-[0_0_10px_hsl(var(--primary))]"
+                    : "bg-primary/70"
                 )}
                 style={{
                   left: `${segment.x * 12}px`,
@@ -164,8 +177,6 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
                 }}
               />
             ))}
-
-            {/* Fruit */}
             <div
               className="absolute bg-accent shadow-[0_0_8px_hsl(var(--accent))] animate-pulse"
               style={{
@@ -178,8 +189,6 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
             />
           </div>
         </div>
-
-        {/* Loading indicator */}
         <div className="space-y-3">
           <div className="flex justify-center space-x-1">
             {[0, 1, 2].map((i) => (
@@ -195,8 +204,6 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
           </p>
         </div>
       </div>
-
-      {/* Reduced motion styles handled by Tailwind's built-in support */}
     </div>
   );
 };
