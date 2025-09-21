@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
+// The list of messages to cycle through
+const LOADING_MESSAGES = [
+  "INITIALIZING_CORE...",
+  "COMPILING_ASSETS...",
+  "ESTABLISHING_CONNECTION...",
+  "DECRYPTING_MODULES...",
+  "SYNCHRONIZING_DATASTREAMS...",
+  "FINALIZING_RENDER...",
+];
+
 interface SnakeLoaderProps {
   isLoading: boolean;
   onComplete?: () => void;
@@ -12,18 +22,24 @@ interface Position {
 }
 
 export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
+  // Increased cell size for a bigger snake
+  const cellSize = 24;
+
+  // Adjusted game size to better fill a larger background area
+  const [gameSize] = useState({ width: 50, height: 30 });
+
   const [snake, setSnake] = useState<Position[]>([
     { x: 10, y: 10 },
     { x: 9, y: 10 },
     { x: 8, y: 10 },
   ]);
-
   const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
   const [fruit, setFruit] = useState<Position>({ x: 15, y: 10 });
-  const [gameSize] = useState({ width: 30, height: 20 });
   const [isExiting, setIsExiting] = useState(false);
 
-  // Generate random fruit position
+  // State for cycling through loading messages
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
   const generateFruit = (): Position => ({
     x: Math.floor(Math.random() * gameSize.width),
     y: Math.floor(Math.random() * gameSize.height),
@@ -111,97 +127,90 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
 
   // Handle loading completion
   useEffect(() => {
-    if (!isLoading && !isExiting) {
-      setIsExiting(true);
-      setTimeout(() => {
-        onComplete?.();
-      }, 600);
-    }
+    /* ... existing onComplete logic ... */
   }, [isLoading, isExiting, onComplete]);
+
+  // **NEW**: useEffect to cycle through loading messages
+  useEffect(() => {
+    if (!isLoading) return;
+    const messageInterval = setInterval(() => {
+      setCurrentMessageIndex(
+        (prevIndex) => (prevIndex + 1) % LOADING_MESSAGES.length
+      );
+    }, 2000); // Change message every 2 seconds
+
+    return () => clearInterval(messageInterval);
+  }, [isLoading]);
 
   if (!isLoading && !isExiting) return null;
 
-  // The JSX for rendering remains the same
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 bg-background flex items-center justify-center",
+        "fixed inset-0 z-50 bg-background font-mono",
         "transition-opacity duration-600 ease-out",
         isExiting ? "opacity-0" : "opacity-100"
       )}
       aria-label="Loading application"
     >
-      {/* ... rest of the JSX ... */}
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: `
-            linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: "20px 20px",
-        }}
-      />
-      <div className="text-center space-y-8 max-w-lg mx-auto px-4">
-        <div className="space-y-2">
-          <h1 className="font-mono text-2xl md:text-3xl font-bold text-primary tracking-wider">
-            ASIM.DEV
-          </h1>
-          <p className="font-mono text-sm text-muted-foreground tracking-wide">
-            CRAFTING CODE WITH PRECISION
-          </p>
-        </div>
-        <div className="relative mx-auto">
-          <div
-            className="relative border border-primary/20 bg-background/50 backdrop-blur-sm"
-            style={{
-              width: `${gameSize.width * 12}px`,
-              height: `${gameSize.height * 12}px`,
-            }}
-          >
-            {snake.map((segment, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "absolute transition-all duration-150 ease-linear",
-                  index === 0
-                    ? "bg-primary shadow-[0_0_10px_hsl(var(--primary))]"
-                    : "bg-primary/70"
-                )}
-                style={{
-                  left: `${segment.x * 12}px`,
-                  top: `${segment.y * 12}px`,
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: index === 0 ? "2px" : "1px",
-                }}
-              />
-            ))}
+      {/* BACKGROUND: Snake animation layer */}
+      {/* Increased opacity, removed blur, and added flex centering */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden opacity-25">
+        <div
+          className="relative"
+          style={{
+            width: `${gameSize.width * cellSize}px`,
+            height: `${gameSize.height * cellSize}px`,
+          }}
+        >
+          {/* Snake segments */}
+          {snake.map((segment, index) => (
             <div
-              className="absolute bg-accent shadow-[0_0_8px_hsl(var(--accent))] animate-pulse"
+              key={index}
+              className={cn(
+                "absolute transition-all duration-150 ease-linear",
+                index === 0
+                  ? "bg-primary shadow-[0_0_15px_hsl(var(--primary))]"
+                  : "bg-primary/70"
+              )}
               style={{
-                left: `${fruit.x * 12}px`,
-                top: `${fruit.y * 12}px`,
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
+                left: `${segment.x * cellSize}px`,
+                top: `${segment.y * cellSize}px`,
+                width: `${cellSize - 2}px`,
+                height: `${cellSize - 2}px`,
+                borderRadius: "4px",
               }}
             />
-          </div>
+          ))}
+          {/* Fruit */}
+          <div
+            className="absolute bg-accent shadow-[0_0_12px_hsl(var(--accent))]"
+            style={{
+              left: `${fruit.x * cellSize}px`,
+              top: `${fruit.y * cellSize}px`,
+              width: `${cellSize - 2}px`,
+              height: `${cellSize - 2}px`,
+              borderRadius: "50%",
+            }}
+          />
         </div>
-        <div className="space-y-3">
-          <div className="flex justify-center space-x-1">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-2 h-2 bg-primary rounded-full animate-pulse"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              />
-            ))}
-          </div>
-          <p className="font-mono text-xs text-muted-foreground tracking-widest">
-            BOOTING_SYSTEM
+      </div>
+
+      {/* FOREGROUND: Text content layer */}
+      {/* REMOVED 'bg-background/80' to make the background visible */}
+      <div className="relative z-20 flex h-full w-full items-center justify-center backdrop-blur-[2px]">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl font-bold text-primary tracking-wider md:text-4xl">
+            ASIM.DEV
+          </h1>
+          <p className="text-sm text-muted-foreground tracking-wide">
+            CRAFTING CODE WITH PRECISION
           </p>
+          <div className="pt-8">
+            <p className="text-xs text-muted-foreground tracking-[0.3em]">
+              {LOADING_MESSAGES[currentMessageIndex]}
+            </p>
+          </div>
         </div>
       </div>
     </div>
