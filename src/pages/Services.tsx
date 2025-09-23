@@ -244,7 +244,7 @@ const Services = () => {
                 },
               ].map((phase, index) => (
                 <div key={index} className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-16 h-16 mx-auto rounded-full btn-gradient hover:opacity-90 text-white shadow-lg flex items-center justify-center font-bold text-lg">
                     {phase.step}
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">
@@ -275,7 +275,7 @@ const Services = () => {
                 <Link to="/#contact">
                   <Button
                     size="lg"
-                    className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
+                    className="btn-gradient hover:opacity-90 text-white shadow-lg"
                   >
                     Start a Conversation
                   </Button>

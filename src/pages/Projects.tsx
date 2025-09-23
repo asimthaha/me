@@ -237,7 +237,7 @@ const Projects = () => {
                   Have a project in mind? I'd love to hear about it and discuss
                   how we can bring your vision to life.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center m-10">
                   <Button
                     size="lg"
                     className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"

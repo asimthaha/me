@@ -73,7 +73,7 @@ const DevelopmentImpact = () => {
             Let's collaborate on your next project and create something
             extraordinary together.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center m-10">
             <Button
               size="lg"
               className="btn-gradient hover:opacity-90 text-white shadow-lg"
@@ -84,7 +84,7 @@ const DevelopmentImpact = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-border/20 bg-background/50 hover:bg-background"
+                className="border-border/20 bg-background/50 hover:bg-background hover:text-foreground shadow-lg"
               >
                 View All Work
               </Button>
