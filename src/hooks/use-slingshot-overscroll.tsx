@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from "react";
 
 /**
  * Snap-Aware Slingshot Overscroll Hook
@@ -19,9 +19,9 @@ export const useSlingshotOverscroll = () => {
    * Temporarily disable snap scrolling during slingshot animation
    */
   const disableSnapScrolling = useCallback(() => {
-    const scrollContainer = document.querySelector('[data-snap-container]');
+    const scrollContainer = document.querySelector("[data-snap-container]");
     if (scrollContainer) {
-      scrollContainer.classList.add('snap-disabled');
+      scrollContainer.classList.add("snap-disabled");
     }
   }, []);
 
@@ -29,9 +29,9 @@ export const useSlingshotOverscroll = () => {
    * Re-enable snap scrolling after animation
    */
   const enableSnapScrolling = useCallback(() => {
-    const scrollContainer = document.querySelector('[data-snap-container]');
+    const scrollContainer = document.querySelector("[data-snap-container]");
     if (scrollContainer) {
-      scrollContainer.classList.remove('snap-disabled');
+      scrollContainer.classList.remove("snap-disabled");
     }
   }, []);
 
@@ -40,12 +40,12 @@ export const useSlingshotOverscroll = () => {
    */
   const performSlingshot = useCallback(() => {
     if (isSlingshotting.current) return;
-    
+
     isSlingshotting.current = true;
-    
+
     // Temporarily disable snap scrolling
     disableSnapScrolling();
-    
+
     const startPosition = window.scrollY;
     const startTime = performance.now();
     const duration = 1200;
@@ -65,22 +65,22 @@ export const useSlingshotOverscroll = () => {
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
+
       const easedProgress = elasticEaseOut(progress);
       const currentPosition = startPosition * (1 - easedProgress);
-      
+
       // Use transform3d for hardware acceleration
       window.scrollTo({
         top: currentPosition,
-        behavior: 'auto'
+        behavior: "auto",
       });
 
       if (progress < 1) {
         animationFrame.current = requestAnimationFrame(animate);
       } else {
         // Animation complete
-        window.scrollTo({ top: 0, behavior: 'auto' });
-        
+        window.scrollTo({ top: 0, behavior: "auto" });
+
         // Re-enable snap scrolling after a brief delay
         setTimeout(() => {
           enableSnapScrolling();
@@ -108,11 +108,12 @@ export const useSlingshotOverscroll = () => {
       const scrollTop = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
+
       // More precise overscroll detection
       const overscrollThreshold = 30;
-      const isOverscrolled = scrollTop + windowHeight >= documentHeight - overscrollThreshold;
-      
+      const isOverscrolled =
+        scrollTop + windowHeight >= documentHeight - overscrollThreshold;
+
       if (isOverscrolled) {
         clearTimeout(overscrollTimeout.current);
         overscrollTimeout.current = setTimeout(() => {
@@ -125,46 +126,56 @@ export const useSlingshotOverscroll = () => {
   /**
    * Enhanced touch handler with momentum detection
    */
-  const handleTouchEnd = useCallback((event: TouchEvent) => {
-    if (isSlingshotting.current || !isFooterVisible.current) return;
-    
-    const touches = event.changedTouches[0];
-    if (touches) {
-      // Check if at bottom and has downward momentum
-      const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 20;
-      
-      if (isAtBottom && scrollVelocity.current > 5) {
-        setTimeout(() => {
-          performSlingshot();
-        }, 50);
+  const handleTouchEnd = useCallback(
+    (event: TouchEvent) => {
+      if (isSlingshotting.current || !isFooterVisible.current) return;
+
+      const touches = event.changedTouches[0];
+      if (touches) {
+        // Check if at bottom and has downward momentum
+        const isAtBottom =
+          window.scrollY + window.innerHeight >=
+          document.documentElement.scrollHeight - 20;
+
+        if (isAtBottom && scrollVelocity.current > 5) {
+          setTimeout(() => {
+            performSlingshot();
+          }, 50);
+        }
       }
-    }
-  }, [performSlingshot]);
+    },
+    [performSlingshot]
+  );
 
   /**
    * Enhanced wheel handler for trackpad/mouse
    */
-  const handleWheel = useCallback((event: WheelEvent) => {
-    if (isSlingshotting.current || !isFooterVisible.current) return;
-    
-    // Detect strong downward scroll at bottom
-    if (event.deltaY > 10) {
-      const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 20;
-      
-      if (isAtBottom) {
-        setTimeout(() => {
-          performSlingshot();
-        }, 50);
+  const handleWheel = useCallback(
+    (event: WheelEvent) => {
+      if (isSlingshotting.current || !isFooterVisible.current) return;
+
+      // Detect strong downward scroll at bottom
+      if (event.deltaY > 10) {
+        const isAtBottom =
+          window.scrollY + window.innerHeight >=
+          document.documentElement.scrollHeight - 20;
+
+        if (isAtBottom) {
+          setTimeout(() => {
+            performSlingshot();
+          }, 50);
+        }
       }
-    }
-  }, [performSlingshot]);
+    },
+    [performSlingshot]
+  );
 
   /**
    * Throttled scroll handler with momentum tracking
    */
   const throttledScrollHandler = useCallback(() => {
     if (animationFrame.current) return;
-    
+
     animationFrame.current = requestAnimationFrame(() => {
       handleOverscroll();
       animationFrame.current = undefined;
@@ -173,47 +184,49 @@ export const useSlingshotOverscroll = () => {
 
   useEffect(() => {
     // Set overscroll behavior for modern browsers
-    document.body.style.overscrollBehavior = 'contain';
-    
+    document.body.style.overscrollBehavior = "contain";
+
     // Setup intersection observer for footer detection
     footerObserver.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.target.tagName.toLowerCase() === 'footer') {
+          if (entry.target.tagName.toLowerCase() === "footer") {
             isFooterVisible.current = entry.isIntersecting;
           }
         });
       },
       {
-        rootMargin: '50px 0px',
-        threshold: 0.1
+        rootMargin: "50px 0px",
+        threshold: 0.1,
       }
     );
 
     // Observe footer element
-    const footerElement = document.querySelector('footer');
+    const footerElement = document.querySelector("footer");
     if (footerElement && footerObserver.current) {
       footerObserver.current.observe(footerElement);
     }
-    
+
     // Add event listeners with passive option for performance
-    window.addEventListener('scroll', throttledScrollHandler, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-    window.addEventListener('wheel', handleWheel, { passive: true });
+    window.addEventListener("scroll", throttledScrollHandler, {
+      passive: true,
+    });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: true });
 
     return () => {
       // Cleanup
-      document.body.style.overscrollBehavior = '';
-      
+      document.body.style.overscrollBehavior = "";
+
       // Disconnect intersection observer
       if (footerObserver.current) {
         footerObserver.current.disconnect();
       }
-      
-      window.removeEventListener('scroll', throttledScrollHandler);
-      window.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('wheel', handleWheel);
-      
+
+      window.removeEventListener("scroll", throttledScrollHandler);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("wheel", handleWheel);
+
       // Clear timeouts and animation frames
       clearTimeout(overscrollTimeout.current);
       if (animationFrame.current) {
@@ -224,6 +237,6 @@ export const useSlingshotOverscroll = () => {
 
   return {
     isSlingshotting: isSlingshotting.current,
-    performSlingshot
+    performSlingshot,
   };
 };

@@ -130,8 +130,8 @@ export const Navbar = ({ scrollContainerRef }) => {
                          focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                          ${
                            activeSection === item.id
-                             ? "text-primary bg-accent"
-                             : "text-muted-foreground"
+                             ? "bg-primary text-primary-foreground"
+                             : "border-border/20 bg-background/50 hover:bg-accent hover:text-accent-foreground"
                          }
                        `}
                       aria-label={`Navigate to ${item.label}`}
