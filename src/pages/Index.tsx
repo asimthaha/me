@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { HeroSection } from "@/components/hero-section";
 import { Navbar } from "@/components/navbar";
 import ProjectsSection from "@/components/projects-section";
-import SkillsSection from "@/components/skills-section";
 import { ForwardTimer } from "@/components/forward-timer";
 import DevelopmentImpact from "@/components/development-impact";
 import Footer from "@/components/footer";
