@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import { HeroSection } from "@/components/hero-section";
 import { Navbar } from "@/components/navbar";
-import AboutMeSection from "@/components/about-me-section";
 import ProjectsSection from "@/components/projects-section";
 import SkillsSection from "@/components/skills-section";
 import { ForwardTimer } from "@/components/forward-timer";
@@ -29,9 +28,6 @@ const Index = () => {
       <Navbar scrollContainerRef={scrollContainerRef} />
       <section id="home" className="snap-start h-screen" data-snap-section>
         <HeroSection />
-      </section>
-      <section id="about" className="snap-start" data-snap-section>
-        <AboutMeSection />
       </section>
       <section
         id="projects"

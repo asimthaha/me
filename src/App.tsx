@@ -7,6 +7,7 @@ import { SnakeLoader } from "@/components/snake-loader";
 import { PremiumCursor } from "@/components/premium-cursor";
 import { useLoading } from "@/hooks/use-loading";
 import Index from "./pages/Index";
+import About from "./pages/About";
 import Projects from "./pages/Projects";
 import Services from "./pages/Services";
 import Contacts from "./pages/Contacts";
@@ -29,6 +30,7 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/services" element={<Services />} />
               <Route path="/contacts" element={<Contacts />} />
