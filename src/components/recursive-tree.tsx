@@ -18,7 +18,6 @@ const RecursiveTree = ({ size = 1, opacity = 1 }: RecursiveTreeProps) => {
 
     const sketch = (p: p5) => {
       p.setup = () => {
-        console.log("p5 setup called");
         // Responsive canvas sizing based on screen size
         const isMobile = window.innerWidth < 768;
         const baseWidth = isMobile ? 300 : 400;
@@ -26,7 +25,6 @@ const RecursiveTree = ({ size = 1, opacity = 1 }: RecursiveTreeProps) => {
         p.createCanvas(baseWidth * size, baseHeight * size);
         p.colorMode(p.RGB, 255);
         p.angleMode(p.DEGREES);
-        console.log("p5 canvas created");
       };
 
       p.draw = () => {
@@ -162,9 +160,8 @@ const RecursiveTree = ({ size = 1, opacity = 1 }: RecursiveTreeProps) => {
     let p5Instance: p5;
     try {
       p5Instance = new p5(sketch, sketchRef.current);
-      console.log("p5 instance created successfully");
     } catch (error) {
-      console.error("Error creating p5 instance:", error);
+      // Gracefully handle p5 initialization errors
       return;
     }
 

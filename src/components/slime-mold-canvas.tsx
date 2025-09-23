@@ -14,7 +14,7 @@
 import { useEffect, useRef, useState, useCallback, memo, useMemo } from "react";
 import { useTheme } from "@/contexts/theme-context";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { SlimeMoldSimulation, Agent } from "@/utils/slime-mold-simulation";
+import { SlimeMoldSimulation } from "@/utils/slime-mold-simulation";
 import {
   detectDeviceCapabilities,
   calculateOptimalAgentCount,
@@ -23,18 +23,20 @@ import {
   type DeviceCapabilities,
   type PerformanceSettings,
 } from "@/utils/device-capabilities";
+import { useCanvasRenderer } from "@/components/canvas/CanvasRenderer";
+import { useAnimationManager } from "@/components/canvas/AnimationManager";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 
 interface SlimeMoldCanvasProps {
   isAnimating: boolean;
   className?: string;
 }
 
-const SlimeMoldCanvas = ({
+const SlimeMoldCanvas = memo(({
   isAnimating,
   className = "",
 }: SlimeMoldCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
   const simulationRef = useRef<SlimeMoldSimulation>();
   const deviceCapabilitiesRef = useRef<DeviceCapabilities>();
   const performanceSettingsRef = useRef<PerformanceSettings>();
@@ -43,6 +45,9 @@ const SlimeMoldCanvas = ({
   const [isResizing, setIsResizing] = useState(false);
   const { currentTheme } = useTheme();
   const isMobile = useIsMobile();
+
+  // Use canvas renderer hook
+  const { createRenderer } = useCanvasRenderer(canvasRef, currentTheme);
 
   // Initialize or update canvas with responsive settings
   const initializeCanvas = useCallback((width: number, height: number) => {
@@ -163,131 +168,44 @@ const SlimeMoldCanvas = ({
     };
   }, [initializeCanvas, handleResize]);
 
-  // Animation loop with performance optimization
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !isAnimating || !isInitializedRef.current) {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      return;
+  // Animation frame using optimized animation manager
+  const onAnimationFrame = useCallback((deltaTime: number) => {
+    if (!simulationRef.current || !canvasRef.current) return;
+
+    const renderer = createRenderer();
+    if (!renderer) return;
+
+    // Update simulation (handles trail decay and agent updates)
+    const trailMap = simulationRef.current.update();
+
+    if (trailMap) {
+      // Clear canvas and render trail map
+      renderer.clearCanvas();
+      renderer.renderTrailMap(trailMap);
     }
+  }, [createRenderer]);
 
-    const ctx = canvas.getContext("2d");
-    if (
-      !ctx ||
-      !simulationRef.current ||
-      !deviceCapabilitiesRef.current ||
-      !performanceSettingsRef.current
-    )
-      return;
-
-    // Check for reduced motion
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return;
-
-    let lastTime = 0;
-    const frameInterval = 1000 / performanceSettingsRef.current.targetFPS;
-
-    const animate = (currentTime: number) => {
-      if (currentTime - lastTime >= frameInterval) {
-        // Update simulation (this handles trail decay and agent updates)
-        const trailMap = simulationRef.current!.update();
-
-        if (trailMap) {
-          // Clear canvas with subtle background based on theme (increased opacity for visibility)
-          const isDark =
-            currentTheme === "dark" ||
-            currentTheme === "netflix" ||
-            currentTheme === "github";
-          ctx.fillStyle = isDark
-            ? "rgba(0, 0, 0, 0.08)"
-            : "rgba(255, 255, 255, 0.1)";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          // Draw trail map with theme-aware colors
-          const imageData = ctx.createImageData(canvas.width, canvas.height);
-          for (let i = 0; i < trailMap.data.length; i += 4) {
-            const intensity = trailMap.data[i] / 255;
-
-            // Theme-specific trail colors (increased opacity for visibility)
-            let r = 30,
-              g = 30,
-              b = 30,
-              a = 150; // Default (light) - increased opacity
-
-            switch (currentTheme) {
-              case "light":
-                r = 30;
-                g = 30;
-                b = 30;
-                a = 150; // increased opacity
-                break;
-              case "dark":
-                r = 200;
-                g = 255;
-                b = 230;
-                a = 200; // Blue-green - increased opacity
-                break;
-              case "netflix":
-                r = 255;
-                g = 50;
-                b = 50;
-                a = 180; // Red accent - increased opacity
-                break;
-              case "ey":
-                r = 255;
-                g = 200;
-                b = 0;
-                a = 170; // Gold/yellow - increased opacity
-                break;
-              case "github":
-                r = 150;
-                g = 200;
-                b = 255;
-                a = 190; // Blue - increased opacity
-                break;
-            }
-
-            imageData.data[i] = Math.floor(intensity * r); // R
-            imageData.data[i + 1] = Math.floor(intensity * g); // G
-            imageData.data[i + 2] = Math.floor(intensity * b); // B
-            imageData.data[i + 3] = Math.floor(intensity * a); // A
-          }
-
-          ctx.putImageData(imageData, 0, 0);
-        }
-        lastTime = currentTime;
-      }
-
-      if (isAnimating) {
-        animationRef.current = requestAnimationFrame(animate);
-      }
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isAnimating, currentTheme, isMobile]);
+  // Use animation manager
+  const { manager } = useAnimationManager(
+    performanceSettingsRef.current || { targetFPS: 30 } as PerformanceSettings,
+    onAnimationFrame,
+    isAnimating && isInitializedRef.current
+  );
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={`absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300 ${className}`}
-      style={{
-        mixBlendMode: blendMode,
-        opacity: isResizing ? 0.7 : 1,
-        transform: isResizing ? "scale(0.98)" : "scale(1)",
-        transition: "opacity 0.3s ease-out, transform 0.3s ease-out",
-      }}
-    />
+    <ErrorBoundary fallback={<div className="absolute inset-0 bg-muted/5" />}>
+      <canvas
+        ref={canvasRef}
+        className={`absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300 ${className}`}
+        style={{
+          mixBlendMode: blendMode,
+          opacity: isResizing ? 0.7 : 1,
+          transform: isResizing ? "scale(0.98)" : "scale(1)",
+          transition: "opacity 0.3s ease-out, transform 0.3s ease-out",
+        }}
+      />
+    </ErrorBoundary>
   );
-};
+});
 
-export default memo(SlimeMoldCanvas);
+export default SlimeMoldCanvas;

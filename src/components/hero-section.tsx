@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, ExternalLink } from "lucide-react";
 import profileImage from "@/assets/developer-profile.jpg";
 import RecursiveTree from "./recursive-tree";
+import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
+import ErrorBoundary from "./ui/ErrorBoundary";
 
 interface HeroSectionProps {
   className?: string;
@@ -19,15 +21,28 @@ interface HeroSectionProps {
 export const HeroSection = React.memo(function HeroSection({
   className,
 }: HeroSectionProps) {
+  // Use intersection observer for performance
+  const { ref: heroRef, shouldAnimate } = useVisibilityAnimation({
+    threshold: 0.2,
+  });
+
+  // Memoize static styles
+  const profileImageStyle = useMemo(() => ({
+    width: "280px",
+    height: "280px",
+    transform: "translate(-5%, -5%)",
+  }), []);
+
   return (
     <section
+      ref={heroRef}
       className={`h-screen flex items-center justify-center px-4 py-16 ${className}`}
       aria-label="Hero section"
     >
       <div className="container max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content Section - Mobile First */}
-          <div className="text-center lg:text-left order-2 lg:order-1 space-y-8 animate-fade-in">
+          <div className={`text-center lg:text-left order-2 lg:order-1 space-y-8 transition-opacity duration-700 ${shouldAnimate ? 'animate-fade-in' : 'opacity-0'}`}>
             {/* Main Headline - Simplified and Clean */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-8">
               <span className="block">Building</span>
@@ -149,14 +164,10 @@ export const HeroSection = React.memo(function HeroSection({
                 </div>
               </div>
 
-              {/* Simplified Background Gradient */}
+              {/* Simplified Background Gradient - Memoized */}
               <div
                 className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-2xl motion-reduce:opacity-50"
-                style={{
-                  width: "280px",
-                  height: "280px",
-                  transform: "translate(-5%, -5%)",
-                }}
+                style={profileImageStyle}
                 aria-hidden="true"
               />
 
@@ -171,17 +182,19 @@ export const HeroSection = React.memo(function HeroSection({
                 />
               </div>
             </div>
-            {/* Simplified Recursive Trees */}
+            {/* Optimized Recursive Trees with Error Boundary */}
             <div className="absolute inset-0 w-full h-full overflow-hidden motion-reduce:hidden">
-              {/* Single tree for desktop */}
-              <div className="absolute right-4 bottom-2 opacity-15 hidden lg:block">
-                <RecursiveTree size={0.7} />
-              </div>
+              <ErrorBoundary fallback={null}>
+                {/* Single tree for desktop */}
+                <div className="absolute right-4 bottom-2 opacity-15 hidden lg:block">
+                  <RecursiveTree size={0.7} />
+                </div>
 
-              {/* Single tree for mobile */}
-              <div className="absolute right-2 bottom-4 opacity-12 lg:hidden">
-                <RecursiveTree size={0.5} />
-              </div>
+                {/* Single tree for mobile */}
+                <div className="absolute right-2 bottom-4 opacity-12 lg:hidden">
+                  <RecursiveTree size={0.5} />
+                </div>
+              </ErrorBoundary>
             </div>
           </div>
         </div>
