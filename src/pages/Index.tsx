@@ -15,10 +15,10 @@ import { useSlingshotOverscroll } from "@/hooks/use-slingshot-overscroll";
  */
 const Index = () => {
   const scrollContainerRef = useRef(null);
-  
+
   // Enable slingshot overscroll effect
   useSlingshotOverscroll();
-  
+
   return (
     <main
       ref={scrollContainerRef}
@@ -36,19 +36,12 @@ const Index = () => {
       >
         <ProjectsSection />
       </section>
-      <section
-        id="skills"
-        className="snap-start min-h-screen"
-        data-snap-section
-      >
-        <SkillsSection />
-      </section>
       <section id="development-impact" className="snap-start" data-snap-section>
         <DevelopmentImpact />
       </section>
       {/* Forward Timer */}
       <ForwardTimer />
-      
+
       {/* Footer */}
       <Footer />
     </main>

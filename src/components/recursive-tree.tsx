@@ -25,6 +25,8 @@ const RecursiveTree = ({ size = 1, opacity = 1 }: RecursiveTreeProps) => {
         p.createCanvas(baseWidth * size, baseHeight * size);
         p.colorMode(p.RGB, 255);
         p.angleMode(p.DEGREES);
+        // Disable pointer events on the canvas
+        p.canvas.style.pointerEvents = "none";
       };
 
       p.draw = () => {

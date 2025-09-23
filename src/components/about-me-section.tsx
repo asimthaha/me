@@ -23,7 +23,7 @@ const AboutMeSection = () => {
         {/* Individual Snap Cards */}
         <div className="snap-start h-screen flex items-center justify-center px-4">
           <div className="max-w-5xl w-full space-y-6 text-center">
-            <h1 className="font-retro text-4xl md:text-6xl lg:text-7xl text-foreground">
+            <h1 className="font-mono text-4xl md:text-6xl lg:text-7xl text-foreground">
               Hey, I'm Alex<span className="blinking-cursor">_</span>
             </h1>
           </div>
@@ -31,11 +31,11 @@ const AboutMeSection = () => {
 
         <div className="snap-start h-screen flex items-center justify-center px-4">
           <div className="max-w-2xl w-full space-y-4 text-center">
-            <p className="font-retro text-sm md:text-base text-muted-foreground">
+            <p className="font-mon text-sm md:text-base text-muted-foreground">
               I build things for the web. Sometimes they even work on the first
               try.
             </p>
-            <p className="font-retro text-sm md:text-base text-muted-foreground">
+            <p className="font-mono text-sm md:text-base text-muted-foreground">
               With over 5 years in the game, I've journeyed through the full
               stack...
             </p>
@@ -47,7 +47,7 @@ const AboutMeSection = () => {
             {/* Status Panel */}
             <div className="relative">
               <div className="absolute -top-3 left-6 bg-background px-2 z-20">
-                <span className="font-retro text-sm text-primary">
+                <span className="font-mono text-sm text-primary">
                   [ STATUS ]
                 </span>
               </div>
@@ -56,7 +56,7 @@ const AboutMeSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Current Mission */}
                   <div className="space-y-2">
-                    <h3 className="font-retro text-xs text-primary">
+                    <h3 className="font-mono text-xs text-primary">
                       // CURRENT MISSION:
                     </h3>
                     <p className="font-body text-sm text-card-foreground">
@@ -66,15 +66,17 @@ const AboutMeSection = () => {
 
                   {/* Level */}
                   <div className="space-y-2">
-                    <h3 className="font-retro text-xs text-primary">// LEVEL:</h3>
-                    <p className="font-body text-sm text-card-foreground">
+                    <h3 className="font-mono text-xs text-primary">
+                      // LEVEL:
+                    </h3>
+                    <p className="font-mono text-sm text-card-foreground">
                       "Junior Software Developer"
                     </p>
                   </div>
 
                   {/* Toolkit */}
                   <div className="space-y-2 md:col-span-2">
-                    <h3 className="font-retro text-xs text-primary">
+                    <h3 className="font-mono text-xs text-primary">
                       // TOOLKIT:
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -91,7 +93,7 @@ const AboutMeSection = () => {
 
                   {/* Loading Progress */}
                   <div className="space-y-2 md:col-span-2">
-                    <h3 className="font-retro text-xs text-primary">
+                    <h3 className="font-mono text-xs text-primary">
                       // LOADING...
                     </h3>
                     <div className="space-y-2">
@@ -113,10 +115,10 @@ const AboutMeSection = () => {
         </div>
 
         <div className="snap-start h-screen flex flex-col justify-center items-center px-4">
-          <p className="font-retro text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed text-center">
+          <p className="font-mono text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed text-center">
             Think we could build something great together?
           </p>
-          <button className="mt-6 pixelated-border-button font-retro text-sm px-6 py-3 hover:bg-primary hover:text-primary-foreground transition-colors">
+          <button className="mt-6 pixelated-border-button font-mono text-sm px-6 py-3 hover:bg-primary hover:text-primary-foreground transition-colors">
             START
           </button>
         </div>

@@ -27,11 +27,14 @@ export const HeroSection = React.memo(function HeroSection({
   });
 
   // Memoize static styles
-  const profileImageStyle = useMemo(() => ({
-    width: "280px",
-    height: "280px",
-    transform: "translate(-5%, -5%)",
-  }), []);
+  const profileImageStyle = useMemo(
+    () => ({
+      width: "280px",
+      height: "280px",
+      transform: "translate(-5%, -5%)",
+    }),
+    []
+  );
 
   return (
     <section
@@ -42,7 +45,11 @@ export const HeroSection = React.memo(function HeroSection({
       <div className="container max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content Section - Mobile First */}
-          <div className={`text-center lg:text-left order-2 lg:order-1 space-y-8 transition-opacity duration-700 ${shouldAnimate ? 'animate-fade-in' : 'opacity-0'}`}>
+          <div
+            className={`text-center lg:text-left order-2 lg:order-1 space-y-8 transition-opacity duration-700 relative z-20 ${
+              shouldAnimate ? "animate-fade-in" : "opacity-0"
+            }`}
+          >
             {/* Main Headline - Simplified and Clean */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-8">
               <span className="block">Building</span>
@@ -51,7 +58,8 @@ export const HeroSection = React.memo(function HeroSection({
 
             {/* Supporting Subheadline */}
             <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8">
-              Full-stack developer crafting scalable web applications with React, Node.js, and cloud architecture.
+              Full-stack developer crafting scalable web applications with
+              React, Node.js, and cloud architecture.
             </p>
 
             {/* Primary & Secondary CTAs */}
@@ -116,7 +124,7 @@ export const HeroSection = React.memo(function HeroSection({
           </div>
 
           {/* Profile Image Section with Animated Blob and Clouds */}
-          <div className="order-1 lg:order-2 flex justify-center">
+          <div className="order-1 lg:order-2 flex justify-center relative z-10">
             <div className="relative">
               {/* Simplified Cloud Elements */}
               <div
@@ -182,20 +190,20 @@ export const HeroSection = React.memo(function HeroSection({
                 />
               </div>
             </div>
-            {/* Optimized Recursive Trees with Error Boundary */}
-            <div className="absolute inset-0 w-full h-full overflow-hidden motion-reduce:hidden">
-              <ErrorBoundary fallback={null}>
-                {/* Single tree for desktop */}
-                <div className="absolute right-4 bottom-2 opacity-15 hidden lg:block">
-                  <RecursiveTree size={0.7} />
-                </div>
+          </div>
+          {/* Optimized Recursive Trees with Error Boundary */}
+          <div className="absolute inset-0 w-full h-full overflow-hidden motion-reduce:hidden pointer-events-none z-5">
+            <ErrorBoundary fallback={null}>
+              {/* Single tree for desktop */}
+              <div className="absolute right-4 bottom-2 opacity-15 hidden lg:block">
+                <RecursiveTree size={0.7} />
+              </div>
 
-                {/* Single tree for mobile */}
-                <div className="absolute right-2 bottom-4 opacity-12 lg:hidden">
-                  <RecursiveTree size={0.5} />
-                </div>
-              </ErrorBoundary>
-            </div>
+              {/* Single tree for mobile */}
+              <div className="absolute right-1 bottom-0 opacity-0 lg:hidden">
+                <RecursiveTree size={0.5} />
+              </div>
+            </ErrorBoundary>
           </div>
         </div>
       </div>
