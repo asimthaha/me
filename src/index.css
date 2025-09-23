@@ -392,79 +392,79 @@ All colors MUST be HSL.
   }
 }
 
-  @keyframes move-pacman-mobile {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(220px);
-    }
+@keyframes move-pacman-mobile {
+  0% {
+    transform: translateX(0);
   }
-
-  @keyframes move-pacman-desktop {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(400px);
-    }
+  100% {
+    transform: translateX(220px);
   }
+}
 
+@keyframes move-pacman-desktop {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(400px);
+  }
+}
+
+.pacman.moving {
+  animation: pacman-chomp-improved 0.3s infinite,
+    move-pacman-mobile 2.5s ease-in-out forwards;
+}
+
+@media (min-width: 640px) {
   .pacman.moving {
     animation: pacman-chomp-improved 0.3s infinite,
-      move-pacman-mobile 2.5s ease-in-out forwards;
+      move-pacman-desktop 2.5s ease-in-out forwards;
   }
+}
 
-  @media (min-width: 640px) {
-    .pacman.moving {
-      animation: pacman-chomp-improved 0.3s infinite,
-        move-pacman-desktop 2.5s ease-in-out forwards;
-    }
-  }
+.dot {
+  /* Size is now handled dynamically by JavaScript for full responsiveness */
+  background-color: hsl(var(--accent));
+  border-radius: 50%;
+  box-shadow: 0 0 10px hsl(var(--accent) / 0.5);
+  transition: all 0.4s ease-out;
+}
 
+.dot.eaten {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pacman,
+  .pacman.moving,
   .dot {
-    /* Size is now handled dynamically by JavaScript for full responsiveness */
-    background-color: hsl(var(--accent));
-    border-radius: 50%;
-    box-shadow: 0 0 10px hsl(var(--accent) / 0.5);
-    transition: all 0.4s ease-out;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Accessibility: Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-pulse-slow,
+  .transition-bounce,
+  .reveal-on-scroll,
+  .blinking-cursor,
+  .hover-tilt,
+  [data-reveal],
+  .pacman,
+  .pacman.moving,
+  .dot {
+    animation: none !important;
+    transition: none !important;
   }
 
-  .dot.eaten {
-    opacity: 0;
-    transform: scale(0);
+  .scanlines {
+    display: none;
   }
-
-  /* Respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .pacman,
-    .pacman.moving,
-    .dot {
-      animation: none !important;
-      transition: none !important;
-    }
-  }
-
-  /* Accessibility: Respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .animate-float,
-    .animate-pulse-slow,
-    .transition-bounce,
-    .reveal-on-scroll,
-    .blinking-cursor,
-    .hover-tilt,
-    [data-reveal],
-    .pacman,
-    .pacman.moving,
-    .dot {
-      animation: none !important;
-      transition: none !important;
-    }
-
-    .scanlines {
-      display: none;
-    }
-  }
+}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -579,4 +579,86 @@ All colors MUST be HSL.
   100% {
     background-position: 200% 0;
   }
+}
+
+/* Snake Loader Styles */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.perspective-grid {
+  width: 150%;
+  height: 150%;
+  position: absolute;
+  top: -25%;
+  left: -25%;
+  background-image: linear-gradient(
+      to right,
+      hsl(var(--primary) / 0.15) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, hsl(var(--primary) / 0.15) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  transform: rotateX(60deg);
+  transform-origin: center;
+  mask-image: linear-gradient(to bottom, white 20%, transparent 80%);
+}
+
+.neon-text {
+  text-shadow: 0 0 8px hsl(var(--primary) / 0.8),
+    0 0 12px hsl(var(--primary) / 0.5);
+}
+
+.snake-segment {
+  background-color: hsl(var(--primary) / 0.8);
+  border-top: 1px solid hsl(var(--primary) / 1);
+  box-shadow: inset 0 2px 2px hsl(var(--primary) / 1),
+    0 2px 0 0px hsl(var(--primary) / 0.4);
+  transition: all 0.15s linear;
+}
+
+.snake-head {
+  background-color: hsl(var(--primary) / 1);
+  box-shadow: inset 0 2px 2px hsl(var(--primary) / 1),
+    0 2px 0 0px hsl(var(--primary) / 0.4), 0 0 20px hsl(var(--primary) / 0.8);
+  z-index: 10;
+}
+
+.snake-head::before,
+.snake-head::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 5px white;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.snake-head::before {
+  left: 5px;
+}
+.snake-head::after {
+  right: 5px;
+}
+
+@keyframes tongue-flicker {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.5);
+  }
+}
+
+.snake-tongue {
+  position: absolute;
+  width: 2px;
+  height: 8px;
+  background: hsl(350 100% 60%);
+  animation: tongue-flicker 0.3s infinite;
+  transform-origin: top;
 }
