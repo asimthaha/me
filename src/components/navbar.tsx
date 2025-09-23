@@ -38,6 +38,8 @@ export const Navbar = ({ scrollContainerRef }) => {
   useEffect(() => {
     if (location.pathname === "/projects") {
       setActiveSection("projects");
+    } else if (location.pathname === "/about") {
+      setActiveSection("about");
     } else if (location.pathname === "/services") {
       setActiveSection("services");
     } else if (location.pathname === "/contacts") {
@@ -50,34 +52,17 @@ export const Navbar = ({ scrollContainerRef }) => {
 
   const handleNavClick = (item: (typeof navItems)[0]) => {
     if (item.type === "page") {
-      if (item.id === "projects") {
+      if (item.id === "home") {
+        navigate("/");
+      } else if (item.id === "about") {
+        navigate("/about");
+      } else if (item.id === "projects") {
         navigate("/projects");
       } else if (item.id === "services") {
         navigate("/services");
       } else if (item.id === "contact") {
         navigate("/contacts");
       }
-    } else if (item.type === "section") {
-      // Navigate to home page first if not already there
-      if (location.pathname !== "/") {
-        navigate("/");
-        // Wait for navigation to complete before scrolling
-        setTimeout(() => {
-          const element = document.getElementById(item.id);
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 100);
-      } else {
-        // Already on home page, just scroll to section
-        const element = document.getElementById(item.id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-        // Update URL hash
-        window.history.pushState(null, "", `#${item.id}`);
-      }
-      setActiveSection(item.id);
     } else if (item.type === "external" && item.href) {
       if (item.href.startsWith("http")) {
         window.open(item.href, "_blank", "noopener,noreferrer");
@@ -114,7 +99,7 @@ export const Navbar = ({ scrollContainerRef }) => {
 
               {/* Desktop Navigation Links */}
               <div className="flex items-center space-x-8">
-                {navItems.slice(0, 5).map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
@@ -143,29 +128,8 @@ export const Navbar = ({ scrollContainerRef }) => {
                 })}
               </div>
 
-              {/* Desktop Social Links & Theme Switcher */}
-              <div className="flex items-center space-x-4">
-                {navItems.slice(5).map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Button
-                      key={item.id}
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="hover:bg-accent hover:text-accent-foreground"
-                    >
-                      <a
-                        href={item.href}
-                        aria-label={`Visit ${item.label}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Icon className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  );
-                })}
+              {/* Theme Switcher */}
+              <div className="flex items-center">
                 <ThemeSwitcher />
               </div>
             </div>
@@ -220,23 +184,11 @@ export const Navbar = ({ scrollContainerRef }) => {
             </div>
           </div>
 
-          {/* Mobile Theme Switcher & Search */}
-          <div className="flex items-center space-x-3">
+          {/* Mobile Theme Switcher */}
+          <div className="flex items-center">
             <div className="backdrop-blur-md bg-background/90 border border-border/20 rounded-full p-2">
               <ThemeSwitcher />
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="
-                rounded-full backdrop-blur-md bg-background/90 border-border/20
-                hover:bg-accent hover:text-accent-foreground
-                focus:ring-2 focus:ring-primary focus:ring-offset-2
-              "
-              aria-label="Search"
-            >
-              {/* <Search className="h-5 w-5" /> */}
-            </Button>
           </div>
         </div>
       </nav>
