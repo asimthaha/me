@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Code2 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { navItems } from "@/lib/data";
+import { navItems, NavItem } from "@/lib/data";
 
 /**
  * Responsive Navbar Component
@@ -50,7 +50,7 @@ export const Navbar = ({ scrollContainerRef }) => {
     }
   }, [location]);
 
-  const handleNavClick = (item: (typeof navItems)[0]) => {
+  const handleNavClick = (item: NavItem) => {
     if (item.type === "page") {
       if (item.id === "home") {
         navigate("/");
@@ -93,7 +93,7 @@ export const Navbar = ({ scrollContainerRef }) => {
               <div className="flex items-center space-x-2">
                 <Code2 className="h-6 w-6 text-primary" aria-hidden="true" />
                 <span className="text-lg font-semibold text-foreground">
-                  Portfolio
+                  ASIM.DEV
                 </span>
               </div>
 

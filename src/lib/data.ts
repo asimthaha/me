@@ -124,8 +124,17 @@ export const skills = [
 
 export const themes: ThemeType[] = ["light", "dark", "netflix", "ey", "github"];
 
+// Navigation items interface
+export interface NavItem {
+  id: string;
+  label: string;
+  icon: any;
+  type: "page" | "external";
+  href?: string;
+}
+
 // Navigation items for desktop and mobile
-export const navItems = [
+export const navItems: NavItem[] = [
   { id: "home", label: "Home", icon: Home, type: "page" },
   { id: "about", label: "About", icon: User, type: "page" },
   { id: "projects", label: "Projects", icon: Code2, type: "page" },
