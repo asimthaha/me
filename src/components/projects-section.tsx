@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { InteractiveProjectCard } from "./interactive-project-card";
+import { SkeletonProjectCard } from "./skeleton-project-card";
 import { ProjectModal } from "./project-modal";
 import { Rocket, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -17,6 +18,7 @@ const ProjectsSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   // Detect mobile/tablet for carousel
   useEffect(() => {
@@ -24,6 +26,15 @@ const ProjectsSection = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Simulate content loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsContentLoaded(true);
+    }, 1500); // 1.5 seconds loading time
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Scroll reveal animation
@@ -74,7 +85,7 @@ const ProjectsSection = () => {
       />
       <section
         ref={sectionRef}
-        className="min-h-screen flex flex-col justify-center py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
+        className="min-h-screen flex flex-col justify-center py-36 px-6 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
         aria-labelledby="projects-title"
       >
         {/* Animated Background Elements */}
@@ -123,19 +134,29 @@ const ProjectsSection = () => {
               </div>
 
               <div className="grid lg:grid-cols-2 gap-8 mb-12">
-                {featuredProjects.map((project, index) => (
-                  <div
-                    key={project.id}
-                    className="opacity-0 translate-y-8"
-                    data-reveal
-                  >
-                    <InteractiveProjectCard
-                      project={project}
-                      index={index}
-                      onExpand={handleProjectExpand}
-                    />
-                  </div>
-                ))}
+                {isContentLoaded
+                  ? featuredProjects.map((project, index) => (
+                      <div
+                        key={project.id}
+                        className="opacity-0 translate-y-8"
+                        data-reveal
+                      >
+                        <InteractiveProjectCard
+                          project={project}
+                          index={index}
+                          onExpand={handleProjectExpand}
+                        />
+                      </div>
+                    ))
+                  : Array.from({ length: 3 }).map((_, index) => (
+                      <div
+                        key={`skeleton-${index}`}
+                        className="opacity-0 translate-y-8"
+                        data-reveal
+                      >
+                        <SkeletonProjectCard />
+                      </div>
+                    ))}
               </div>
             </div>
           )}

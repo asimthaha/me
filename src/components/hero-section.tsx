@@ -2,12 +2,13 @@ import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, ExternalLink } from "lucide-react";
 import profileImage from "@/assets/developer-profile.jpg";
-import RecursiveTree from "./recursive-tree";
+import { GeometricShapes } from "./geometric-shapes";
 import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
 import ErrorBoundary from "./ui/ErrorBoundary";
 
 interface HeroSectionProps {
   className?: string;
+  scrollContainerRef?: React.RefObject<HTMLElement>;
 }
 
 /**
@@ -20,6 +21,7 @@ interface HeroSectionProps {
  */
 export const HeroSection = React.memo(function HeroSection({
   className,
+  scrollContainerRef,
 }: HeroSectionProps) {
   // Use intersection observer for performance
   const { ref: heroRef, shouldAnimate } = useVisibilityAnimation({
@@ -39,7 +41,7 @@ export const HeroSection = React.memo(function HeroSection({
   return (
     <section
       ref={heroRef}
-      className={`h-screen flex items-center justify-center px-4 py-16 ${className}`}
+      className={`h-screen flex items-center justify-center px-6 py-24 ${className}`}
       aria-label="Hero section"
     >
       <div className="container max-w-6xl mx-auto">
@@ -50,38 +52,30 @@ export const HeroSection = React.memo(function HeroSection({
               shouldAnimate ? "animate-fade-in" : "opacity-0"
             }`}
           >
-            {/* Main Headline - Simplified and Clean */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-8">
-              <span className="block">Building</span>
-              <span className="block text-gradient">Digital Solutions</span>
+            {/* Main Headline - Rolls-Royce Typography */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-heading leading-tight mb-8">
+              <span className="block">Crafting</span>
+              <span className="block text-gradient font-accent">
+                Digital Excellence
+              </span>
             </h1>
 
             {/* Supporting Subheadline */}
             <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8">
               Full-stack developer crafting scalable web applications with
-              React, Node.js, and cloud architecture.
+              modern technologies.
             </p>
 
-            {/* Primary & Secondary CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-              {/* Primary CTA - High contrast, action-focused */}
+            {/* Single Primary CTA */}
+            <div className="flex justify-center lg:justify-start mb-8">
               <Button
                 variant="hero"
                 size="hero-lg"
-                className="group bg-accent"
+                className="group bg-accent btn-border-expand"
                 aria-label="View my work portfolio"
               >
                 View My Work
                 <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-
-              {/* Secondary CTA */}
-              <Button
-                variant="hero-secondary"
-                size="hero-lg"
-                aria-label="Get in touch"
-              >
-                Get In Touch
               </Button>
             </div>
 
@@ -90,7 +84,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth"
+                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth hover-scale"
                 aria-label="Visit GitHub profile"
               >
                 <Github className="h-5 w-5" />
@@ -99,7 +93,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth"
+                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth hover-scale"
                 aria-label="Visit LinkedIn profile"
               >
                 <Linkedin className="h-5 w-5" />
@@ -108,7 +102,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth"
+                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth hover-scale"
                 aria-label="Visit Stack Overflow profile"
               >
                 <svg
@@ -180,7 +174,7 @@ export const HeroSection = React.memo(function HeroSection({
               />
 
               {/* Profile image container */}
-              <div className="relative z-10 w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden blob-shadow transition-smooth hover:scale-105">
+              <div className="relative z-10 w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden border-2 border-accent/20 shadow-2xl transition-smooth hover-scale">
                 <img
                   src={profileImage}
                   alt="Professional headshot of John Doe, Software Developer"
@@ -191,19 +185,9 @@ export const HeroSection = React.memo(function HeroSection({
               </div>
             </div>
           </div>
-          {/* Optimized Recursive Trees with Error Boundary */}
+          {/* Elegant Geometric Shapes Background */}
           <div className="absolute inset-0 w-full h-full overflow-hidden motion-reduce:hidden pointer-events-none z-5">
-            <ErrorBoundary fallback={null}>
-              {/* Single tree for desktop */}
-              <div className="absolute right-4 bottom-2 opacity-15 hidden lg:block">
-                <RecursiveTree size={0.7} />
-              </div>
-
-              {/* Single tree for mobile */}
-              <div className="absolute right-1 bottom-0 opacity-0 lg:hidden">
-                <RecursiveTree size={0.5} />
-              </div>
-            </ErrorBoundary>
+            <GeometricShapes scrollContainerRef={scrollContainerRef} />
           </div>
         </div>
       </div>

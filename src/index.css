@@ -8,50 +8,50 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Minimalist Developer Portfolio Design System */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Rolls-Royce Inspired Luxury Design System */
+    --background: 0 0% 98%; /* Platinum white */
+    --foreground: 220 20% 12%; /* Deep charcoal */
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card: 0 0% 98%;
+    --card-foreground: 220 20% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 220 20% 12%;
 
-    /* Primary: Deep navy for professional developer aesthetic */
-    --primary: 220 26% 14%;
+    /* Primary: Deep charcoal */
+    --primary: 220 20% 12%;
     --primary-foreground: 0 0% 98%;
 
-    /* Secondary: Subtle gray for supporting elements */
-    --secondary: 220 13% 91%;
-    --secondary-foreground: 220 9% 46%;
+    /* Secondary: Refined gray */
+    --secondary: 220 10% 65%;
+    --secondary-foreground: 220 20% 12%;
 
     /* Tertiary: Subtle white for supporting elements */
     --tertiary: 0 0% 99%;
-    --tertiary-foreground: 0 0% 95%;
+    --tertiary-foreground: 220 20% 12%;
 
     /* Muted: Light backgrounds and subtle text */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 220 10% 65%;
+    --muted-foreground: 220 20% 12%;
 
-    /* Accent: Professional blue for CTAs */
-    --accent: 217 91% 60%;
+    /* Accent: Subtle gold */
+    --accent: 40 60% 45%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --border: 220 10% 65%;
+    --input: 220 10% 65%;
+    --ring: 40 60% 45%;
 
     --radius: 0.5rem;
 
     /* Custom tokens for hero section */
     --hero-gradient: linear-gradient(
       135deg,
-      hsl(220 26% 14%) 0%,
-      hsl(217 91% 60%) 100%
+      hsl(220 20% 12%) 0%,
+      hsl(40 60% 45%) 100%
     );
     --blob-shadow: 0 20px 40px -10px hsl(217 91% 60% / 0.15);
     --text-shadow: 0 2px 4px hsl(220 26% 14% / 0.1);
@@ -82,48 +82,48 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark mode: Refined dark palette */
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Dark mode: Luxury Rolls-Royce palette */
+    --background: 220 20% 12%; /* Deep charcoal */
+    --foreground: 0 0% 98%; /* Platinum white */
 
-    --card: 240 10% 7%;
+    --card: 220 15% 15%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 7%;
+    --popover: 220 15% 15%;
     --popover-foreground: 0 0% 98%;
 
-    /* Primary: Light text in dark mode */
+    /* Primary: Platinum white */
     --primary: 0 0% 98%;
-    --primary-foreground: 240 10% 3.9%;
+    --primary-foreground: 220 20% 12%;
 
-    /* Secondary: Dark surface with light text */
-    --secondary: 240 4% 16%;
+    /* Secondary: Refined charcoal surface */
+    --secondary: 220 15% 15%;
     --secondary-foreground: 0 0% 98%;
 
-    /* Tertiary:  Dark surface with light text */
-    --tertiary: 240 4% 8%;
+    /* Tertiary: Darker charcoal surface */
+    --tertiary: 220 10% 10%;
     --tertiary-foreground: 0 0% 98%;
 
     /* Muted: Subtle dark backgrounds */
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 220 10% 65%;
+    --muted-foreground: 0 0% 98%;
 
-    /* Accent: Bright blue for dark mode CTAs */
-    --accent: 217 91% 60%;
-    --accent-foreground: 240 10% 3.9%;
+    /* Accent: Subtle gold */
+    --accent: 40 60% 45%;
+    --accent-foreground: 220 20% 12%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 217 91% 60%;
+    --border: 220 10% 65%;
+    --input: 220 10% 65%;
+    --ring: 40 60% 45%;
 
     /* Dark mode custom tokens */
     --hero-gradient: linear-gradient(
       135deg,
-      hsl(240 10% 3.9%) 0%,
-      hsl(217 91% 60%) 100%
+      hsl(220 20% 12%) 0%,
+      hsl(40 60% 45%) 100%
     );
     --blob-shadow: 0 20px 40px -10px hsl(217 91% 60% / 0.25);
     --text-shadow: 0 2px 4px hsl(0 0% 0% / 0.2);
@@ -487,11 +487,17 @@ All colors MUST be HSL.
   display: none; /* Chrome/Safari */
 }
 
-/* === Premium Typography === */
+/* === Rolls-Royce Premium Typography === */
 .font-heading {
-  font-family: "Inter", sans-serif;
+  font-family: "Playfair Display", serif;
   font-weight: 600;
   letter-spacing: -0.02em;
+}
+
+.font-subheading {
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  letter-spacing: 0.05em;
 }
 
 .font-body {
@@ -500,9 +506,76 @@ All colors MUST be HSL.
   line-height: 1.6;
 }
 
+.font-accent {
+  font-family: "Cinzel", serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
 .font-code {
   font-family: "JetBrains Mono", monospace;
   font-weight: 400;
+}
+
+/* === Performance Optimizations === */
+.image-fade-in {
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.image-fade-in.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.font-preload {
+  font-display: swap;
+}
+
+/* === WCAG AAA Accessibility Excellence === */
+.focus-visible {
+  outline: 2px solid hsl(var(--accent));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --border: 0 0% 0%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --border: 0 0% 100%;
+  }
 }
 
 /* === Premium Interactive Elements === */
@@ -556,6 +629,60 @@ All colors MUST be HSL.
 .hover-lift:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px hsl(var(--primary) / 0.1);
+}
+
+/* Rolls-Royce Micro-interactions */
+.hover-scale {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px hsl(var(--accent) / 0.15);
+}
+
+/* Button border expansion */
+.btn-border-expand {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn-border-expand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid hsl(var(--accent) / 0.3);
+  border-radius: inherit;
+  transform: scale(1);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn-border-expand:hover::before {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Refined link underlines */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, hsl(var(--accent)), hsl(var(--primary)));
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.link-underline:hover::after {
+  width: 100%;
 }
 
 .text-shimmer {

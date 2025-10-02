@@ -37,7 +37,7 @@ const Footer = () => {
           {/* Brand & Description */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground">
-              Developer Portfolio
+              PORT
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Crafting exceptional digital experiences with modern technologies. 

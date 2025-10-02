@@ -286,7 +286,7 @@ const Services = () => {
                     variant="outline"
                     className="border-border/20 bg-background/50 hover:bg-background"
                   >
-                    View Portfolio
+                    View PORT
                   </Button>
                 </Link>
               </div>

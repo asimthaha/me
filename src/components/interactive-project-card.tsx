@@ -157,32 +157,24 @@ export const InteractiveProjectCard = ({
 
       {/* Content */}
       <div className="p-6 space-y-4 flex-grow flex flex-col">
-        {/* Title & Description */}
+        {/* Title - Minimal and impactful */}
         <div className="space-y-2 flex-grow">
-          <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
+          <h3 className="text-xl font-heading text-foreground group-hover:text-primary transition-colors duration-300">
             {project.title}
           </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {project.description}
-          </p>
         </div>
 
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2">
-          {project.techStack.slice(0, 4).map((tech) => (
+        {/* Tech Stack - Visual only, no text */}
+        <div className="flex flex-wrap gap-2 justify-center">
+          {project.techStack.slice(0, 3).map((tech) => (
             <Badge
               key={tech}
-              variant="secondary"
-              className="text-xs bg-secondary/50 hover:bg-secondary/80 transition-colors"
+              variant="outline"
+              className="text-xs border-accent/30 hover:border-accent/60 transition-colors"
             >
               {tech}
             </Badge>
           ))}
-          {project.techStack.length > 4 && (
-            <Badge variant="outline" className="text-xs">
-              +{project.techStack.length - 4} more
-            </Badge>
-          )}
         </div>
 
         {/* Action Buttons */}

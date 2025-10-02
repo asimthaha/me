@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Code2 } from "lucide-react";
+import { Code2, Menu, X } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { ProgressIndicator } from "./progress-indicator";
 import { navItems } from "@/lib/data";
 
 /**
@@ -13,6 +14,7 @@ export const Navbar = ({ scrollContainerRef }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [activeSection, setActiveSection] = useState("home");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -75,6 +77,9 @@ export const Navbar = ({ scrollContainerRef }) => {
 
   return (
     <>
+      {/* Scroll Progress Indicator */}
+      <ProgressIndicator scrollContainerRef={scrollContainerRef} />
+
       {/* Desktop Navbar */}
       <nav
         className={`
@@ -92,8 +97,8 @@ export const Navbar = ({ scrollContainerRef }) => {
               {/* Logo/Brand */}
               <div className="flex items-center space-x-2">
                 <Code2 className="h-6 w-6 text-primary" aria-hidden="true" />
-                <span className="text-lg font-semibold text-foreground">
-                  Portfolio
+                <span className="text-lg font-heading text-foreground">
+                  PORT
                 </span>
               </div>
 
@@ -137,61 +142,82 @@ export const Navbar = ({ scrollContainerRef }) => {
         </div>
       </nav>
 
-      {/* Mobile Navbar */}
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="fixed top-6 right-6 z-50 md:hidden p-2 rounded-full bg-background/80 backdrop-blur-md border border-border/20 hover-scale"
+        aria-label="Toggle mobile menu"
+      >
+        {isMobileMenuOpen ? (
+          <X className="h-6 w-6 text-foreground" />
+        ) : (
+          <Menu className="h-6 w-6 text-foreground" />
+        )}
+      </button>
+
+      {/* Mobile Slide-in Menu */}
       <nav
         className={`
-          fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50
+          fixed top-0 right-0 h-full w-80 z-40
           md:hidden
-          transition-all duration-300 ease-in-out
-          ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
-          }
+          transition-transform duration-300 ease-in-out
+          transform ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}
+          bg-background/95 backdrop-blur-md border-l border-border/20
         `}
         role="navigation"
         aria-label="Mobile navigation"
       >
-        <div className="flex items-center space-x-4">
-          {/* Mobile Pill Container */}
-          <div className="mobile-pill backdrop-blur-md bg-background/90 border border-border/20 rounded-full px-6 py-3">
-            <div className="flex items-center space-x-6">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSection === item.id;
+        <div className="flex flex-col h-full pt-20 px-6">
+          {/* Mobile Navigation Links */}
+          <div className="flex flex-col space-y-4">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
 
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item)}
-                    className={`
-                      relative p-2 rounded-full transition-all duration-200
-                      hover:bg-accent hover:text-accent-foreground
-                      focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                      ${
-                        isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground"
-                      }
-                    `}
-                    aria-label={`Navigate to ${item.label}`}
-                  >
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                    {isActive && (
-                      <span className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    handleNavClick(item);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`
+                    flex items-center space-x-3 w-full p-4 rounded-lg transition-all duration-200
+                    hover:bg-accent hover:text-accent-foreground
+                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                    ${
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }
+                  `}
+                  aria-label={`Navigate to ${item.label}`}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                  <span className="text-lg">{item.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Mobile Theme Switcher */}
-          <div className="flex items-center">
-            <div className="backdrop-blur-md bg-background/90 border border-border/20 rounded-full p-2">
+          <div className="mt-8 pt-8 border-t border-border/20">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Theme</span>
               <ThemeSwitcher />
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/20 z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
     </>
   );
 };
