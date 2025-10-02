@@ -1,13 +1,10 @@
 import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, ExternalLink, ArrowRight, Mail, Download, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Github, Linkedin, ExternalLink } from "lucide-react";
 import profileImage from "@/assets/developer-profile.jpg";
 import RecursiveTree from "./recursive-tree";
 import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
 import ErrorBoundary from "./ui/ErrorBoundary";
-import { TypewriterText } from "@/components/typewriter-text";
-import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
   className?: string;
@@ -53,63 +50,38 @@ export const HeroSection = React.memo(function HeroSection({
               shouldAnimate ? "animate-fade-in" : "opacity-0"
             }`}
           >
-            {/* Status Badge */}
-            <div className="inline-flex items-center px-4 py-2 mb-6 bg-green-500/10 border border-green-500/20 rounded-full">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2" />
-              <span className="text-sm text-green-600 dark:text-green-400 font-medium">
-                Available for Projects
-              </span>
-            </div>
-
-            {/* Main Headline with Typewriter Effect */}
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
-              <TypewriterText 
-                text="Hi, I'm Asim" 
-                speed={100}
-                className="inline block"
-              />
-              <br />
-              <span className="text-gradient bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Full Stack Developer
-              </span>
-              <br />
-              <span className="text-lg md:text-xl lg:text-2xl font-light text-muted-foreground">
-                Crafting premium digital experiences
-              </span>
+            {/* Main Headline - Simplified and Clean */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-8">
+              <span className="block">Building</span>
+              <span className="block text-gradient">Digital Solutions</span>
             </h1>
 
             {/* Supporting Subheadline */}
             <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8">
-              3+ years of experience building scalable web applications with
-              React, Node.js, and modern cloud architecture. Let's create something amazing together.
+              Full-stack developer crafting scalable web applications with
+              React, Node.js, and cloud architecture.
             </p>
 
             {/* Primary & Secondary CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
               {/* Primary CTA - High contrast, action-focused */}
-              <Button 
-                size="lg" 
-                className="btn-gradient hover:opacity-90 text-white shadow-lg group transform hover:scale-105 transition-all duration-300"
-                asChild
+              <Button
+                variant="hero"
+                size="hero-lg"
+                className="group bg-accent"
+                aria-label="View my work portfolio"
               >
-                <Link to="/projects">
-                  <Sparkles className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
-                  View My Work
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
+                View My Work
+                <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
 
               {/* Secondary CTA */}
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-border/20 bg-background/50 hover:bg-background hover:text-foreground shadow-lg group transform hover:scale-105 transition-all duration-300"
-                asChild
+              <Button
+                variant="hero-secondary"
+                size="hero-lg"
+                aria-label="Get in touch"
               >
-                <Link to="/contacts">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Let's Connect
-                </Link>
+                Get In Touch
               </Button>
             </div>
 
@@ -211,7 +183,7 @@ export const HeroSection = React.memo(function HeroSection({
               <div className="relative z-10 w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden blob-shadow transition-smooth hover:scale-105">
                 <img
                   src={profileImage}
-                  alt="Asim - Full Stack Developer and Digital Experience Creator"
+                  alt="Professional headshot of John Doe, Software Developer"
                   className="w-full h-full object-cover object-center"
                   loading="eager"
                   decoding="async"
