@@ -19,24 +19,27 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { isLoading, completeLoading } = useLoading(3000); // Optimized load time
+  const { isLoading, completeLoading } = useLoading(3000);
   const [showPacmanIntro, setShowPacmanIntro] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [showMainApp, setShowMainApp] = useState(false);
 
   const handleSnakeComplete = () => {
+    // Set next state BEFORE completing loading to avoid white screen
+    setShowPacmanIntro(true);
     completeLoading();
-    setTimeout(() => setShowPacmanIntro(true), 300);
   };
 
   const handlePacmanComplete = () => {
+    // Set next state BEFORE hiding current component
+    setShowWelcome(true);
     setShowPacmanIntro(false);
-    setTimeout(() => setShowWelcome(true), 200);
   };
 
   const handleWelcomeEnter = () => {
+    // Set next state BEFORE hiding current component
+    setShowMainApp(true);
     setShowWelcome(false);
-    setTimeout(() => setShowMainApp(true), 300);
   };
 
   // Snake Loader Phase
@@ -54,32 +57,34 @@ const App = () => {
     return <WelcomeOverlay isVisible={showWelcome} onEnter={handleWelcomeEnter} />;
   }
 
-  // Main App Phase
-  if (!showMainApp) {
-    return null;
+  // Main App Phase - Show immediately when ready
+  if (showMainApp) {
+
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <PremiumCursor />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/contacts" element={<Contacts />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
   }
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <PremiumCursor />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contacts" element={<Contacts />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
+  // Fallback - should never reach here, but prevents white screen
+  return <SnakeLoader isLoading={true} onComplete={handleSnakeComplete} />;
 };
 
 export default App;
