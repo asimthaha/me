@@ -25,9 +25,8 @@ const App = () => {
   const [showMainApp, setShowMainApp] = useState(false);
 
   const handleSnakeComplete = () => {
-    // Set next state BEFORE completing loading to avoid white screen
+    console.log('Snake complete, showing Pacman');
     setShowPacmanIntro(true);
-    completeLoading();
   };
 
   const handlePacmanComplete = () => {
@@ -42,22 +41,22 @@ const App = () => {
     setShowWelcome(false);
   };
 
-  // Snake Loader Phase
-  if (isLoading) {
+  // Snake Loader Phase - show until it completes
+  if (isLoading && !showPacmanIntro) {
     return <SnakeLoader isLoading={isLoading} onComplete={handleSnakeComplete} />;
   }
 
   // Pacman Transition Phase
-  if (showPacmanIntro) {
+  if (showPacmanIntro && !showWelcome) {
     return <PacmanIntroOverlay isVisible={showPacmanIntro} onComplete={handlePacmanComplete} />;
   }
 
   // Welcome Overlay Phase
-  if (showWelcome) {
+  if (showWelcome && !showMainApp) {
     return <WelcomeOverlay isVisible={showWelcome} onEnter={handleWelcomeEnter} />;
   }
 
-  // Main App Phase - Show immediately when ready
+  // Main App Phase - Show when all intro phases complete
   if (showMainApp) {
 
     return (
