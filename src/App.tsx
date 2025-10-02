@@ -19,24 +19,24 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { isLoading, completeLoading } = useLoading(8000); // Reduced load time for better UX
+  const { isLoading, completeLoading } = useLoading(3000); // Optimized load time
   const [showPacmanIntro, setShowPacmanIntro] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [showMainApp, setShowMainApp] = useState(false);
 
   const handleSnakeComplete = () => {
     completeLoading();
-    setShowPacmanIntro(true);
+    setTimeout(() => setShowPacmanIntro(true), 300);
   };
 
   const handlePacmanComplete = () => {
     setShowPacmanIntro(false);
-    setShowWelcome(true);
+    setTimeout(() => setShowWelcome(true), 200);
   };
 
   const handleWelcomeEnter = () => {
     setShowWelcome(false);
-    setShowMainApp(true);
+    setTimeout(() => setShowMainApp(true), 300);
   };
 
   // Snake Loader Phase
@@ -56,7 +56,7 @@ const App = () => {
 
   // Main App Phase
   if (!showMainApp) {
-    return null; // Brief moment while transitioning
+    return null;
   }
 
   return (

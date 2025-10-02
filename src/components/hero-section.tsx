@@ -89,7 +89,7 @@ export const HeroSection = React.memo(function HeroSection({
               {/* Primary CTA - High contrast, action-focused */}
               <Button 
                 size="lg" 
-                className="btn-gradient hover:opacity-90 text-white shadow-lg group"
+                className="btn-gradient hover:opacity-90 text-white shadow-lg group transform hover:scale-105 transition-all duration-300"
                 asChild
               >
                 <Link to="/projects">
@@ -103,7 +103,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-border/20 bg-background/50 hover:bg-background hover:text-foreground shadow-lg group"
+                className="border-border/20 bg-background/50 hover:bg-background hover:text-foreground shadow-lg group transform hover:scale-105 transition-all duration-300"
                 asChild
               >
                 <Link to="/contacts">

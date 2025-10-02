@@ -24,17 +24,20 @@ export const WelcomeOverlay = ({ isVisible, onEnter }: WelcomeOverlayProps) => {
   ];
 
   useEffect(() => {
-    if (isVisible && currentStep < welcomeMessages.length) {
+    if (!isVisible) return;
+    
+    if (currentStep < welcomeMessages.length - 1) {
       const timer = setTimeout(() => {
-        if (currentStep === welcomeMessages.length - 1) {
-          setShowCTA(true);
-        } else {
-          setCurrentStep(prev => prev + 1);
-        }
-      }, 2000);
+        setCurrentStep(prev => prev + 1);
+      }, 1800);
+      return () => clearTimeout(timer);
+    } else if (currentStep === welcomeMessages.length - 1 && !showCTA) {
+      const timer = setTimeout(() => {
+        setShowCTA(true);
+      }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [currentStep, isVisible, welcomeMessages.length]);
+  }, [currentStep, isVisible, showCTA, welcomeMessages.length]);
 
   if (!isVisible) return null;
 
@@ -51,18 +54,13 @@ export const WelcomeOverlay = ({ isVisible, onEnter }: WelcomeOverlayProps) => {
               {index === currentStep && (
                 <TypewriterText
                   text={message}
-                  speed={80}
+                  speed={60}
                   className={cn(
                     "block",
                     index === 0 && "text-2xl md:text-3xl font-light text-muted-foreground",
                     index === 1 && "text-3xl md:text-4xl font-bold text-foreground",
                     index === 2 && "text-lg md:text-xl text-primary font-medium"
                   )}
-                  onComplete={() => {
-                    if (index < welcomeMessages.length - 1) {
-                      setTimeout(() => setCurrentStep(prev => prev + 1), 800);
-                    }
-                  }}
                 />
               )}
               {index < currentStep && (
