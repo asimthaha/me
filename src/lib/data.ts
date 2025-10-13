@@ -160,10 +160,10 @@ export interface PersonalInfo {
 }
 
 export const personalInfo: PersonalInfo = {
-  name: "Asim Khan",
+  name: "John Doe",
   title: "Full-Stack Developer & Creative Technologist",
   location: "Remote / Global",
-  email: "contact@asimkhan.dev",
+  email: "contact@johndoe.dev",
   bio: "Passionate full-stack developer specializing in creating immersive web experiences with modern technologies. I combine technical expertise with creative problem-solving to build scalable, user-centric applications.",
   yearsOfExperience: 1,
   specializations: [
@@ -171,7 +171,7 @@ export const personalInfo: PersonalInfo = {
     "WebGL & Three.js Experiences",
     "Full-Stack Web Applications",
     "Performance Optimization",
-    "UI/UX Implementation"
+    "UI/UX Implementation",
   ],
   availability: {
     status: "available",
@@ -180,21 +180,21 @@ export const personalInfo: PersonalInfo = {
       "Web Applications",
       "Interactive Experiences",
       "E-commerce Platforms",
-      "SaaS Products"
-    ]
+      "SaaS Products",
+    ],
   },
   workPhilosophy: [
     "Clean, maintainable code is non-negotiable",
     "User experience drives every technical decision",
     "Performance optimization from day one",
-    "Continuous learning and adaptation"
+    "Continuous learning and adaptation",
   ],
   achievements: [
     "Built 6+ production-ready web applications",
     "Consistently achieve 90+ Lighthouse scores",
     "Specialized in React and TypeScript ecosystems",
-    "Expert in modern frontend tooling and best practices"
-  ]
+    "Expert in modern frontend tooling and best practices",
+  ],
 };
 
 export const skillCategories: SkillCategory[] = [
