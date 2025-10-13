@@ -253,7 +253,7 @@ export const skillCategories: SkillCategory[] = [
 ];
 
 //services page
-interface Service {
+export interface Service {
   id: number;
   title: string;
   description: string;
@@ -286,7 +286,7 @@ export const services: Service[] = [
     id: 2,
     title: "UI/UX Design",
     description:
-      "User-centered design solutions that create intuitive interfaces and exceptional user experiences.",
+      "I design user-centered solutions that create intuitive interfaces. My goal is to deliver exceptional user experiences.",
     icon: Palette,
     features: [
       "User Research & Testing",

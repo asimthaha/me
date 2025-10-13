@@ -64,17 +64,6 @@ export const HeroSection = React.memo(function HeroSection({
 
             {/* Primary & Secondary CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-              {/* Primary CTA - High contrast, action-focused */}
-              <Button
-                variant="hero"
-                size="hero-lg"
-                className="group bg-accent"
-                aria-label="View my work portfolio"
-              >
-                View My Work
-                <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-
               {/* Secondary CTA */}
               <Button
                 variant="hero-secondary"
@@ -190,20 +179,6 @@ export const HeroSection = React.memo(function HeroSection({
                 />
               </div>
             </div>
-          </div>
-          {/* Optimized Recursive Trees with Error Boundary */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden motion-reduce:hidden pointer-events-none z-5">
-            <ErrorBoundary fallback={null}>
-              {/* Single tree for desktop */}
-              <div className="absolute right-4 bottom-2 opacity-15 hidden lg:block">
-                <RecursiveTree size={0.7} />
-              </div>
-
-              {/* Single tree for mobile */}
-              <div className="absolute right-1 bottom-0 opacity-0 lg:hidden">
-                <RecursiveTree size={0.5} />
-              </div>
-            </ErrorBoundary>
           </div>
         </div>
       </div>

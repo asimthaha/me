@@ -116,13 +116,6 @@ const AboutMeSection = () => {
               </div>
             </div>
           </div>
-          <section
-            id="skills"
-            className="snap-start min-h-screen"
-            data-snap-section
-          >
-            <SkillsSection />
-          </section>
           <div className="snap-start h-screen flex flex-col justify-center items-center px-4">
             <p className="font-mono text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed text-center">
               Think we could build something great together?

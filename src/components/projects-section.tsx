@@ -90,36 +90,17 @@ const ProjectsSection = () => {
           {/* Featured Projects Section */}
           {featuredProjects.length > 0 && (
             <div className="">
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                <div
-                  className="opacity-0 translate-y-8 transition-all duration-700"
-                  data-reveal
-                >
-                  <h3 className="text-2xl font-semibold text-foreground flex items-center gap-2">
-                    <Rocket className="w-6 h-6 text-primary" />
-                    Featured Projects
-                  </h3>
-                  <p className="text-muted-foreground mt-2">
-                    Showcasing cutting-edge technology and creative solutions
-                  </p>
-                </div>
-
-                {/* CTA Button */}
-                <div
-                  className="opacity-0 translate-y-8 transition-all duration-700 m-10"
-                  data-reveal
-                  style={{ transitionDelay: "300ms" }}
-                >
-                  <Link to="/projects">
-                    <Button
-                      size="lg"
-                      className="w-full sm:w-auto btn-gradient hover:opacity-90 text-white shadow-lg"
-                    >
-                      View All Projects
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
-                </div>
+              <div
+                className="opacity-0 translate-y-8 transition-all duration-700 mb-10"
+                data-reveal
+              >
+                <h3 className="text-2xl font-semibold text-foreground flex items-center gap-2">
+                  <Rocket className="w-6 h-6 text-primary" />
+                  Featured Projects
+                </h3>
+                <p className="text-muted-foreground mt-2">
+                  Showcasing cutting-edge technology and creative solutions
+                </p>
               </div>
 
               <div className="grid lg:grid-cols-2 gap-8 mb-12">
@@ -136,6 +117,22 @@ const ProjectsSection = () => {
                     />
                   </div>
                 ))}
+              </div>
+              {/* CTA Button */}
+              <div
+                className="opacity-0 translate-y-8 transition-all duration-700 m-10 flex justify-center"
+                data-reveal
+                style={{ transitionDelay: "300ms" }}
+              >
+                <Link to="/projects">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto btn-gradient hover:opacity-90 text-white shadow-lg"
+                  >
+                    View All Projects
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </div>
           )}
