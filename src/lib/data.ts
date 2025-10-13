@@ -141,6 +141,62 @@ export const navItems: NavItem[] = [
   { id: "contact", label: "Contact", icon: Mail, type: "page" },
 ];
 
+// Personal/Professional Information
+export interface PersonalInfo {
+  name: string;
+  title: string;
+  location: string;
+  email: string;
+  bio: string;
+  yearsOfExperience: number;
+  specializations: string[];
+  availability: {
+    status: "available" | "limited" | "unavailable";
+    nextAvailable: string;
+    preferredProjectTypes: string[];
+  };
+  workPhilosophy: string[];
+  achievements: string[];
+}
+
+export const personalInfo: PersonalInfo = {
+  name: "Asim Khan",
+  title: "Full-Stack Developer & Creative Technologist",
+  location: "Remote / Global",
+  email: "contact@asimkhan.dev",
+  bio: "Passionate full-stack developer specializing in creating immersive web experiences with modern technologies. I combine technical expertise with creative problem-solving to build scalable, user-centric applications.",
+  yearsOfExperience: 1,
+  specializations: [
+    "React & TypeScript Development",
+    "WebGL & Three.js Experiences",
+    "Full-Stack Web Applications",
+    "Performance Optimization",
+    "UI/UX Implementation"
+  ],
+  availability: {
+    status: "available",
+    nextAvailable: "Immediately",
+    preferredProjectTypes: [
+      "Web Applications",
+      "Interactive Experiences",
+      "E-commerce Platforms",
+      "SaaS Products"
+    ]
+  },
+  workPhilosophy: [
+    "Clean, maintainable code is non-negotiable",
+    "User experience drives every technical decision",
+    "Performance optimization from day one",
+    "Continuous learning and adaptation"
+  ],
+  achievements: [
+    "Built 6+ production-ready web applications",
+    "Consistently achieve 90+ Lighthouse scores",
+    "Specialized in React and TypeScript ecosystems",
+    "Expert in modern frontend tooling and best practices"
+  ]
+};
+
 export const skillCategories: SkillCategory[] = [
   {
     title: "Frontend",
