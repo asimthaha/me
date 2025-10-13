@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { SnakeLoader } from "@/components/snake-loader";
 import { PremiumCursor } from "@/components/premium-cursor";
+import { PortfolioChatbot } from "@/components/PortfolioChatbot";
 import { useLoading } from "@/hooks/use-loading";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -26,6 +27,7 @@ const App = () => {
       <ThemeProvider>
         <TooltipProvider>
           <PremiumCursor />
+          <PortfolioChatbot />
           <Sonner />
           <BrowserRouter>
             <Routes>
