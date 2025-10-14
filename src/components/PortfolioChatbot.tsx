@@ -1,15 +1,22 @@
-import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Sparkles, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { supabase } from '@/integrations/supabase/client';
-import { generateKnowledgeBase } from '@/lib/chatbot-knowledge';
-import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from "react";
+import {
+  MessageCircle,
+  X,
+  Send,
+  Loader2,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { supabase } from "@/integrations/supabase/client";
+import { generateKnowledgeBase } from "@/lib/chatbot-knowledge";
+import { cn } from "@/lib/utils";
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   id: string;
 }
@@ -22,12 +29,12 @@ const SUGGESTED_QUESTIONS = [
 ];
 
 const MAX_RETRIES = 3;
-const CHAT_STORAGE_KEY = 'portfolio_chat_history';
+const CHAT_STORAGE_KEY = "portfolio_chat_history";
 
 export const PortfolioChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -45,7 +52,7 @@ export const PortfolioChatbot = () => {
         }
       }
     } catch (e) {
-      console.error('Failed to load chat history:', e);
+      console.error("Failed to load chat history:", e);
     }
   }, []);
 
@@ -55,24 +62,27 @@ export const PortfolioChatbot = () => {
       try {
         localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
       } catch (e) {
-        console.error('Failed to save chat history:', e);
+        console.error("Failed to save chat history:", e);
       }
     }
   }, [messages]);
 
   // Auto-scroll to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // Welcome message on first open (only if no saved history)
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([{
-        role: 'assistant',
-        content: "Hi! I'm here to answer questions about my skills, projects, and services. What would you like to know?",
-        id: 'welcome'
-      }]);
+      setMessages([
+        {
+          role: "assistant",
+          content:
+            "Hi! I'm here to answer questions about my skills, projects, and services. What would you like to know?",
+          id: "welcome",
+        },
+      ]);
     }
   }, [isOpen]);
 
@@ -87,25 +97,25 @@ export const PortfolioChatbot = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Escape to close chat
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         setIsOpen(false);
       }
       // Ctrl+/ to toggle chat
-      if (e.ctrlKey && e.key === '/') {
+      if (e.ctrlKey && e.key === "/") {
         e.preventDefault();
-        setIsOpen(prev => !prev);
+        setIsOpen((prev) => !prev);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
   // Announce new messages to screen readers
   useEffect(() => {
     if (messages.length > 0 && liveRegionRef.current) {
       const lastMessage = messages[messages.length - 1];
-      if (lastMessage.role === 'assistant' && lastMessage.content) {
+      if (lastMessage.role === "assistant" && lastMessage.content) {
         liveRegionRef.current.textContent = `Assistant: ${lastMessage.content}`;
       }
     }
@@ -116,11 +126,14 @@ export const PortfolioChatbot = () => {
     localStorage.removeItem(CHAT_STORAGE_KEY);
     // Show welcome message after clearing
     setTimeout(() => {
-      setMessages([{
-        role: 'assistant',
-        content: "Hi! I'm here to answer questions about my skills, projects, and services. What would you like to know?",
-        id: 'welcome'
-      }]);
+      setMessages([
+        {
+          role: "assistant",
+          content:
+            "Hi! I'm here to answer questions about my skills, projects, and services. What would you like to know?",
+          id: "welcome",
+        },
+      ]);
     }, 100);
   };
 
@@ -128,36 +141,38 @@ export const PortfolioChatbot = () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
-      role: 'user',
+      role: "user",
       content: input,
-      id: Date.now().toString()
+      id: Date.now().toString(),
     };
 
     if (attempt === 0) {
-      setMessages(prev => [...prev, userMessage]);
-      setInput('');
+      setMessages((prev) => [...prev, userMessage]);
+      setInput("");
       setIsLoading(true);
       setRetryCount(0);
     }
 
     try {
       const knowledgeBase = generateKnowledgeBase();
-      
+
       const response = await fetch(
         `https://efznnmazwqlkaxcsgoqy.supabase.co/functions/v1/portfolio-chat`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+            }`,
           },
           body: JSON.stringify({
-            messages: [...messages, userMessage].map(m => ({
+            messages: [...messages, userMessage].map((m) => ({
               role: m.role,
-              content: m.content
+              content: m.content,
             })),
-            knowledgeBase
-          })
+            knowledgeBase,
+          }),
         }
       );
 
@@ -165,67 +180,98 @@ export const PortfolioChatbot = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let assistantMessage = '';
+      // Handle the response as a JSON array of chunks
+      const responseData = await response.json();
+      console.log("Received response data:", responseData);
+      console.log("Response data type:", typeof responseData);
+      console.log("Is array:", Array.isArray(responseData));
 
+      let assistantMessage = "";
       const assistantMsgId = Date.now().toString();
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: '',
-        id: assistantMsgId
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "",
+          id: assistantMsgId,
+        },
+      ]);
 
-      if (reader) {
-        let buffer = '';
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          
-          buffer = lines.pop() || '';
-
-          for (const line of lines) {
-            if (!line.trim()) continue;
-
-            try {
-              const parsed = JSON.parse(line);
-              const content = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (content) {
-                assistantMessage += content;
-                setMessages(prev => prev.map(m => 
-                  m.id === assistantMsgId 
+      try {
+        // Process each chunk in the array
+        if (Array.isArray(responseData)) {
+          console.log(
+            "Processing array of chunks, length:",
+            responseData.length
+          );
+          for (const chunk of responseData) {
+            console.log("Processing chunk:", chunk);
+            const content = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (content) {
+              assistantMessage += content;
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantMsgId
                     ? { ...m, content: assistantMessage }
                     : m
-                ));
-              }
-            } catch (parseError) {
-              console.error('Error parsing chunk:', line, parseError);
+                )
+              );
+              // Add small delay for smoother streaming effect
+              await new Promise((resolve) => setTimeout(resolve, 50));
             }
           }
+        } else {
+          // Fallback for single response object
+          console.log(
+            "Response is not an array, falling back to single object parsing"
+          );
+          const content =
+            responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (content) {
+            assistantMessage = content;
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId
+                  ? { ...m, content: assistantMessage }
+                  : m
+              )
+            );
+          }
         }
+      } catch (processingError) {
+        console.error("Error processing response data:", processingError);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "I'm having trouble processing the response. Please try again.",
+            id: Date.now().toString(),
+          },
+        ]);
       }
 
       setRetryCount(0);
       setIsLoading(false);
-
     } catch (error) {
-      console.error('Chat error (attempt ' + (attempt + 1) + '):', error);
-      
+      console.error("Chat error (attempt " + (attempt + 1) + "):", error);
+
       if (attempt < MAX_RETRIES - 1) {
         const delay = 1000 * Math.pow(2, attempt);
         setRetryCount(attempt + 1);
-        
-        await new Promise(resolve => setTimeout(resolve, delay));
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
         return sendMessageWithRetry(attempt + 1);
       } else {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: "I'm having persistent connection issues. Please try again later or reach out directly via the contact form.",
-          id: Date.now().toString()
-        }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "I'm having persistent connection issues. Please try again later or reach out directly via the contact form.",
+            id: Date.now().toString(),
+          },
+        ]);
         setIsLoading(false);
         setRetryCount(0);
       }
@@ -235,7 +281,7 @@ export const PortfolioChatbot = () => {
   const sendMessage = () => sendMessageWithRetry();
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -289,7 +335,9 @@ export const PortfolioChatbot = () => {
         <div className="flex items-center justify-between p-4 border-b border-border bg-muted/50">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-accent" />
-            <h3 className="font-semibold text-foreground">Portfolio Assistant</h3>
+            <h3 className="font-semibold text-foreground">
+              Portfolio Assistant
+            </h3>
           </div>
           <div className="flex gap-1">
             <Button
@@ -314,31 +362,41 @@ export const PortfolioChatbot = () => {
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-4" role="log" aria-label="Chat messages">
+        <ScrollArea
+          className="flex-1 p-4"
+          role="log"
+          aria-label="Chat messages"
+        >
           <div className="space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={cn(
                   "flex",
-                  message.role === 'user' ? "justify-end" : "justify-start"
+                  message.role === "user" ? "justify-end" : "justify-start"
                 )}
               >
                 <div
                   role="article"
-                  aria-label={`${message.role === 'user' ? 'Your message' : 'Assistant message'}`}
+                  aria-label={`${
+                    message.role === "user"
+                      ? "Your message"
+                      : "Assistant message"
+                  }`}
                   className={cn(
                     "max-w-[80%] rounded-lg px-4 py-2",
-                    message.role === 'user'
+                    message.role === "user"
                       ? "bg-accent text-accent-foreground"
                       : "bg-muted text-muted-foreground"
                   )}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {message.content}
+                  </p>
                 </div>
               </div>
             ))}
-            
+
             {/* Suggested Questions */}
             {messages.length === 1 && (
               <div className="grid grid-cols-2 gap-2 mt-4">
@@ -355,7 +413,7 @@ export const PortfolioChatbot = () => {
                 ))}
               </div>
             )}
-            
+
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-muted rounded-lg px-4 py-2 flex items-center gap-2">
@@ -396,8 +454,11 @@ export const PortfolioChatbot = () => {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p id="chat-disclaimer" className="text-xs text-muted-foreground mt-2">
-            AI-powered · Press Escape to close · Ctrl+/ to toggle
+          <p
+            id="chat-disclaimer"
+            className="text-xs text-muted-foreground mt-2"
+          >
+            AI-powered · Press Esc to close · Ctrl+/ to toggle
           </p>
         </div>
       </Card>
