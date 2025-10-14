@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
 import { generateKnowledgeBase } from "@/lib/chatbot-knowledge";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +32,7 @@ const CHAT_STORAGE_KEY = "portfolio_chat_history";
 
 export const PortfolioChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -135,6 +135,11 @@ export const PortfolioChatbot = () => {
         },
       ]);
     }, 100);
+  };
+
+  const hideChatIcon = () => {
+    setIsHidden(true);
+    setIsOpen(false);
   };
 
   const sendMessageWithRetry = async (attempt: number = 0): Promise<void> => {
@@ -304,19 +309,36 @@ export const PortfolioChatbot = () => {
       />
 
       {/* Floating Chat Button */}
-      <Button
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50",
-          "bg-accent text-accent-foreground hover:bg-accent/90",
-          "hover:scale-110 transition-all duration-200",
-          isOpen && "scale-0"
-        )}
-        aria-label="Open portfolio chat assistant"
-        aria-expanded={isOpen}
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
+      {!isHidden && (
+        <div className="fixed bottom-24 right-4 md:bottom-6 z-50">
+          <Button
+            onClick={hideChatIcon}
+            className={cn(
+              "absolute -top-2 -right-2 h-6 w-6 rounded-full shadow-md z-10",
+              "bg-accent text-accent-foreground hover:bg-accent/90",
+              "opacity-100 transition-opacity duration-200",
+              isOpen && "scale-0"
+            )}
+            aria-label="Hide chat icon permanently"
+            size="sm"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+          <Button
+            onClick={() => setIsOpen(!isOpen)}
+            className={cn(
+              "h-14 w-14 rounded-full shadow-lg group",
+              "bg-accent text-accent-foreground hover:bg-accent/90",
+              "hover:scale-110 transition-all duration-200",
+              isOpen && "scale-0"
+            )}
+            aria-label="Open portfolio chat assistant"
+            aria-expanded={isOpen}
+          >
+            <MessageCircle className="h-6 w-6" />
+          </Button>
+        </div>
+      )}
 
       {/* Chat Window */}
       <Card
