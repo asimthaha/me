@@ -13,6 +13,22 @@ interface Message {
   content: string;
 }
 
+// Simple in-memory rate limiter
+// In production, consider using Redis or Supabase for distributed rate limiting
+const rateLimiter = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_REQUESTS = 10; // Max requests per window
+const RATE_LIMIT_WINDOW = 60000; // 1 minute in milliseconds
+
+// Cleanup old entries every 5 minutes to prevent memory leak
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of rateLimiter.entries()) {
+    if (now > value.resetTime) {
+      rateLimiter.delete(key);
+    }
+  }
+}, 300000);
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -20,6 +36,42 @@ serve(async (req) => {
   }
 
   try {
+    // Rate limiting check
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+    const now = Date.now();
+    const limit = rateLimiter.get(clientIp);
+
+    if (limit) {
+      if (now < limit.resetTime) {
+        if (limit.count >= RATE_LIMIT_REQUESTS) {
+          console.warn(`Rate limit exceeded for IP: ${clientIp}`);
+          return new Response(
+            JSON.stringify({ 
+              error: "Rate limit exceeded. Please try again in a minute.",
+              retryAfter: Math.ceil((limit.resetTime - now) / 1000)
+            }),
+            { 
+              status: 429, 
+              headers: { 
+                ...corsHeaders, 
+                'Content-Type': 'application/json',
+                'Retry-After': String(Math.ceil((limit.resetTime - now) / 1000))
+              } 
+            }
+          );
+        }
+        limit.count++;
+      } else {
+        // Reset window
+        rateLimiter.set(clientIp, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+      }
+    } else {
+      // First request from this IP
+      rateLimiter.set(clientIp, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    }
+
     const { messages, knowledgeBase } = await req.json();
 
     if (!GOOGLE_API_KEY) {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   MessageCircle,
   X,
@@ -123,7 +123,10 @@ export const PortfolioChatbot = () => {
     }
   }, [messages]);
 
-  const clearChatHistory = () => {
+  // Memoize knowledge base generation (only regenerate if data changes)
+  const knowledgeBase = useMemo(() => generateKnowledgeBase(), []);
+
+  const clearChatHistory = useCallback(() => {
     setMessages([]);
     localStorage.removeItem(CHAT_STORAGE_KEY);
     // Show welcome message after clearing
@@ -137,7 +140,7 @@ export const PortfolioChatbot = () => {
         },
       ]);
     }, 100);
-  };
+  }, []);
 
   const hideChatIcon = () => {
     setIsHidden(true);
@@ -161,8 +164,6 @@ export const PortfolioChatbot = () => {
     }
 
     try {
-      const knowledgeBase = generateKnowledgeBase();
-
       const response = await fetch(
         `https://efznnmazwqlkaxcsgoqy.supabase.co/functions/v1/portfolio-chat`,
         {
@@ -184,6 +185,20 @@ export const PortfolioChatbot = () => {
       );
 
       if (!response.ok) {
+        if (response.status === 429) {
+          const errorData = await response.json();
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content: `⚠️ ${errorData.error || "Rate limit exceeded. Please wait a minute before trying again."}`,
+              id: Date.now().toString(),
+            },
+          ]);
+          setIsLoading(false);
+          setRetryCount(0);
+          return;
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -204,6 +219,25 @@ export const PortfolioChatbot = () => {
         },
       ]);
 
+      // Token batching for smoother rendering
+      let tokenBuffer = "";
+      let lastUpdateTime = Date.now();
+      const BATCH_INTERVAL = 100; // Update UI every 100ms instead of per token
+
+      const flushBuffer = () => {
+        if (tokenBuffer) {
+          assistantMessage += tokenBuffer;
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMsgId
+                ? { ...m, content: assistantMessage }
+                : m
+            )
+          );
+          tokenBuffer = "";
+        }
+      };
+
       try {
         // Process each chunk in the array
         if (Array.isArray(responseData)) {
@@ -215,18 +249,18 @@ export const PortfolioChatbot = () => {
             console.log("Processing chunk:", chunk);
             const content = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
             if (content) {
-              assistantMessage += content;
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantMsgId
-                    ? { ...m, content: assistantMessage }
-                    : m
-                )
-              );
-              // Add small delay for smoother streaming effect
-              await new Promise((resolve) => setTimeout(resolve, 50));
+              tokenBuffer += content;
+              
+              // Batch updates to reduce re-renders
+              const now = Date.now();
+              if (now - lastUpdateTime >= BATCH_INTERVAL) {
+                flushBuffer();
+                lastUpdateTime = now;
+              }
             }
           }
+          // Flush any remaining tokens
+          flushBuffer();
         } else {
           // Fallback for single response object
           console.log(
@@ -294,10 +328,10 @@ export const PortfolioChatbot = () => {
     }
   };
 
-  const handleSuggestionClick = (question: string) => {
+  const handleSuggestionClick = useCallback((question: string) => {
     setInput(question);
     setTimeout(() => sendMessage(), 100);
-  };
+  }, []);
 
   return (
     <>

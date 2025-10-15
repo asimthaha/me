@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -5,8 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { SnakeLoader } from "@/components/snake-loader";
 import { PremiumCursor } from "@/components/premium-cursor";
-import { PortfolioChatbot } from "@/components/PortfolioChatbot";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useLoading } from "@/hooks/use-loading";
+
+// Lazy load chatbot for better initial page load performance
+const PortfolioChatbot = lazy(() => import("@/components/PortfolioChatbot").then(module => ({ default: module.PortfolioChatbot })));
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
@@ -27,7 +31,11 @@ const App = () => {
       <ThemeProvider>
         <TooltipProvider>
           <PremiumCursor />
-          <PortfolioChatbot />
+          <ErrorBoundary>
+            <Suspense fallback={null}>
+              <PortfolioChatbot />
+            </Suspense>
+          </ErrorBoundary>
           <Sonner />
           <BrowserRouter>
             <Routes>
