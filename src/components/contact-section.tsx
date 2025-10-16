@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import emailjs from "@emailjs/browser";
 import ReCAPTCHA from "react-google-recaptcha";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -75,8 +76,8 @@ const ContactSection: React.FC = () => {
   };
 
   /**
-   * Submit form via EmailJS
-   * Validates reCAPTCHA and sends email with proper error handling
+   * Submit form: Save to Supabase, then send emails via EmailJS
+   * Validates reCAPTCHA and handles errors gracefully
    */
   const onSubmit = async (data: ContactFormData) => {
     if (!captchaValue) {
@@ -89,37 +90,106 @@ const ContactSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare EmailJS template parameters
-      const templateParams = {
+      // Step 1: Save submission to Supabase database
+      const { data: submission, error: dbError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: data.name.trim(),
+          email: data.email.trim().toLowerCase(),
+          message: data.description?.trim() || null,
+          recaptcha_token: captchaValue,
+          ip_address: null, // Browser can't access IP directly
+          user_agent: navigator.userAgent,
+        })
+        .select()
+        .single();
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to save your message. Please try again.');
+      }
+
+      console.log('✅ Submission saved to database:', submission.id);
+
+      // Step 2: Prepare EmailJS template parameters
+      const submittedAt = new Date(submission.created_at).toLocaleString('en-US', {
+        dateStyle: 'full',
+        timeStyle: 'short',
+      });
+
+      const adminTemplateParams = {
         from_name: data.name,
         from_email: data.email,
-        message: data.description || "No additional message provided.",
+        message: data.description || "No message provided.",
         to_name: "Website Admin",
+        submission_id: submission.id,
+        submitted_at: submittedAt,
         "g-recaptcha-response": captchaValue,
       };
 
-      // Send email via EmailJS
-      const result = await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        templateParams,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
+      const userTemplateParams = {
+        to_name: data.name,
+        to_email: data.email,
+        message: data.description || "",
+        "g-recaptcha-response": captchaValue,
+      };
 
-      if (result.status === 200) {
-        setIsSubmitted(true);
-        form.reset();
-        setCaptchaValue(null);
-        recaptchaRef.current?.reset();
+      // Step 3: Send both emails in parallel
+      const [adminEmailResult, userEmailResult] = await Promise.allSettled([
+        // Admin notification email
+        emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+          adminTemplateParams,
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        ),
+        // User thank-you email
+        emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_USER_ID,
+          userTemplateParams,
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        ),
+      ]);
 
+      // Log email results
+      if (adminEmailResult.status === 'fulfilled') {
+        console.log('✅ Admin notification sent');
+      } else {
+        console.error('❌ Admin email failed:', adminEmailResult.reason);
+      }
+
+      if (userEmailResult.status === 'fulfilled') {
+        console.log('✅ User thank-you sent');
+      } else {
+        console.error('❌ User email failed:', userEmailResult.reason);
+      }
+
+      // Show success even if emails partially failed (data is saved)
+      const bothEmailsSuccess = 
+        adminEmailResult.status === 'fulfilled' && 
+        userEmailResult.status === 'fulfilled';
+
+      setIsSubmitted(true);
+      form.reset();
+      setCaptchaValue(null);
+      recaptchaRef.current?.reset();
+
+      if (bothEmailsSuccess) {
         toast.success("Message Sent Successfully!", {
           description: "Thank you for your message. I'll get back to you soon.",
         });
+      } else {
+        toast.success("Message Received!", {
+          description: "Your message was saved. Email notifications may be delayed.",
+        });
       }
-    } catch (error) {
+
+    } catch (error: any) {
+      console.error('Contact form error:', error);
+      
       toast.error("Failed to Send Message", {
-        description:
-          "There was an error sending your message. Please try again.",
+        description: error.message || "There was an error. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
