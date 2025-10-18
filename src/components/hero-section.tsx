@@ -79,7 +79,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth"
+                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent transition-smooth"
                 aria-label="Visit GitHub profile"
               >
                 <Github className="h-5 w-5" />
@@ -88,7 +88,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth"
+                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent transition-smooth"
                 aria-label="Visit LinkedIn profile"
               >
                 <Linkedin className="h-5 w-5" />
@@ -97,7 +97,7 @@ export const HeroSection = React.memo(function HeroSection({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent/10 transition-smooth"
+                className="h-12 w-12 rounded-full border border-muted-foreground/20 hover:border-accent hover:bg-accent transition-smooth"
                 aria-label="Visit Stack Overflow profile"
               >
                 <svg
