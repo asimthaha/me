@@ -94,7 +94,7 @@ const Contacts = () => {
     try {
       // Step 1: Save submission to Supabase database
       const { data: submission, error: dbError } = await supabase
-        .from('contact_submissions')
+        .from("contact_submissions")
         .insert({
           name: data.name.trim(),
           email: data.email.trim().toLowerCase(),
@@ -107,17 +107,20 @@ const Contacts = () => {
         .single();
 
       if (dbError) {
-        console.error('Database error:', dbError);
-        throw new Error('Failed to save your message. Please try again.');
+        console.error("Database error:", dbError);
+        throw new Error("Failed to save your message. Please try again.");
       }
 
-      console.log('✅ Submission saved to database:', submission.id);
+      console.log("✅ Submission saved to database:", submission.id);
 
       // Step 2: Prepare EmailJS template parameters
-      const submittedAt = new Date(submission.created_at).toLocaleString('en-US', {
-        dateStyle: 'full',
-        timeStyle: 'short',
-      });
+      const submittedAt = new Date(submission.created_at).toLocaleString(
+        "en-US",
+        {
+          dateStyle: "full",
+          timeStyle: "short",
+        }
+      );
 
       const adminTemplateParams = {
         from_name: data.name,
@@ -155,22 +158,22 @@ const Contacts = () => {
       ]);
 
       // Log email results
-      if (adminEmailResult.status === 'fulfilled') {
-        console.log('✅ Admin notification sent');
+      if (adminEmailResult.status === "fulfilled") {
+        console.log("✅ Admin notification sent");
       } else {
-        console.error('❌ Admin email failed:', adminEmailResult.reason);
+        console.error("❌ Admin email failed:", adminEmailResult.reason);
       }
 
-      if (userEmailResult.status === 'fulfilled') {
-        console.log('✅ User thank-you sent');
+      if (userEmailResult.status === "fulfilled") {
+        console.log("✅ User thank-you sent");
       } else {
-        console.error('❌ User email failed:', userEmailResult.reason);
+        console.error("❌ User email failed:", userEmailResult.reason);
       }
 
       // Show success even if emails partially failed (data is saved)
-      const bothEmailsSuccess = 
-        adminEmailResult.status === 'fulfilled' && 
-        userEmailResult.status === 'fulfilled';
+      const bothEmailsSuccess =
+        adminEmailResult.status === "fulfilled" &&
+        userEmailResult.status === "fulfilled";
 
       setIsSubmitted(true);
       form.reset();
@@ -183,15 +186,19 @@ const Contacts = () => {
         });
       } else {
         toast.success("Message Received!", {
-          description: "Your message was saved. Email notifications may be delayed.",
+          description:
+            "Your message was saved. Email notifications may be delayed.",
         });
       }
+    } catch (error: unknown) {
+      console.error("Contact form error:", error);
 
-    } catch (error: any) {
-      console.error('Contact form error:', error);
-      
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "There was an error. Please try again.";
       toast.error("Failed to Send Message", {
-        description: error.message || "There was an error. Please try again.",
+        description: errorMessage,
       });
     } finally {
       setIsSubmitting(false);

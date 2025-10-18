@@ -127,7 +127,7 @@ export const themes: ThemeType[] = ["light", "dark", "netflix", "ey", "github"];
 export interface NavItem {
   id: string;
   label: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   type: string;
   href?: string;
 }
@@ -257,7 +257,7 @@ export interface Service {
   id: number;
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   features: string[];
   duration: string;
   startingPrice: string;

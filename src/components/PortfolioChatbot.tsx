@@ -94,7 +94,7 @@ export const PortfolioChatbot = () => {
         },
       ]);
     }
-  }, [isOpen]);
+  }, [isOpen, messages.length]);
 
   // Focus management - focus input when chat opens
   useEffect(() => {
@@ -153,53 +153,82 @@ export const PortfolioChatbot = () => {
   }, []);
 
   // Extract contact information from conversation
-  const extractContactInfo = useCallback((text: string, currentData: ContactFormData): ContactFormData => {
-    const newData = { ...currentData };
-    
-    // Detect contact intent keywords
-    const contactKeywords = ['contact', 'get in touch', 'reach out', 'send message', 'email', 'availability'];
-    const hasContactIntent = contactKeywords.some(keyword => text.toLowerCase().includes(keyword));
-    
-    if (hasContactIntent && !isInContactFlow) {
-      setIsInContactFlow(true);
-    }
+  const extractContactInfo = useCallback(
+    (text: string, currentData: ContactFormData): ContactFormData => {
+      const newData = { ...currentData };
 
-    // Extract email (simple regex)
-    const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
-    if (emailMatch && !newData.email) {
-      newData.email = emailMatch[0];
-    }
+      // Detect contact intent keywords
+      const contactKeywords = [
+        "contact",
+        "get in touch",
+        "reach out",
+        "send message",
+        "email",
+        "availability",
+      ];
+      const hasContactIntent = contactKeywords.some((keyword) =>
+        text.toLowerCase().includes(keyword)
+      );
 
-    // Extract name - look for "my name is", "I'm", "I am"
-    const namePatterns = [
-      /(?:my name is|i'm|i am|this is)\s+([a-zA-Z\s'-]{2,50})/i,
-      /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)$/m // Capitalized names
-    ];
-    
-    for (const pattern of namePatterns) {
-      const nameMatch = text.match(pattern);
-      if (nameMatch && !newData.name) {
-        const extractedName = nameMatch[1].trim();
-        // Validate it's not just a common phrase
-        if (!['yes', 'no', 'sure', 'okay', 'thanks'].includes(extractedName.toLowerCase())) {
-          newData.name = extractedName;
+      if (hasContactIntent && !isInContactFlow) {
+        setIsInContactFlow(true);
+      }
+
+      // Extract email (simple regex)
+      const emailMatch = text.match(
+        /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/
+      );
+      if (emailMatch && !newData.email) {
+        newData.email = emailMatch[0];
+      }
+
+      // Extract name - look for "my name is", "I'm", "I am"
+      const namePatterns = [
+        /(?:my name is|i'm|i am|this is)\s+([a-zA-Z\s'-]{2,50})/i,
+        /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)$/m, // Capitalized names
+      ];
+
+      for (const pattern of namePatterns) {
+        const nameMatch = text.match(pattern);
+        if (nameMatch && !newData.name) {
+          const extractedName = nameMatch[1].trim();
+          // Validate it's not just a common phrase
+          if (
+            !["yes", "no", "sure", "okay", "thanks"].includes(
+              extractedName.toLowerCase()
+            )
+          ) {
+            newData.name = extractedName;
+          }
+          break;
         }
-        break;
       }
-    }
 
-    // Extract message - if user is providing details after being asked
-    if (isInContactFlow && text.length > 20 && !text.includes('@') && !newData.message) {
-      // This might be their message
-      const lowerText = text.toLowerCase();
-      const isNotMetaText = !['my name', 'i am', 'i\'m', 'contact', 'email'].some(phrase => lowerText.includes(phrase));
-      if (isNotMetaText) {
-        newData.message = text;
+      // Extract message - if user is providing details after being asked
+      if (
+        isInContactFlow &&
+        text.length > 20 &&
+        !text.includes("@") &&
+        !newData.message
+      ) {
+        // This might be their message
+        const lowerText = text.toLowerCase();
+        const isNotMetaText = ![
+          "my name",
+          "i am",
+          "i'm",
+          "contact",
+          "email",
+        ].some((phrase) => lowerText.includes(phrase));
+        if (isNotMetaText) {
+          newData.message = text;
+        }
       }
-    }
 
-    return newData;
-  }, [isInContactFlow]);
+      return newData;
+    },
+    [isInContactFlow]
+  );
 
   const hideChatIcon = () => {
     setIsHidden(true);
@@ -219,7 +248,7 @@ export const PortfolioChatbot = () => {
       // Extract contact information from user input
       const updatedContactData = extractContactInfo(input, contactFormData);
       setContactFormData(updatedContactData);
-      
+
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
       setIsLoading(true);
@@ -227,13 +256,14 @@ export const PortfolioChatbot = () => {
     }
 
     // Check if we should submit the contact form
-    const shouldSubmitContact = isInContactFlow && 
-      contactFormData.name && 
-      contactFormData.email && 
+    const shouldSubmitContact =
+      isInContactFlow &&
+      contactFormData.name &&
+      contactFormData.email &&
       contactFormData.message &&
-      (input.toLowerCase().includes('yes') || 
-       input.toLowerCase().includes('confirm') || 
-       input.toLowerCase().includes('submit'));
+      (input.toLowerCase().includes("yes") ||
+        input.toLowerCase().includes("confirm") ||
+        input.toLowerCase().includes("submit"));
 
     try {
       const response = await fetch(
@@ -264,7 +294,10 @@ export const PortfolioChatbot = () => {
             ...prev,
             {
               role: "assistant",
-              content: `⚠️ ${errorData.error || "Rate limit exceeded. Please wait a minute before trying again."}`,
+              content: `⚠️ ${
+                errorData.error ||
+                "Rate limit exceeded. Please wait a minute before trying again."
+              }`,
               id: Date.now().toString(),
             },
           ]);
@@ -279,7 +312,9 @@ export const PortfolioChatbot = () => {
             ...prev,
             {
               role: "assistant",
-              content: `❌ ${errorData.message || "Please check your input and try again."}`,
+              content: `❌ ${
+                errorData.message || "Please check your input and try again."
+              }`,
               id: Date.now().toString(),
             },
           ]);
@@ -294,7 +329,7 @@ export const PortfolioChatbot = () => {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const jsonResponse = await response.json();
-        
+
         if (jsonResponse.success) {
           // Contact form submitted successfully
           setMessages((prev) => [
@@ -311,7 +346,7 @@ export const PortfolioChatbot = () => {
           setRetryCount(0);
           return;
         }
-        
+
         if (jsonResponse.error) {
           // Handle error response
           setMessages((prev) => [
@@ -355,9 +390,7 @@ export const PortfolioChatbot = () => {
           assistantMessage += tokenBuffer;
           setMessages((prev) =>
             prev.map((m) =>
-              m.id === assistantMsgId
-                ? { ...m, content: assistantMessage }
-                : m
+              m.id === assistantMsgId ? { ...m, content: assistantMessage } : m
             )
           );
           tokenBuffer = "";
@@ -376,7 +409,7 @@ export const PortfolioChatbot = () => {
             const content = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
             if (content) {
               tokenBuffer += content;
-              
+
               // Batch updates to reduce re-renders
               const now = Date.now();
               if (now - lastUpdateTime >= BATCH_INTERVAL) {
@@ -556,24 +589,29 @@ export const PortfolioChatbot = () => {
             {/* Contact Flow Indicator */}
             {isInContactFlow && (
               <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 text-sm">
-                <p className="font-semibold text-accent mb-2">📝 Contact Form Progress:</p>
+                <p className="font-semibold text-accent mb-2">
+                  📝 Contact Form Progress:
+                </p>
                 <div className="space-y-1 text-xs">
                   <div className="flex items-center gap-2">
-                    <span>{contactFormData.name ? '✅' : '⏳'}</span>
-                    <span>Name: {contactFormData.name || 'Pending...'}</span>
+                    <span>{contactFormData.name ? "✅" : "⏳"}</span>
+                    <span>Name: {contactFormData.name || "Pending..."}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span>{contactFormData.email ? '✅' : '⏳'}</span>
-                    <span>Email: {contactFormData.email || 'Pending...'}</span>
+                    <span>{contactFormData.email ? "✅" : "⏳"}</span>
+                    <span>Email: {contactFormData.email || "Pending..."}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span>{contactFormData.message ? '✅' : '⏳'}</span>
-                    <span>Message: {contactFormData.message ? 'Received' : 'Pending...'}</span>
+                    <span>{contactFormData.message ? "✅" : "⏳"}</span>
+                    <span>
+                      Message:{" "}
+                      {contactFormData.message ? "Received" : "Pending..."}
+                    </span>
                   </div>
                 </div>
               </div>
             )}
-            
+
             {messages.map((message) => (
               <div
                 key={message.id}

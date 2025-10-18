@@ -93,11 +93,12 @@ export const useSnapNavigation = () => {
           event.preventDefault();
           scrollToSection(0);
           break;
-        case 'End':
-          event.preventDefault();
-          const sections = document.querySelectorAll('[data-snap-section]');
-          scrollToSection(sections.length - 1);
-          break;
+        case 'End': {
+           event.preventDefault();
+           const sections = document.querySelectorAll('[data-snap-section]');
+           scrollToSection(sections.length - 1);
+           break;
+        }
       }
     };
 
