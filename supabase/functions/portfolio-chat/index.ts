@@ -1,7 +1,14 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const GOOGLE_API_KEY = Deno.env.get('GOOGLE_API_KEY');
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const EMAILJS_SERVICE_ID = Deno.env.get('EMAILJS_SERVICE_ID');
+const EMAILJS_TEMPLATE_ID = Deno.env.get('EMAILJS_TEMPLATE_ID');
+const EMAILJS_TEMPLATE_USER_ID = Deno.env.get('EMAILJS_TEMPLATE_USER_ID');
+const EMAILJS_PUBLIC_KEY = Deno.env.get('EMAILJS_PUBLIC_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,6 +18,160 @@ const corsHeaders = {
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+}
+
+interface ContactFormData {
+  name?: string;
+  email?: string;
+  message?: string;
+}
+
+// Validation functions
+function validateName(name: string): { valid: boolean; error?: string } {
+  const trimmed = name.trim();
+  if (!trimmed || trimmed.length < 2) {
+    return { valid: false, error: "Name must be at least 2 characters long" };
+  }
+  if (trimmed.length > 100) {
+    return { valid: false, error: "Name must be less than 100 characters" };
+  }
+  if (!/^[a-zA-Z\s'-]+$/.test(trimmed)) {
+    return { valid: false, error: "Name can only contain letters, spaces, hyphens, and apostrophes" };
+  }
+  return { valid: true };
+}
+
+function validateEmail(email: string): { valid: boolean; error?: string } {
+  const trimmed = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (!trimmed) {
+    return { valid: false, error: "Email address is required" };
+  }
+  if (!emailRegex.test(trimmed)) {
+    return { valid: false, error: "Please provide a valid email address" };
+  }
+  if (trimmed.length > 255) {
+    return { valid: false, error: "Email must be less than 255 characters" };
+  }
+  return { valid: true };
+}
+
+function validateMessage(message: string): { valid: boolean; error?: string } {
+  const trimmed = message.trim();
+  if (!trimmed || trimmed.length < 10) {
+    return { valid: false, error: "Message must be at least 10 characters long" };
+  }
+  if (trimmed.length > 1000) {
+    return { valid: false, error: "Message must be less than 1000 characters" };
+  }
+  // Check for spam patterns
+  const spamPatterns = ['http://', 'https://', 'www.', 'click here', 'buy now', 'casino', 'viagra'];
+  const lowerMessage = trimmed.toLowerCase();
+  if (spamPatterns.some(pattern => lowerMessage.includes(pattern))) {
+    return { valid: false, error: "Message contains prohibited content" };
+  }
+  return { valid: true };
+}
+
+function sanitizeInput(input: string): string {
+  return input.trim().replace(/[<>]/g, '');
+}
+
+// Save contact submission to Supabase
+async function saveContactSubmission(data: ContactFormData, clientIp: string) {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  
+  const { data: submission, error } = await supabase
+    .from('contact_submissions')
+    .insert({
+      name: sanitizeInput(data.name!),
+      email: sanitizeInput(data.email!),
+      message: sanitizeInput(data.message!),
+      ip_address: clientIp,
+      user_agent: 'Chatbot',
+      status: 'new'
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Supabase error:', error);
+    throw new Error('Failed to save contact submission');
+  }
+
+  return submission;
+}
+
+// Send emails via EmailJS
+async function sendContactEmails(data: ContactFormData, submissionId: string) {
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_PUBLIC_KEY) {
+    console.warn('EmailJS not configured, skipping email send');
+    return;
+  }
+
+  const emailJSUrl = 'https://api.emailjs.com/api/v1.0/email/send';
+
+  // Send admin notification
+  const adminEmailPromise = fetch(emailJSUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: EMAILJS_TEMPLATE_ID,
+      user_id: EMAILJS_PUBLIC_KEY,
+      template_params: {
+        from_name: sanitizeInput(data.name!),
+        from_email: sanitizeInput(data.email!),
+        message: sanitizeInput(data.message!),
+        submission_id: submissionId,
+        submitted_at: new Date().toISOString()
+      }
+    })
+  });
+
+  // Send user confirmation
+  const userEmailPromise = fetch(emailJSUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: EMAILJS_TEMPLATE_USER_ID,
+      user_id: EMAILJS_PUBLIC_KEY,
+      template_params: {
+        to_name: sanitizeInput(data.name!),
+        to_email: sanitizeInput(data.email!),
+        message: sanitizeInput(data.message!)
+      }
+    })
+  });
+
+  try {
+    await Promise.all([adminEmailPromise, userEmailPromise]);
+    console.log('Emails sent successfully');
+  } catch (error) {
+    console.error('EmailJS error:', error);
+    // Don't throw - submission was saved, email is secondary
+  }
+}
+
+// Rate limiting for contact submissions
+const contactRateLimiter = new Map<string, { count: number; resetTime: number }>();
+const CONTACT_RATE_LIMIT = 3; // Max 3 contact submissions per hour
+const CONTACT_RATE_WINDOW = 3600000; // 1 hour
+
+function checkContactRateLimit(clientIp: string): boolean {
+  const now = Date.now();
+  const limit = contactRateLimiter.get(clientIp);
+
+  if (limit) {
+    if (now < limit.resetTime) {
+      return limit.count < CONTACT_RATE_LIMIT;
+    } else {
+      contactRateLimiter.delete(clientIp);
+    }
+  }
+  return true;
 }
 
 // Simple in-memory rate limiter
@@ -72,13 +233,91 @@ serve(async (req) => {
       rateLimiter.set(clientIp, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     }
 
-    const { messages, knowledgeBase } = await req.json();
+    const { messages, knowledgeBase, contactFormData } = await req.json();
 
     if (!GOOGLE_API_KEY) {
       throw new Error('GOOGLE_API_KEY is not configured');
     }
 
     console.log('Received chat request with', messages.length, 'messages');
+
+    // Handle contact form submission if all data is collected
+    if (contactFormData && contactFormData.name && contactFormData.email && contactFormData.message) {
+      // Validate all fields
+      const nameValidation = validateName(contactFormData.name);
+      const emailValidation = validateEmail(contactFormData.email);
+      const messageValidation = validateMessage(contactFormData.message);
+
+      if (!nameValidation.valid || !emailValidation.valid || !messageValidation.valid) {
+        const errors = [
+          !nameValidation.valid && nameValidation.error,
+          !emailValidation.valid && emailValidation.error,
+          !messageValidation.valid && messageValidation.error
+        ].filter(Boolean);
+
+        return new Response(
+          JSON.stringify({ 
+            error: 'Validation failed',
+            validationErrors: errors,
+            message: `Please correct the following: ${errors.join(', ')}`
+          }),
+          { 
+            status: 400, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
+      // Check rate limit
+      if (!checkContactRateLimit(clientIp)) {
+        return new Response(
+          JSON.stringify({ 
+            error: "You've reached the maximum number of contact submissions. Please try again later."
+          }),
+          { 
+            status: 429, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
+      // Save to database and send emails
+      try {
+        const submission = await saveContactSubmission(contactFormData, clientIp);
+        await sendContactEmails(contactFormData, submission.id);
+
+        // Update rate limiter
+        const now = Date.now();
+        const limit = contactRateLimiter.get(clientIp);
+        if (limit && now < limit.resetTime) {
+          limit.count++;
+        } else {
+          contactRateLimiter.set(clientIp, { count: 1, resetTime: now + CONTACT_RATE_WINDOW });
+        }
+
+        return new Response(
+          JSON.stringify({ 
+            success: true,
+            message: "Thank you! Your message has been sent successfully. I'll get back to you soon!"
+          }),
+          { 
+            status: 200, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      } catch (error) {
+        console.error('Contact submission error:', error);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Failed to submit contact form. Please try again.'
+          }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+    }
 
     // Create system prompt with knowledge base
     const systemPrompt = `You are an AI assistant for ${knowledgeBase.personal.name}'s professional portfolio website.
@@ -100,12 +339,28 @@ ${JSON.stringify(knowledgeBase.projects, null, 2)}
 SERVICES:
 ${JSON.stringify(knowledgeBase.services, null, 2)}
 
+CONTACT FORM CAPABILITY:
+You can help users send contact messages directly through this chat. When a user wants to get in touch, contact, send a message, or ask about availability:
+
+1. Warmly acknowledge their interest
+2. Collect their name (2-100 characters, letters only)
+3. Collect their email (valid email format)
+4. Collect their message (10-1000 characters, no URLs or spam)
+
+After collecting all information:
+- Confirm the details with the user
+- Ask them to confirm submission
+- Inform them you'll submit their message
+
+Use natural, conversational language. Validate each field as you collect it and provide friendly error messages if needed.
+
 GUIDELINES:
 - Be professional yet personable
 - Provide accurate information only from the knowledge base above
 - Keep responses concise (2-4 sentences)
 - If you don't know something, suggest contacting directly
-- Direct users to relevant portfolio sections when appropriate`;
+- Direct users to relevant portfolio sections when appropriate
+- Help users send contact messages through the chat interface`;
 
     // Format messages for Gemini API
     const formattedMessages = [

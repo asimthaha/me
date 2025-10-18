@@ -21,6 +21,12 @@ interface Message {
   id: string;
 }
 
+interface ContactFormData {
+  name?: string;
+  email?: string;
+  message?: string;
+}
+
 const SUGGESTED_QUESTIONS = [
   "What technologies do you specialize in?",
   "Tell me about your recent projects",
@@ -38,6 +44,8 @@ export const PortfolioChatbot = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [contactFormData, setContactFormData] = useState<ContactFormData>({});
+  const [isInContactFlow, setIsInContactFlow] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const liveRegionRef = useRef<HTMLDivElement>(null);
@@ -128,6 +136,8 @@ export const PortfolioChatbot = () => {
 
   const clearChatHistory = useCallback(() => {
     setMessages([]);
+    setContactFormData({});
+    setIsInContactFlow(false);
     localStorage.removeItem(CHAT_STORAGE_KEY);
     // Show welcome message after clearing
     setTimeout(() => {
@@ -141,6 +151,55 @@ export const PortfolioChatbot = () => {
       ]);
     }, 100);
   }, []);
+
+  // Extract contact information from conversation
+  const extractContactInfo = useCallback((text: string, currentData: ContactFormData): ContactFormData => {
+    const newData = { ...currentData };
+    
+    // Detect contact intent keywords
+    const contactKeywords = ['contact', 'get in touch', 'reach out', 'send message', 'email', 'availability'];
+    const hasContactIntent = contactKeywords.some(keyword => text.toLowerCase().includes(keyword));
+    
+    if (hasContactIntent && !isInContactFlow) {
+      setIsInContactFlow(true);
+    }
+
+    // Extract email (simple regex)
+    const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+    if (emailMatch && !newData.email) {
+      newData.email = emailMatch[0];
+    }
+
+    // Extract name - look for "my name is", "I'm", "I am"
+    const namePatterns = [
+      /(?:my name is|i'm|i am|this is)\s+([a-zA-Z\s'-]{2,50})/i,
+      /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)$/m // Capitalized names
+    ];
+    
+    for (const pattern of namePatterns) {
+      const nameMatch = text.match(pattern);
+      if (nameMatch && !newData.name) {
+        const extractedName = nameMatch[1].trim();
+        // Validate it's not just a common phrase
+        if (!['yes', 'no', 'sure', 'okay', 'thanks'].includes(extractedName.toLowerCase())) {
+          newData.name = extractedName;
+        }
+        break;
+      }
+    }
+
+    // Extract message - if user is providing details after being asked
+    if (isInContactFlow && text.length > 20 && !text.includes('@') && !newData.message) {
+      // This might be their message
+      const lowerText = text.toLowerCase();
+      const isNotMetaText = !['my name', 'i am', 'i\'m', 'contact', 'email'].some(phrase => lowerText.includes(phrase));
+      if (isNotMetaText) {
+        newData.message = text;
+      }
+    }
+
+    return newData;
+  }, [isInContactFlow]);
 
   const hideChatIcon = () => {
     setIsHidden(true);
@@ -157,11 +216,24 @@ export const PortfolioChatbot = () => {
     };
 
     if (attempt === 0) {
+      // Extract contact information from user input
+      const updatedContactData = extractContactInfo(input, contactFormData);
+      setContactFormData(updatedContactData);
+      
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
       setIsLoading(true);
       setRetryCount(0);
     }
+
+    // Check if we should submit the contact form
+    const shouldSubmitContact = isInContactFlow && 
+      contactFormData.name && 
+      contactFormData.email && 
+      contactFormData.message &&
+      (input.toLowerCase().includes('yes') || 
+       input.toLowerCase().includes('confirm') || 
+       input.toLowerCase().includes('submit'));
 
     try {
       const response = await fetch(
@@ -180,6 +252,7 @@ export const PortfolioChatbot = () => {
               content: m.content,
             })),
             knowledgeBase,
+            contactFormData: shouldSubmitContact ? contactFormData : undefined,
           }),
         }
       );
@@ -199,7 +272,60 @@ export const PortfolioChatbot = () => {
           setRetryCount(0);
           return;
         }
+        if (response.status === 400) {
+          // Validation error
+          const errorData = await response.json();
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content: `❌ ${errorData.message || "Please check your input and try again."}`,
+              id: Date.now().toString(),
+            },
+          ]);
+          setIsLoading(false);
+          setRetryCount(0);
+          return;
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Check if this is a contact form success response
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const jsonResponse = await response.json();
+        
+        if (jsonResponse.success) {
+          // Contact form submitted successfully
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content: jsonResponse.message,
+              id: Date.now().toString(),
+            },
+          ]);
+          setContactFormData({});
+          setIsInContactFlow(false);
+          setIsLoading(false);
+          setRetryCount(0);
+          return;
+        }
+        
+        if (jsonResponse.error) {
+          // Handle error response
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content: `❌ ${jsonResponse.error}`,
+              id: Date.now().toString(),
+            },
+          ]);
+          setIsLoading(false);
+          setRetryCount(0);
+          return;
+        }
       }
 
       // Handle the response as a JSON array of chunks
@@ -427,6 +553,27 @@ export const PortfolioChatbot = () => {
           aria-label="Chat messages"
         >
           <div className="space-y-4">
+            {/* Contact Flow Indicator */}
+            {isInContactFlow && (
+              <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 text-sm">
+                <p className="font-semibold text-accent mb-2">📝 Contact Form Progress:</p>
+                <div className="space-y-1 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span>{contactFormData.name ? '✅' : '⏳'}</span>
+                    <span>Name: {contactFormData.name || 'Pending...'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>{contactFormData.email ? '✅' : '⏳'}</span>
+                    <span>Email: {contactFormData.email || 'Pending...'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>{contactFormData.message ? '✅' : '⏳'}</span>
+                    <span>Message: {contactFormData.message ? 'Received' : 'Pending...'}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {messages.map((message) => (
               <div
                 key={message.id}
