@@ -65,17 +65,49 @@ function validateMessage(message: string): { valid: boolean; error?: string } {
   if (trimmed.length > 1000) {
     return { valid: false, error: "Message must be less than 1000 characters" };
   }
-  // Check for spam patterns
-  const spamPatterns = ['http://', 'https://', 'www.', 'click here', 'buy now', 'casino', 'viagra'];
+  // Enhanced spam detection
+  const spamPatterns = [
+    'http://', 'https://', 'www.', 'click here', 'buy now', 'casino', 
+    'viagra', 'lottery', 'winner', 'congratulations', 'claim now',
+    'limited time', 'act now', 'free money', 'make money fast'
+  ];
   const lowerMessage = trimmed.toLowerCase();
   if (spamPatterns.some(pattern => lowerMessage.includes(pattern))) {
     return { valid: false, error: "Message contains prohibited content" };
   }
+  
+  // Check for excessive special characters (potential spam)
+  const specialCharsCount = (trimmed.match(/[!@#$%^&*()]/g) || []).length;
+  if (specialCharsCount > 10) {
+    return { valid: false, error: "Message contains too many special characters" };
+  }
+  
   return { valid: true };
 }
 
 function sanitizeInput(input: string): string {
   return input.trim().replace(/[<>]/g, '');
+}
+
+// Check for duplicate submissions
+async function checkDuplicateSubmission(email: string, message: string): Promise<boolean> {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  
+  const { data, error } = await supabase
+    .from('contact_submissions')
+    .select('id')
+    .eq('email', email)
+    .eq('message', message)
+    .gte('created_at', fiveMinutesAgo)
+    .limit(1);
+
+  if (error) {
+    console.error('Error checking duplicates:', error);
+    return false; // Allow submission on error
+  }
+
+  return data && data.length > 0;
 }
 
 // Save contact submission to Supabase
@@ -272,7 +304,26 @@ serve(async (req) => {
       if (!checkContactRateLimit(clientIp)) {
         return new Response(
           JSON.stringify({ 
-            error: "You've reached the maximum number of contact submissions. Please try again later."
+            error: "You've reached the maximum number of contact submissions. Please try again in an hour.",
+            retryAfter: 3600
+          }),
+          { 
+            status: 429, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
+      // Check for duplicate submission
+      const isDuplicate = await checkDuplicateSubmission(
+        contactFormData.email,
+        contactFormData.message
+      );
+      
+      if (isDuplicate) {
+        return new Response(
+          JSON.stringify({ 
+            error: "This message was already submitted recently. Please wait a few minutes before submitting again."
           }),
           { 
             status: 429, 
@@ -342,17 +393,23 @@ ${JSON.stringify(knowledgeBase.services, null, 2)}
 CONTACT FORM CAPABILITY:
 You can help users send contact messages directly through this chat. When a user wants to get in touch, contact, send a message, or ask about availability:
 
-1. Warmly acknowledge their interest
-2. Collect their name (2-100 characters, letters only)
-3. Collect their email (valid email format)
-4. Collect their message (10-1000 characters, no URLs or spam)
+1. Warmly acknowledge their interest and explain the process
+2. Collect their name (2-100 characters, letters, spaces, hyphens, and apostrophes only)
+3. Collect their email (valid email format, will be used for response)
+4. Collect their message (10-1000 characters, no URLs or promotional content)
+
+VALIDATION RULES:
+- Name: Must be 2-100 characters with only letters, spaces, hyphens, and apostrophes
+- Email: Must be a valid email address format
+- Message: Must be 10-1000 characters, no URLs, no excessive special characters
 
 After collecting all information:
-- Confirm the details with the user
-- Ask them to confirm submission
-- Inform them you'll submit their message
+- Show a clear summary of their information
+- Ask for explicit confirmation ("Please type 'yes' to confirm and send your message")
+- Only submit when user confirms with "yes", "confirm", "send", or similar affirmative response
+- Allow user to cancel by typing "cancel", "no", or "stop"
 
-Use natural, conversational language. Validate each field as you collect it and provide friendly error messages if needed.
+Use natural, conversational language. Validate each field as you collect it and provide specific, friendly error messages if validation fails. Guide users to correct any errors before moving to the next field.
 
 GUIDELINES:
 - Be professional yet personable

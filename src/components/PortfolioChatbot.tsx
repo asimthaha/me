@@ -46,6 +46,7 @@ export const PortfolioChatbot = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [contactFormData, setContactFormData] = useState<ContactFormData>({});
   const [isInContactFlow, setIsInContactFlow] = useState(false);
+  const [showCancelButton, setShowCancelButton] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const liveRegionRef = useRef<HTMLDivElement>(null);
@@ -138,6 +139,7 @@ export const PortfolioChatbot = () => {
     setMessages([]);
     setContactFormData({});
     setIsInContactFlow(false);
+    setShowCancelButton(false);
     localStorage.removeItem(CHAT_STORAGE_KEY);
     // Show welcome message after clearing
     setTimeout(() => {
@@ -245,15 +247,77 @@ export const PortfolioChatbot = () => {
     };
 
     if (attempt === 0) {
+      // Check if user wants to cancel
+      const cancelWords = [
+        "cancel",
+        "stop",
+        "nevermind",
+        "never mind",
+        "no thanks",
+      ];
+      const isCancellation = cancelWords.some((word) =>
+        input.toLowerCase().includes(word)
+      );
+
+      if (isCancellation && isInContactFlow) {
+        setContactFormData({});
+        setIsInContactFlow(false);
+        setShowCancelButton(false);
+        setMessages((prev) => [
+          ...prev,
+          userMessage,
+          {
+            role: "assistant",
+            content:
+              "No problem! The contact form has been cancelled. Feel free to ask me anything else about the portfolio.",
+            id: Date.now().toString(),
+          },
+        ]);
+        setInput("");
+        return;
+      }
+
       // Extract contact information from user input
       const updatedContactData = extractContactInfo(input, contactFormData);
       setContactFormData(updatedContactData);
+
+      // Detect if user is entering contact flow
+      if (!isInContactFlow) {
+        const contactIntents = [
+          "contact",
+          "reach out",
+          "get in touch",
+          "send message",
+          "email",
+          "talk to",
+        ];
+        const hasContactIntent = contactIntents.some((intent) =>
+          input.toLowerCase().includes(intent)
+        );
+        if (hasContactIntent) {
+          setIsInContactFlow(true);
+          setShowCancelButton(true);
+        }
+      }
 
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
       setIsLoading(true);
       setRetryCount(0);
     }
+
+    // Check if user is confirming the contact form submission
+    const confirmationWords = [
+      "yes",
+      "confirm",
+      "send",
+      "submit",
+      "correct",
+      "ok",
+    ];
+    const isConfirmation = confirmationWords.some((word) =>
+      input.toLowerCase().includes(word)
+    );
 
     // Check if we should submit the contact form
     const shouldSubmitContact =
@@ -264,6 +328,7 @@ export const PortfolioChatbot = () => {
       (input.toLowerCase().includes("yes") ||
         input.toLowerCase().includes("confirm") ||
         input.toLowerCase().includes("submit"));
+    isConfirmation;
 
     try {
       const response = await fetch(
@@ -336,27 +401,44 @@ export const PortfolioChatbot = () => {
             ...prev,
             {
               role: "assistant",
-              content: jsonResponse.message,
+              content:
+                jsonResponse.message ||
+                "Thank you! Your message has been sent successfully. I'll get back to you soon! 🎉",
               id: Date.now().toString(),
             },
           ]);
           setContactFormData({});
           setIsInContactFlow(false);
+          setShowCancelButton(false);
           setIsLoading(false);
           setRetryCount(0);
           return;
         }
 
-        if (jsonResponse.error) {
-          // Handle error response
+        if (jsonResponse.error || jsonResponse.validationErrors) {
+          // Validation or other errors
+          const errorMessage = jsonResponse.validationErrors
+            ? `❌ Please correct the following:\n${jsonResponse.validationErrors.join(
+                "\n"
+              )}`
+            : `❌ ${jsonResponse.error || "Failed to submit contact form"}`;
+
           setMessages((prev) => [
             ...prev,
             {
               role: "assistant",
-              content: `❌ ${jsonResponse.error}`,
+              content: errorMessage,
               id: Date.now().toString(),
             },
           ]);
+
+          // If rate limited, exit contact flow
+          if (jsonResponse.retryAfter) {
+            setContactFormData({});
+            setIsInContactFlow(false);
+            setShowCancelButton(false);
+          }
+
           setIsLoading(false);
           setRetryCount(0);
           return;
@@ -589,9 +671,34 @@ export const PortfolioChatbot = () => {
             {/* Contact Flow Indicator */}
             {isInContactFlow && (
               <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 text-sm">
-                <p className="font-semibold text-accent mb-2">
-                  📝 Contact Form Progress:
-                </p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold text-accent">
+                    📝 Contact Form Progress
+                  </p>
+                  {showCancelButton && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setContactFormData({});
+                        setIsInContactFlow(false);
+                        setShowCancelButton(false);
+                        setMessages((prev) => [
+                          ...prev,
+                          {
+                            role: "assistant",
+                            content:
+                              "Contact form cancelled. How else can I help you?",
+                            id: Date.now().toString(),
+                          },
+                        ]);
+                      }}
+                      className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
                 <div className="space-y-1 text-xs">
                   <div className="flex items-center gap-2">
                     <span>{contactFormData.name ? "✅" : "⏳"}</span>
@@ -609,6 +716,9 @@ export const PortfolioChatbot = () => {
                     </span>
                   </div>
                 </div>
+                <p className="text-xs text-muted-foreground mt-2 italic">
+                  Type "cancel" anytime to stop
+                </p>
               </div>
             )}
 
