@@ -16,19 +16,19 @@ interface PacManIntroOverlayProps {
 const getResponsiveTimings = (screenWidth: number) => {
   if (screenWidth < 768) {
     return {
-      animationDuration: 2000,
+      animationDuration: 2500,
       dot1Delay: 1400,
       dot2Delay: 1800,
     };
   } else if (screenWidth < 1024) {
     return {
-      animationDuration: 2200,
+      animationDuration: 2700,
       dot1Delay: 1500,
       dot2Delay: 1900,
     };
   } else {
     return {
-      animationDuration: 2400,
+      animationDuration: 2900,
       dot1Delay: 1600,
       dot2Delay: 2000,
     };
