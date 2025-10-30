@@ -145,6 +145,50 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
           ref={containerRef}
           className="relative w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 z-10"
         >
+          <div
+            className="absolute inset-0 pointer-events-none"
+            aria-hidden="true"
+          >
+            {/* Cloud 1 */}
+            <div
+              className="absolute text-muted-foreground/30 animate-float"
+              style={{
+                top: "-10%",
+                left: "-15%",
+                animationDelay: "0s",
+                animationDuration: "12s",
+                opacity: 0.4,
+              }}
+            >
+              <svg
+                className="w-32 h-auto lg:w-40"
+                viewBox="0 0 120 70"
+                fill="currentColor"
+              >
+                <path d="M20 45c-6-1-11-7-11-14 0-8 7-15 15-15 1-6 6-10 13-10 4 0 8 2 10 5 2-1 4-1 6-1 8 0 15 7 15 15 0 3-1 7-3 9 5 1 9 6 9 12 0 7-5 12-12 12H25c-4 0-8-3-8-7 0-3 1-5 3-6z" />
+              </svg>
+            </div>
+
+            {/* Cloud 2 */}
+            <div
+              className="absolute text-muted-foreground/20 animate-float hidden lg:block"
+              style={{
+                bottom: "8%",
+                right: "-18%",
+                animationDelay: "6s",
+                animationDuration: "20s",
+                opacity: 0.3,
+              }}
+            >
+              <svg
+                className="w-20 h-auto"
+                viewBox="0 0 80 50"
+                fill="currentColor"
+              >
+                <path d="M15 30c-4-1-7-4-7-9 0-5 4-9 9-9 1-3 4-6 8-6 3 0 5 1 6 3 1 0 3-1 4-1 5 0 9 4 9 9 0 2-1 4-2 6 3 1 6 4 6 7 0 4-3 7-7 7H18c-2 0-5-2-5-4 0-2 1-3 2-3z" />
+              </svg>
+            </div>
+          </div>
           {/* Game Area */}
           <div
             className="relative mb-8 sm:mb-10 lg:mb-12 overflow-hidden flex items-center justify-center"

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particle Portrait Effect</title>
+    <style>
+      /* Basic styles for a dark theme and centering */
+      body {
+        background-color: #111;
+        color: #eee;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+          "Helvetica Neue", sans-serif;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      /* Main container for the canvas and instructions */
+      .app-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      /* Style the canvas */
+      #particleCanvas {
+        background-color: #1a1a1a;
+        border-radius: 12px;
+        cursor: pointer;
+        /* The canvas size will be set by JavaScript, 
+               but max-width/height ensures it's responsive */
+        max-width: 90vw;
+        max-height: 80vh;
+        aspect-ratio: 4/5; /* Aspect ratio of the image I'm using */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: #888;
+        background: #222;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        user-select: none; /* Prevents text selection on tap */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- The canvas where we'll draw the particles --><canvas
+        id="particleCanvas"
+      ></canvas>
+      <!-- Instructions for the user -->
+      <p>Tap the image to scatter / assemble</p>
+    </div>
+
+    <script>
+      // --- 1. Setup ---
+      const canvas = document.getElementById("particleCanvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+      let particlesArray = [];
+      let isSwirling = true; // Start in the swirling state
+      let isAssembled = false; // Start disassembled
+      let animationFrameId; // To store the requestAnimationFrame ID
+
+      // --- Configuration Variables ---
+      const particleDensity = 4; // Lower number = more particles.
+      const particleSize = 2; // Size of each particle dot
+      const easeFactor = 0.04; // How fast particles move (0.01 = slow, 0.1 = fast)
+      const maxCanvasWidth = 600; // Max width for performance
+
+      // Swirling effect configuration
+      const swirlCenterConcentration = 0.7; // 70% of particles start in the center
+      const swirlMaxRadius = 150; // Max radius for the central swirl cloud
+      const swirlRotationSpeed = 0.005; // Base speed of rotation for concentrated particles
+      const swirlRandomWalkSpeed = 0.8; // Speed of random movement for non-concentrated particles
+      const swirlOscillation = 0.02; // How much individual particles "breathe" in and out of the center
+
+      // This is the image we'll use.
+      // IMPORTANT: To use your own image, just change this URL.
+      // For it to work, the image MUST be served with CORS headers,
+      // or be from the same domain. GitHub, Imgur, Wikimedia, etc. work.
+      const imageUrl =
+        "./Gemini_Generated_Image_khdnrhkhdnrhkhdn-removebg-preview.png";
+
+      const image = new Image();
+      image.crossOrigin = "Anonymous"; // Required for loading cross-domain images
+      image.src = imageUrl;
+
+      // --- 2. The Particle Class ---
+      // Each particle object will manage its own state
+      class Particle {
+        constructor(imageX, imageY, color, type) {
+          // The "assembled" position (from the image)
+          this.imageX = imageX;
+          this.imageY = imageY;
+
+          // The "scattered" position (random, for later use)
+          this.randomX = Math.random() * canvas.width;
+          this.randomY = Math.random() * canvas.height;
+
+          // The "target" position (where it's trying to go)
+          this.targetX = 0;
+          this.targetY = 0;
+
+          // The "current" position (where it is right now)
+          this.x = 0;
+          this.y = 0;
+
+          this.color = color;
+
+          // Give each particle a slightly different speed for a more organic feel
+          this.speed = Math.random() * 0.05 + easeFactor;
+
+          // Swirling properties
+          this.type = type; // 'concentrated' or 'scattered_swirl'
+          if (this.type === "concentrated") {
+            this.swirlRadius = Math.random() * swirlMaxRadius;
+            this.swirlAngle = Math.random() * Math.PI * 2; // Full circle
+            this.swirlAngularVelocity =
+              (Math.random() - 0.5) * swirlRotationSpeed * 2; // Slight variation
+            this.swirlOscillationOffset = Math.random() * Math.PI * 2; // For breathing effect
+          } else {
+            // For scattered particles in swirl state
+            this.vx = (Math.random() - 0.5) * swirlRandomWalkSpeed;
+            this.vy = (Math.random() - 0.5) * swirlRandomWalkSpeed;
+          }
+        }
+
+        // Initialize position for the start of the swirl animation
+        initSwirlPosition(centerX, centerY) {
+          if (this.type === "concentrated") {
+            this.x = centerX + Math.cos(this.swirlAngle) * this.swirlRadius;
+            this.y = centerY + Math.sin(this.swirlAngle) * this.swirlRadius;
+          } else {
+            // Start scattered particles anywhere
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+          }
+        }
+
+        // Update the particle's current position
+        update(centerX, centerY, time) {
+          if (isSwirling) {
+            if (this.type === "concentrated") {
+              // --- Concentrated Swirl Logic ---
+              this.swirlAngle += this.swirlAngularVelocity;
+
+              // Add some oscillation for "breathing" effect
+              const currentSwirlRadius =
+                this.swirlRadius +
+                Math.sin(time * 0.01 + this.swirlOscillationOffset) *
+                  swirlOscillation *
+                  swirlMaxRadius;
+
+              this.x = centerX + Math.cos(this.swirlAngle) * currentSwirlRadius;
+              this.y = centerY + Math.sin(this.swirlAngle) * currentSwirlRadius;
+
+              // Ensure particles stay within canvas bounds
+              this.x = Math.max(0, Math.min(canvas.width, this.x));
+              this.y = Math.max(0, Math.min(canvas.height, this.y));
+            } else {
+              // --- Scattered Swirl Logic (random walk with bounce) ---
+              this.x += this.vx;
+              this.y += this.vy;
+
+              // Add a small random change to velocity for "swirling"
+              this.vx += (Math.random() - 0.5) * 0.1;
+              this.vy += (Math.random() - 0.5) * 0.1;
+
+              // Clamp velocity to a max speed
+              this.vx = Math.max(
+                -swirlRandomWalkSpeed,
+                Math.min(swirlRandomWalkSpeed, this.vx)
+              );
+              this.vy = Math.max(
+                -swirlRandomWalkSpeed,
+                Math.min(swirlRandomWalkSpeed, this.vy)
+              );
+
+              // Boundary check (bounce off edges)
+              if (this.x <= 0 || this.x >= canvas.width) {
+                this.vx *= -1;
+                this.x = Math.max(0, Math.min(canvas.width, this.x)); // Clamp position
+              }
+              if (this.y <= 0 || this.y >= canvas.height) {
+                this.vy *= -1;
+                this.y = Math.max(0, Math.min(canvas.height, this.y)); // Clamp position
+              }
+            }
+          } else {
+            // --- Easing Logic (Assemble/Scatter) ---
+            this.x += (this.targetX - this.x) * this.speed;
+            this.y += (this.targetY - this.y) * this.speed;
+          }
+        }
+
+        // Draw the particle on the canvas
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.fillRect(this.x, this.y, particleSize, particleSize);
+        }
+      }
+
+      // --- 3. Image Loading and Initialization ---
+      image.onload = () => {
+        // Calculate the scaled dimensions
+        const aspectRatio = image.height / image.width;
+        canvas.width = maxCanvasWidth;
+        canvas.height = maxCanvasWidth * aspectRatio;
+
+        // Set the canvas aspect-ratio in CSS to match
+        canvas.style.aspectRatio = `${canvas.width} / ${canvas.height}`;
+
+        console.log("Image loaded. Initializing particles...");
+        initParticles();
+        console.log(`Created ${particlesArray.length} particles.`);
+
+        // Start the animation loop
+        animate(0); // Pass initial time
+      };
+
+      image.onerror = () => {
+        console.error("Error loading image. Check URL and CORS.");
+        // Display an error on the canvas
+        ctx.fillStyle = "red";
+        ctx.font = "16px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "Error loading image. Check URL and CORS.",
+          canvas.width / 2,
+          canvas.height / 2
+        );
+      };
+
+      // --- 4. Particle Creation ---
+      function initParticles() {
+        // Draw the image onto the canvas (it's hidden)
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // Get the pixel data from the canvas
+        const imageData = ctx.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        ).data;
+
+        particlesArray = []; // Clear any existing particles
+        const potentialParticles = [];
+
+        // Collect all potential particle data
+        for (let y = 0; y < canvas.height; y += particleDensity) {
+          for (let x = 0; x < canvas.width; x += particleDensity) {
+            const index = (y * canvas.width + x) * 4;
+            const r = imageData[index];
+            const g = imageData[index + 1];
+            const b = imageData[index + 2];
+            const a = imageData[index + 3];
+
+            const color = `rgb(${r},${g},${b})`;
+            const brightness = (r + g + b) / 3;
+
+            if (a > 100 && brightness > 10) {
+              potentialParticles.push({ x, y, color });
+            }
+          }
+        }
+
+        // Randomize the order to distribute 'concentrated' types evenly
+        potentialParticles.sort(() => 0.5 - Math.random());
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        for (let i = 0; i < potentialParticles.length; i++) {
+          const pData = potentialParticles[i];
+          const type =
+            i < potentialParticles.length * swirlCenterConcentration
+              ? "concentrated"
+              : "scattered_swirl";
+          const particle = new Particle(pData.x, pData.y, pData.color, type);
+          particle.initSwirlPosition(centerX, centerY); // Set initial swirl position
+          particlesArray.push(particle);
+        }
+
+        // Clear the image from the canvas, leaving it blank
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // --- 5. Animation Loop ---
+      function animate(time) {
+        // Clear the canvas every frame
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        // Update and draw every particle
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update(centerX, centerY, time);
+          particlesArray[i].draw();
+        }
+
+        // Request the next frame
+        animationFrameId = requestAnimationFrame(animate);
+      }
+
+      // --- 6. Interaction ---
+      function toggleState() {
+        if (isSwirling) {
+          // First click: Stop swirling and assemble
+          isSwirling = false;
+          isAssembled = true;
+
+          // Tell every particle its *image* target
+          for (let i = 0; i < particlesArray.length; i++) {
+            const p = particlesArray[i];
+            p.targetX = p.imageX;
+            p.targetY = p.imageY;
+          }
+        } else {
+          // Subsequent clicks: Toggle between assembled and scattered
+          isAssembled = !isAssembled; // Flip the state
+
+          // Tell every particle its new target
+          for (let i = 0; i < particlesArray.length; i++) {
+            const p = particlesArray[i];
+            if (isAssembled) {
+              p.targetX = p.imageX;
+              p.targetY = p.imageY;
+            } else {
+              // Give it a new random position every time it scatters
+              p.randomX = Math.random() * canvas.width;
+              p.randomY =
+                Math.random() * (canvas.height * 1.5) - canvas.height * 0.25;
+              p.targetX = p.randomX;
+              p.targetY = p.randomY;
+            }
+          }
+        }
+      }
+
+      // Listen for clicks/taps on the canvas
+      canvas.addEventListener("click", toggleState);
+
+      // --- 7. Responsive Resizing (Simple) ---
+      // A full responsive resize is complex as it requires recalculating
+      // all particle 'imageX/imageY' positions.
+      // For this demo, if the window resizes, we just re-initialize.
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          console.log("Resizing... re-initializing.");
+
+          // Cancel current animation frame
+          cancelAnimationFrame(animationFrameId);
+
+          // Reset canvas size to let CSS take over (temporarily)
+          canvas.width = 0;
+          canvas.height = 0;
+
+          // Re-load the image to trigger the process
+          image.src = imageUrl;
+
+          // Reset state to initial swirl
+          isSwirling = true;
+          isAssembled = false;
+        }, 250); // Wait 250ms after resize stops
+      });
+    </script>
+  </body>
+</html>

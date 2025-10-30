@@ -5,6 +5,7 @@ import profileImage from "@/assets/developer-profile.jpg";
 import RecursiveTree from "./recursive-tree";
 import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
 import ErrorBoundary from "./ui/ErrorBoundary";
+import ParticlePortrait from "./ParticlePortrait";
 
 interface HeroSectionProps {
   className?: string;
@@ -25,16 +26,6 @@ export const HeroSection = React.memo(function HeroSection({
   const { ref: heroRef, shouldAnimate } = useVisibilityAnimation({
     threshold: 0.2,
   });
-
-  // Memoize static styles
-  const profileImageStyle = useMemo(
-    () => ({
-      width: "280px",
-      height: "280px",
-      transform: "translate(-5%, -5%)",
-    }),
-    []
-  );
 
   return (
     <section
@@ -114,70 +105,9 @@ export const HeroSection = React.memo(function HeroSection({
 
           {/* Profile Image Section with Animated Blob and Clouds */}
           <div className="order-1 lg:order-2 flex justify-center relative z-10">
-            <div className="relative">
-              {/* Simplified Cloud Elements */}
-              <div
-                className="absolute inset-0 pointer-events-none motion-reduce:hidden"
-                aria-hidden="true"
-              >
-                {/* Primary cloud - top left */}
-                <div
-                  className="absolute opacity-4 text-muted-foreground/30 animate-float"
-                  style={{
-                    top: "-15%",
-                    left: "-20%",
-                    animationDelay: "0s",
-                    animationDuration: "12s",
-                  }}
-                >
-                  <svg
-                    width="120"
-                    height="70"
-                    viewBox="0 0 120 70"
-                    fill="currentColor"
-                  >
-                    <path d="M20 45c-6-1-11-7-11-14 0-8 7-15 15-15 1-6 6-10 13-10 4 0 8 2 10 5 2-1 4-1 6-1 8 0 15 7 15 15 0 3-1 7-3 9 5 1 9 6 9 12 0 7-5 12-12 12H25c-4 0-8-3-8-7 0-3 1-5 3-6z" />
-                  </svg>
-                </div>
-
-                {/* Secondary cloud - bottom right */}
-                <div
-                  className="absolute opacity-3 text-muted-foreground/20 animate-float hidden lg:block"
-                  style={{
-                    bottom: "15%",
-                    right: "-10%",
-                    animationDelay: "6s",
-                    animationDuration: "20s",
-                  }}
-                >
-                  <svg
-                    width="80"
-                    height="50"
-                    viewBox="0 0 80 50"
-                    fill="currentColor"
-                  >
-                    <path d="M15 30c-4-1-7-4-7-9 0-5 4-9 9-9 1-3 4-6 8-6 3 0 5 1 6 3 1 0 3-1 4-1 5 0 9 4 9 9 0 2-1 4-2 6 3 1 6 4 6 7 0 4-3 7-7 7H18c-2 0-5-2-5-4 0-2 1-3 2-3z" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Simplified Background Gradient - Memoized */}
-              <div
-                className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-2xl motion-reduce:opacity-50"
-                style={profileImageStyle}
-                aria-hidden="true"
-              />
-
-              {/* Profile image container */}
-              <div className="relative z-10 w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden blob-shadow transition-smooth hover:scale-105">
-                <img
-                  src={profileImage}
-                  alt="Professional headshot of John Doe, Software Developer"
-                  className="w-full h-full object-cover object-center"
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
+            {/* Profile image container */}
+            <div className="z-10 w-64 h-64 sm:mt-10 sm:w-80 sm:h-80 rounded-full overflow-hidden hover:blob-shadow transition-smooth hover:scale-105 hover:cursor-pointer">
+              <ParticlePortrait />
             </div>
           </div>
         </div>
