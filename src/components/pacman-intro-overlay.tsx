@@ -1,111 +1,86 @@
 /**
  * Pac-Man Intro Overlay - Fully responsive playful animation
  * Overlays the About Me section with a game-inspired reveal animation
- *
- * Features:
- * - Fully responsive design that adapts to all screen sizes
- * - Dynamic positioning using CSS Grid and Flexbox
- * - Breakpoint-specific animation timing and spacing
- * - Touch-friendly interactions on mobile devices
- * - Optimized performance across different devices
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
+// import { useIsMobile } from "@/hooks/use-mobile"; // <-- Removed
 
 interface PacManIntroOverlayProps {
   onComplete: () => void;
 }
 
-// Responsive animation timing and spacing utilities
-const getResponsiveSettings = (isMobile: boolean, screenWidth: number) => {
-  if (screenWidth < 480) {
-    // Small mobile
+// Responsive animation *timing* utility.
+const getResponsiveTimings = (screenWidth: number) => {
+  if (screenWidth < 768) {
     return {
-      gameAreaHeight: "120px",
-      pacmanSize: "48px",
-      dotSize: "12px",
-      dotSpacing: "60px",
-      animationDuration: 1800,
-      dot1Delay: 1200,
-      dot2Delay: 1600,
-      pacmanStartPosition: "16px",
-      dotsStartPosition: "300px",
-    };
-  } else if (screenWidth < 768) {
-    // Mobile/tablet
-    return {
-      gameAreaHeight: "140px",
-      pacmanSize: "56px",
-      dotSize: "14px",
-      dotSpacing: "80px",
       animationDuration: 2000,
       dot1Delay: 1400,
       dot2Delay: 1800,
-      pacmanStartPosition: "20px",
-      dotsStartPosition: "350px",
     };
   } else if (screenWidth < 1024) {
-    // Tablet/small desktop
     return {
-      gameAreaHeight: "160px",
-      pacmanSize: "64px",
-      dotSize: "16px",
-      dotSpacing: "100px",
       animationDuration: 2200,
       dot1Delay: 1500,
       dot2Delay: 1900,
-      pacmanStartPosition: "24px",
-      dotsStartPosition: "380px",
     };
   } else {
-    // Large desktop
     return {
-      gameAreaHeight: "180px",
-      pacmanSize: "72px",
-      dotSize: "18px",
-      dotSpacing: "120px",
       animationDuration: 2400,
       dot1Delay: 1600,
       dot2Delay: 2000,
-      pacmanStartPosition: "32px",
-      dotsStartPosition: "420px",
     };
   }
+};
+
+// Helper function to get initial timings without window access during SSR
+const getInitialTimings = () => {
+  if (typeof window === "undefined") {
+    return getResponsiveTimings(1024); // Default to desktop
+  }
+  return getResponsiveTimings(window.innerWidth);
 };
 
 const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const [dotsEaten, setDotsEaten] = useState([false, false]);
-  const [responsiveSettings, setResponsiveSettings] = useState(
-    getResponsiveSettings(false, 1024)
-  );
-  const isMobile = useIsMobile();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [responsiveTimings, setResponsiveTimings] = useState(getInitialTimings);
 
-  // Responsive settings and device detection
+  // responsive timings on resize (debounced)
   useEffect(() => {
-    const updateResponsiveSettings = () => {
+    let debounceTimer: NodeJS.Timeout;
+
+    const updateResponsiveTimings = () => {
       const screenWidth = window.innerWidth;
-      const newSettings = getResponsiveSettings(isMobile, screenWidth);
-      setResponsiveSettings(newSettings);
+      const newTimings = getResponsiveTimings(screenWidth);
+      setResponsiveTimings(newTimings);
     };
 
-    updateResponsiveSettings();
+    const handleResize = () => {
+      clearTimeout(debounceTimer);
+      // Debounce to prevent rapid state updates on resize
+      debounceTimer = setTimeout(updateResponsiveTimings, 200);
+    };
 
     // Listen for resize events to update responsive settings
-    window.addEventListener("resize", updateResponsiveSettings);
-    return () => window.removeEventListener("resize", updateResponsiveSettings);
-  }, [isMobile]);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      clearTimeout(debounceTimer);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []); // Empty dependency array, runs only on mount
 
-  // Check for reduced motion preference
-  const prefersReducedMotion =
-    typeof window !== "undefined"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      : false;
+  // Check for reduced motion preference (memoized for performance)
+  const prefersReducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        : false,
+    []
+  );
 
   const handleStart = () => {
     if (prefersReducedMotion) {
@@ -118,8 +93,8 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
     setIsAnimating(true);
 
     // Eat dots at specific intervals based on responsive timing
-    setTimeout(() => setDotsEaten([true, false]), responsiveSettings.dot1Delay);
-    setTimeout(() => setDotsEaten([true, true]), responsiveSettings.dot2Delay);
+    setTimeout(() => setDotsEaten([true, false]), responsiveTimings.dot1Delay);
+    setTimeout(() => setDotsEaten([true, true]), responsiveTimings.dot2Delay);
 
     // Start the eating animation sequence
     setTimeout(() => {
@@ -128,7 +103,7 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
       setTimeout(() => {
         onComplete();
       }, 500); // Wait for fade out
-    }, responsiveSettings.animationDuration);
+    }, responsiveTimings.animationDuration);
   };
 
   if (!showOverlay) return null;
@@ -142,7 +117,7 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
         )}
       >
         <div
-          ref={containerRef}
+          // ref={containerRef} // <-- Removed
           className="relative w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 z-10"
         >
           <div
@@ -191,42 +166,53 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
           </div>
           {/* Game Area */}
           <div
-            className="relative mb-8 sm:mb-10 lg:mb-12 overflow-hidden flex items-center justify-center"
-            style={{ height: responsiveSettings.gameAreaHeight }}
+            className={cn(
+              "relative mb-8 sm:mb-10 lg:mb-12 overflow-hidden flex items-center justify-center",
+              "h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px]"
+            )}
           >
             {/* Pac-Man */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 transition-all duration-300"
-              style={{ left: responsiveSettings.pacmanStartPosition }}
+              className={cn(
+                "absolute top-1/2 -translate-y-1/2 transition-all duration-300",
+                "left-[16px] sm:left-[20px] md:left-[24px] lg:left-[32px]"
+              )}
             >
               <div
-                className={cn("pacman", isAnimating && "moving")}
-                style={{
-                  width: responsiveSettings.pacmanSize,
-                  height: responsiveSettings.pacmanSize,
-                }}
+                className={cn(
+                  "pacman",
+                  isAnimating && "moving",
+                  "w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] md:w-[64px] md:h-[64px] lg:w-[72px] lg:h-[72px]"
+                )}
               />
             </div>
 
             {/* Dots positioned for proper eating timing */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 flex items-center"
-              style={{ marginLeft: responsiveSettings.dotsStartPosition }}
+              className={cn(
+                "absolute top-1/2 -translate-y-1/2 flex items-center",
+                "ml-[300px] sm:ml-[350px] md:ml-[380px] lg:ml-[420px]"
+              )}
             >
               <div
-                className={cn("dot", dotsEaten[0] && "eaten")}
-                style={{
-                  width: responsiveSettings.dotSize,
-                  height: responsiveSettings.dotSize,
-                  marginRight: responsiveSettings.dotSpacing,
-                }}
+                className={cn(
+                  "dot",
+                  dotsEaten[0] && "eaten",
+                  "w-[12px] h-[12px] mr-[60px]",
+                  "sm:w-[14px] sm:h-[14px] sm:mr-[80px]",
+                  "md:w-[16px] md:h-[16px] md:mr-[100px]",
+                  "lg:w-[18px] lg:h-[18px] lg:mr-[120px]"
+                )}
               />
               <div
-                className={cn("dot", dotsEaten[1] && "eaten")}
-                style={{
-                  width: responsiveSettings.dotSize,
-                  height: responsiveSettings.dotSize,
-                }}
+                className={cn(
+                  "dot",
+                  dotsEaten[1] && "eaten",
+                  "w-[12px] h-[12px]",
+                  "sm:w-[14px] sm:h-[14px]",
+                  "md:w-[16px] md:h-[16px]",
+                  "lg:w-[18px] lg:h-[18px]"
+                )}
               />
             </div>
           </div>
@@ -236,10 +222,9 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
             <Button
               onClick={handleStart}
               disabled={isAnimating}
-              size={isMobile ? "default" : "lg"}
               className={cn(
                 "pixelated-border-button font-retro hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50",
-                isMobile ? "text-base px-6 py-3" : "text-lg px-8 py-4"
+                "text-base px-6 py-3 md:text-lg md:px-8 md:py-4"
               )}
             >
               {isAnimating ? "LOADING..." : "START"}
