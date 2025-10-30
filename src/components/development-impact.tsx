@@ -56,7 +56,7 @@ const DevelopmentImpact = () => {
           <StatsCounter label="Projects Delivered" value="25+" delay={200} />
           <StatsCounter label="Client Satisfaction" value="100%" delay={400} />
           <StatsCounter label="Technologies Mastered" value="15+" delay={600} />
-          <StatsCounter label="Years Experience" value="3+" delay={800} />
+          <StatsCounter label="Years Experience" value="1+" delay={800} />
         </div>
       </div>
 
