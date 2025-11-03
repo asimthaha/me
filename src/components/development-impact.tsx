@@ -74,7 +74,7 @@ const DevelopmentImpact = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 px-4 sm:px-6 lg:px-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 px-4 sm:px-6 lg:px-0">
           {stats.map((stat) => (
             <StatsCard key={stat.label} {...stat} />
           ))}
@@ -93,8 +93,8 @@ const DevelopmentImpact = () => {
             {/* Animated gradient border */}
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary opacity-10 blur-2xl" />
 
-            <div className="relative z-10 space-y-6">
-              <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+            <div className="relative z-10 space-y-1">
+              <h3 className="text-xl md:text-2xl font-bold text-foreground">
                 Ready to Build Something Amazing?
               </h3>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
