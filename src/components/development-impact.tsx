@@ -74,7 +74,7 @@ const DevelopmentImpact = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 px-4 sm:px-6 lg:px-0">
           {stats.map((stat) => (
             <StatsCard key={stat.label} {...stat} />
           ))}

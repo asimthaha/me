@@ -56,7 +56,7 @@ export const StatsCard = ({
       />
 
       {/* Main card */}
-      <div className="relative bg-background/60 backdrop-blur-xl border border-border/20 rounded-2xl p-8 hover-lift transition-all duration-300">
+      <div className="relative bg-background/60 backdrop-blur-xl border border-border/20 rounded-2xl p-6 sm:p-8 hover-lift transition-all duration-300 text-center">
         {/* Icon container */}
         <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
           <Icon className="w-7 h-7 text-primary transition-colors duration-300 group-hover:text-accent" />
