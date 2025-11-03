@@ -12,7 +12,12 @@ interface StatsCardProps {
  * Premium stats card with 3D hover effects and animations
  * Features glass morphism, gradient borders, and counter animations
  */
-export const StatsCard = ({ icon: Icon, label, value, delay }: StatsCardProps) => {
+export const StatsCard = ({
+  icon: Icon,
+  label,
+  value,
+  delay,
+}: StatsCardProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -58,7 +63,7 @@ export const StatsCard = ({ icon: Icon, label, value, delay }: StatsCardProps) =
         </div>
 
         {/* Value with counter animation */}
-        <div className="text-4xl md:text-5xl font-bold mb-3 font-mono bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+        <div className="text-4xl md:text-4xl font-bold mb-3 font-mono bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
           {isVisible ? value : "00"}
         </div>
 

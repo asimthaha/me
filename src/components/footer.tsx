@@ -8,35 +8,31 @@ import { WaveSeparator } from "./ui/wave-separator";
  * Includes gradient effects, animations, and responsive design
  */
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const socialLinks = [
-    { 
-      icon: Github, 
-      href: "https://github.com", 
+    {
+      icon: Github,
+      href: "https://github.com",
       label: "GitHub",
-      color: "hover:text-[#333] dark:hover:text-white"
+      color: "hover:text-[#333] dark:hover:text-white",
     },
-    { 
-      icon: Linkedin, 
-      href: "https://linkedin.com", 
+    {
+      icon: Linkedin,
+      href: "https://linkedin.com",
       label: "LinkedIn",
-      color: "hover:text-[#0A66C2]"
+      color: "hover:text-[#0A66C2]",
     },
-    { 
-      icon: Twitter, 
-      href: "https://twitter.com", 
+    {
+      icon: Twitter,
+      href: "https://twitter.com",
       label: "Twitter",
-      color: "hover:text-[#1DA1F2]"
+      color: "hover:text-[#1DA1F2]",
     },
-    { 
-      icon: Mail, 
-      href: "mailto:contact@example.com", 
+    {
+      icon: Mail,
+      href: "mailto:contact@example.com",
       label: "Email",
-      color: "hover:text-accent"
-    }
+      color: "hover:text-accent",
+    },
   ];
 
   const navLinks = [
@@ -44,14 +40,14 @@ const Footer = () => {
     { name: "About", href: "#about" },
     { name: "Projects", href: "#projects" },
     { name: "Skills", href: "#skills" },
-    { name: "Contact", href: "#development-impact" }
+    { name: "Contact", href: "#development-impact" },
   ];
 
   const resourceLinks = [
     { name: "Documentation", href: "#" },
     { name: "Blog", href: "#" },
     { name: "FAQ", href: "#" },
-    { name: "Support", href: "#" }
+    { name: "Support", href: "#" },
   ];
 
   return (
@@ -84,7 +80,9 @@ const Footer = () => {
             {/* Status badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
               <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-xs font-medium text-accent">Available for work</span>
+              <span className="text-xs font-medium text-accent">
+                Available for work
+              </span>
             </div>
           </div>
 
@@ -184,7 +182,6 @@ const Footer = () => {
 
           {/* Scroll to top button */}
           <Button
-            onClick={scrollToTop}
             variant="outline"
             size="sm"
             className="group border-border/50 bg-background/50 hover:bg-accent hover:border-accent hover:text-accent-foreground transition-all duration-300"
