@@ -10,7 +10,11 @@ import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useLoading } from "@/hooks/use-loading";
 
 // Lazy load chatbot for better initial page load performance
-const PortfolioChatbot = lazy(() => import("@/components/PortfolioChatbot").then(module => ({ default: module.PortfolioChatbot })));
+const PortfolioChatbot = lazy(() =>
+  import("@/components/PortfolioChatbot").then((module) => ({
+    default: module.PortfolioChatbot,
+  }))
+);
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
@@ -37,7 +41,7 @@ const App = () => {
             </Suspense>
           </ErrorBoundary>
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename="/me">
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
