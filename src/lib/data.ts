@@ -347,3 +347,133 @@ export const services: Service[] = [
     startingPrice: "Contact for quote",
   },
 ];
+
+// Experience Tree data structure
+export interface ExperienceNode {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  period: {
+    start: string;
+    end: string | "Present";
+  };
+  type: "work" | "education" | "milestone" | "certification";
+  description: string[];
+  technologies: string[];
+  highlights: string[];
+  metrics?: string[];
+}
+
+export const experienceNodes: ExperienceNode[] = [
+  {
+    id: "exp-1",
+    title: "Senior Frontend Developer",
+    company: "TechCorp Solutions",
+    location: "Remote",
+    period: { start: "Jan 2023", end: "Present" },
+    type: "work",
+    description: [
+      "Lead frontend architecture for SaaS platform serving 10k+ users",
+      "Implemented micro-frontend architecture reducing load time by 40%",
+      "Mentored team of 4 junior developers on React best practices",
+    ],
+    technologies: ["React", "TypeScript", "Next.js", "Tailwind", "GraphQL"],
+    highlights: [
+      "Achieved 95+ Lighthouse score across all pages",
+      "Reduced bundle size by 60% through optimization",
+      "Implemented real-time collaboration features",
+    ],
+    metrics: ["40% performance improvement", "10k+ users", "60% bundle reduction"],
+  },
+  {
+    id: "exp-2",
+    title: "Full-Stack Developer",
+    company: "StartupXYZ",
+    location: "San Francisco, CA",
+    period: { start: "Jun 2021", end: "Dec 2022" },
+    type: "work",
+    description: [
+      "Built e-commerce platform from scratch using MERN stack",
+      "Designed and implemented RESTful APIs serving 5k requests/day",
+      "Integrated payment systems and third-party APIs",
+    ],
+    technologies: ["React", "Node.js", "MongoDB", "Express", "AWS"],
+    highlights: [
+      "Launched MVP in 3 months",
+      "Scaled to handle 100k monthly active users",
+      "Reduced server costs by 35% through optimization",
+    ],
+    metrics: ["3-month MVP", "100k MAU", "35% cost reduction"],
+  },
+  {
+    id: "exp-3",
+    title: "Frontend Developer",
+    company: "Digital Agency Inc",
+    location: "New York, NY",
+    period: { start: "Jan 2020", end: "May 2021" },
+    type: "work",
+    description: [
+      "Developed responsive websites for 15+ clients",
+      "Collaborated with designers to implement pixel-perfect UIs",
+      "Optimized web performance and accessibility",
+    ],
+    technologies: ["HTML5", "CSS3", "JavaScript", "Vue.js", "Webpack"],
+    highlights: [
+      "Delivered 15+ client projects on time",
+      "Achieved WCAG AA accessibility compliance",
+      "Improved avg. page load by 50%",
+    ],
+    metrics: ["15+ projects", "50% faster load", "WCAG AA"],
+  },
+  {
+    id: "cert-1",
+    title: "AWS Certified Solutions Architect",
+    company: "Amazon Web Services",
+    location: "Online",
+    period: { start: "Mar 2022", end: "Mar 2022" },
+    type: "certification",
+    description: [
+      "Professional-level certification in cloud architecture",
+      "Demonstrated expertise in designing distributed systems",
+    ],
+    technologies: ["AWS", "Cloud Architecture", "DevOps"],
+    highlights: ["Industry-recognized certification"],
+  },
+  {
+    id: "edu-1",
+    title: "B.S. Computer Science",
+    company: "State University",
+    location: "California, USA",
+    period: { start: "Sep 2016", end: "May 2020" },
+    type: "education",
+    description: [
+      "Focus on Software Engineering and Web Development",
+      "GPA: 3.8/4.0, Dean's List all semesters",
+    ],
+    technologies: ["Java", "Python", "C++", "Data Structures", "Algorithms"],
+    highlights: [
+      "Graduated with honors",
+      "Led capstone project team",
+      "Published research on web performance",
+    ],
+  },
+  {
+    id: "milestone-1",
+    title: "Open Source Contribution Milestone",
+    company: "GitHub Community",
+    location: "Global",
+    period: { start: "Ongoing", end: "Present" },
+    type: "milestone",
+    description: [
+      "Active contributor to React ecosystem projects",
+      "500+ GitHub contributions in 2023",
+    ],
+    technologies: ["React", "TypeScript", "Open Source"],
+    highlights: [
+      "Contributed to 10+ projects",
+      "2k+ total GitHub stars",
+      "Active in developer community",
+    ],
+  },
+];

@@ -1,10 +1,7 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, ExternalLink } from "lucide-react";
-import profileImage from "@/assets/developer-profile.jpg";
-import RecursiveTree from "./recursive-tree";
+import { Github, Linkedin } from "lucide-react";
 import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
-import ErrorBoundary from "./ui/ErrorBoundary";
 import ParticlePortrait from "./ParticlePortrait";
 
 interface HeroSectionProps {

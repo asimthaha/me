@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Code2 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { navItems } from "@/lib/data";
