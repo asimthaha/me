@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import SkillsSection from "@/components/skills-section";
+import ExperienceTreeSection from "@/components/experience-tree-section";
 
 /**
  * About Page - Dedicated page for developer introduction and background
@@ -13,6 +14,7 @@ const About = () => {
     <main ref={scrollContainerRef} className="relative bg-background">
       <Navbar scrollContainerRef={scrollContainerRef} />
       <SkillsSection />
+      <ExperienceTreeSection />
     </main>
   );
 };
