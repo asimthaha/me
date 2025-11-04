@@ -46,11 +46,11 @@ const Index = () => {
       <section id="development-impact" className="snap-start" data-snap-section>
         <DevelopmentImpact />
       </section>
+      <section id="footer" className="snap-start" data-snap-section>
+        <Footer />
+      </section>
       {/* Forward Timer */}
       <ForwardTimer />
-
-      {/* Footer */}
-      <Footer />
     </main>
   );
 };

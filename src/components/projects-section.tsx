@@ -89,7 +89,7 @@ const ProjectsSection = () => {
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Featured Projects Section */}
           {featuredProjects.length > 0 && (
-            <div className="">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <div
                 className="opacity-0 translate-y-8 transition-all duration-700 mb-10"
                 data-reveal

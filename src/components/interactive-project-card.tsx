@@ -87,7 +87,7 @@ export const InteractiveProjectCard = ({
     <article
       ref={cardRef}
       className={cn(
-        "group relative flex flex-col min-h-full bg-background/60 backdrop-blur-md border border-border/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 translate-y-8",
+        "group relative flex flex-col min-h-full bg-background/60 backdrop-blur-md border rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 opacity-0 translate-y-8",
         "hover:border-primary/20 hover:bg-background/80"
       )}
       style={{
@@ -168,18 +168,45 @@ export const InteractiveProjectCard = ({
         </div>
 
         {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2">
-          {project.techStack.slice(0, 4).map((tech) => (
+        <div
+          className={cn(
+            "flex flex-wrap gap-2 transition-all duration-500",
+            isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          )}
+        >
+          {project.techStack.slice(0, 4).map((tech, i) => (
             <Badge
               key={tech}
               variant="secondary"
-              className="text-xs bg-secondary/50 hover:bg-secondary/80 transition-colors"
+              className={cn(
+                "text-xs bg-secondary/50 hover:bg-secondary/80 transition-all duration-500",
+                isHovered
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              )}
+              style={{
+                transitionDelay: isHovered ? `${i * 100}ms` : "0ms", // staggered appearance
+              }}
             >
               {tech}
             </Badge>
           ))}
+
           {project.techStack.length > 4 && (
-            <Badge variant="outline" className="text-xs">
+            <Badge
+              variant="outline"
+              className={cn(
+                "text-xs transition-all duration-500",
+                isHovered
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              )}
+              style={{
+                transitionDelay: isHovered
+                  ? `${project.techStack.slice(0, 4).length * 100}ms`
+                  : "0ms",
+              }}
+            >
               +{project.techStack.length - 4} more
             </Badge>
           )}

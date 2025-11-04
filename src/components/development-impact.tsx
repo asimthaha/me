@@ -43,7 +43,7 @@ const DevelopmentImpact = () => {
   const stats = [
     { icon: Briefcase, label: "Projects Delivered", value: "25+", delay: 200 },
     { icon: Star, label: "Client Satisfaction", value: "100%", delay: 400 },
-    { icon: Code2, label: "Technologies Mastered", value: "15+", delay: 600 },
+    { icon: Code2, label: "Digital Arsenal", value: "15+", delay: 600 },
     { icon: Calendar, label: "Years Experience", value: "1+", delay: 800 },
   ];
 
@@ -59,7 +59,7 @@ const DevelopmentImpact = () => {
       </div>
 
       {/* Stats Section with Title */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className="opacity-0 translate-y-8 transition-all duration-700 mb-10 text-left"
           data-reveal

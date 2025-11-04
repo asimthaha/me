@@ -52,7 +52,7 @@ const ServicesSection = () => {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10 px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div
           className="opacity-0 translate-y-8 transition-all duration-700 mb-10"
@@ -67,9 +67,8 @@ const ServicesSection = () => {
             Professional Services
           </h3>
           <p className="text-muted-foreground mt-2" data-reveal>
-            Transform your digital vision into reality with expert development
-            services. From concept to deployment, I deliver high-quality
-            solutions tailored to your needs.
+            Bringing your digital vision to life with expert, customized
+            development.
           </p>
         </div>
 
