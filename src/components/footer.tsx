@@ -82,7 +82,7 @@ const Footer = () => {
               {/* Status badge */}
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
                 <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                <span className="text-xs font-medium text-accent">
+                <span className="text-xs font-medium text-primary">
                   Available for work
                 </span>
               </div>
