@@ -1,6 +1,5 @@
 import { Heart, Github, Linkedin, Twitter, Mail, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { WaveSeparator } from "./ui/wave-separator";
 
 /**
  * Premium Footer Component
@@ -52,15 +51,8 @@ const Footer = () => {
 
   return (
     <footer className="relative bg-gradient-to-b from-background to-muted/20 border-t border-border overflow-hidden">
-      {/* Wave separator */}
-      {/* <WaveSeparator /> */}
-
       {/* Animated gradient line at top */}
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
-
-      {/* Floating gradient orbs */}
-      {/* <div className="absolute top-20 left-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none" /> */}
 
       <div className="relative container mx-auto px-6 py-16 md:py-20">
         {/* Main footer content */}
