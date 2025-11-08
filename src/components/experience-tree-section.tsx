@@ -1,8 +1,15 @@
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap, Award, Trophy } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import RecursiveTree from "./recursive-tree";
 import { experienceNodes, ExperienceNode } from "@/lib/data";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import TechParticles3D from "./experience-tree/TechParticles3D";
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Experience Tree Section Component
@@ -10,6 +17,45 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
  * Matches blueprint aesthetic of the Tech Stack section
  */
 const ExperienceTreeSection = () => {
+  const treeRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll-triggered tree growth animation
+  useEffect(() => {
+    if (!treeRef.current || !sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Animate tree growing from bottom to top
+      gsap.from(treeRef.current, {
+        scaleY: 0,
+        transformOrigin: "bottom center",
+        opacity: 0,
+        duration: 2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          end: "top 30%",
+          scrub: 1,
+        },
+      });
+
+      // Animate tree opacity and scale on scroll
+      gsap.to(treeRef.current, {
+        opacity: 1,
+        scale: 1,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          end: "top 20%",
+          scrub: 1,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   // Get icon based on experience type
   const getTypeIcon = (type: ExperienceNode["type"]) => {
     const iconClass = "w-5 h-5";
@@ -40,7 +86,7 @@ const ExperienceTreeSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen py-24 px-4 md:px-8 overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen py-24 px-4 md:px-8 overflow-hidden">
       {/* Blueprint grid background */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
         <div
@@ -78,7 +124,7 @@ const ExperienceTreeSection = () => {
           </p>
         </motion.div>
 
-        {/* Tree Visualization */}
+        {/* Tree Visualization with 3D Particles */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -86,10 +132,18 @@ const ExperienceTreeSection = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-20 flex justify-center"
         >
-          <div className="relative">
-            <RecursiveTree size={1.2} opacity={0.8} />
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-primary/20 via-primary/40 to-transparent" />
+          <div ref={treeRef} className="relative h-[600px] w-full max-w-4xl">
+            {/* 3D Tech Particles Background */}
+            <TechParticles3D />
+            
+            {/* Recursive Tree */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <RecursiveTree size={1.2} opacity={0.8} />
+            </div>
+            
+            {/* Central timeline accent */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="w-px h-full bg-gradient-to-b from-primary/20 via-primary/40 to-transparent" />
             </div>
           </div>
         </motion.div>
