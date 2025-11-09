@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import SkillsSection from "@/components/skills-section";
 import ExperienceTreeSection from "@/components/experience-tree-section";
+import { ForwardTimer } from "@/components/forward-timer";
 
 /**
  * About Page - Dedicated page for developer introduction and background
@@ -15,6 +16,8 @@ const About = () => {
       <Navbar scrollContainerRef={scrollContainerRef} />
       <SkillsSection />
       <ExperienceTreeSection />
+      {/* Forward Timer */}
+      <ForwardTimer />
     </main>
   );
 };

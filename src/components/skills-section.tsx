@@ -144,7 +144,7 @@ const SkillsSection: React.FC = () => {
       <div className="relative z-10 mb-16">
         <div className="flex items-center gap-6 mb-4">
           <div className="text-sm font-mono uppercase tracking-wider text-muted-foreground">
-            Section_03
+            Section_01
           </div>
           <div className="flex-1 h-px bg-gradient-to-r from-muted-foreground/30 to-transparent"></div>
         </div>
@@ -176,15 +176,6 @@ const SkillsSection: React.FC = () => {
         {skillCategories.map((category, index) => (
           <SkillCategory key={index} category={category} index={index} />
         ))}
-      </div>
-
-      {/* Bottom blueprint accent */}
-      <div className="relative z-10 mt-16 flex justify-center">
-        <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground uppercase tracking-wider">
-          <div className="w-8 h-px bg-muted-foreground/30"></div>
-          <span>End of Specifications</span>
-          <div className="w-8 h-px bg-muted-foreground/30"></div>
-        </div>
       </div>
     </section>
   );
