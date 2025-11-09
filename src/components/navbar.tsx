@@ -136,21 +136,25 @@ export const Navbar = ({ scrollContainerRef }) => {
         </div>
       </nav>
 
-      {/* Mobile Navbar */}
+      {/* Mobile Top Theme Switcher */}
+      <div className="fixed top-4 left-4 z-50 md:hidden">
+        <div className="backdrop-blur-md bg-background/90 border border-border/20 rounded-full p-2">
+          <ThemeSwitcher />
+        </div>
+      </div>
+
+      {/* Mobile Navbar (Bottom) */}
       <nav
         className={`
-          fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50
-          md:hidden
-          transition-all duration-300 ease-in-out
-          ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
-          }
-        `}
+    fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40
+    md:hidden
+    transition-all duration-300 ease-in-out
+    ${isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"}
+  `}
         role="navigation"
         aria-label="Mobile navigation"
       >
         <div className="flex items-center space-x-4">
-          {/* Mobile Pill Container */}
           <div className="mobile-pill backdrop-blur-md bg-background/90 border border-border/20 rounded-full px-6 py-3">
             <div className="flex items-center space-x-6">
               {navItems.map((item) => {
@@ -162,15 +166,15 @@ export const Navbar = ({ scrollContainerRef }) => {
                     key={item.id}
                     onClick={() => handleNavClick(item)}
                     className={`
-                      relative p-2 rounded-full transition-all duration-200
-                      hover:bg-accent hover:text-accent-foreground
-                      focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                      ${
-                        isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground"
-                      }
-                    `}
+                relative p-2 rounded-full transition-all duration-200
+                hover:bg-accent hover:text-accent-foreground
+                focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                ${
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground"
+                }
+              `}
                     aria-label={`Navigate to ${item.label}`}
                   >
                     <Icon className="h-5 w-5" aria-hidden="true" />
@@ -180,13 +184,6 @@ export const Navbar = ({ scrollContainerRef }) => {
                   </button>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Mobile Theme Switcher */}
-          <div className="flex items-center">
-            <div className="backdrop-blur-md bg-background/90 border border-border/20 rounded-full p-2">
-              <ThemeSwitcher />
             </div>
           </div>
         </div>

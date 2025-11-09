@@ -16,6 +16,7 @@ import { Clock, Star, ArrowRight, CheckCircle } from "lucide-react";
 import { services } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ServiceCarousel } from "@/components/service-carousel";
+import { CTASection } from "@/components/cta-section";
 
 /**
  * Services Page
@@ -272,40 +273,20 @@ const Services = () => {
             </div>
           </div>
 
-          {/* CTA Section */}
-          <div
-            className="opacity-0 translate-y-8 transition-all duration-700 text-center"
-            data-reveal
-          >
-            <div className="space-y-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-12 border border-border/20">
-              <h3 className="text-3xl font-bold text-foreground">
-                Ready to Start Your Project?
-              </h3>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Let's discuss your vision and create something amazing together.
-                Every project starts with a conversation.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/#contact">
-                  <Button
-                    size="lg"
-                    className="btn-gradient hover:opacity-90 text-white shadow-lg"
-                  >
-                    Start a Conversation
-                  </Button>
-                </Link>
-                <Link to="/">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-border/20 bg-background/50 hover:bg-background"
-                  >
-                    View Portfolio
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
+          <CTASection
+            title="Ready to Start Your Project?"
+            description="Let's discuss your vision and create something amazing together. Every project starts with a conversation."
+            primaryCta={{
+              label: "Start a Conversation",
+              href: "/#contact",
+              variant: "solid",
+            }}
+            secondaryCta={{
+              label: "View Portfolio",
+              href: "/",
+            }}
+            variant="boxed"
+          />
         </div>
       </section>
     </main>

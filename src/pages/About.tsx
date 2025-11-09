@@ -6,6 +6,7 @@ import { ExperienceCarousel } from "@/components/experience-carousel";
 import { ForwardTimer } from "@/components/forward-timer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { experienceNodes } from "@/lib/data";
+import { CTASection } from "@/components/cta-section";
 
 /**
  * About Page - Dedicated page for developer introduction and background
@@ -24,6 +25,19 @@ const About = () => {
       ) : (
         <ExperienceTreeSection experienceNodes={experienceNodes} />
       )}
+      <section className="snap-start relative z-10 bg-background py-20">
+        <CTASection
+          title="Let’s Build Something Together"
+          description="I’m always open to new opportunities, collaborations, and interesting projects. If you’d like to chat, feel free to reach out."
+          primaryCta={{
+            label: "Get in Touch",
+            href: "/contact",
+            variant: "solid",
+          }}
+          variant="default"
+          animated={false} // disable reveal animation for now
+        />
+      </section>
       {/* Forward Timer */}
       <ForwardTimer />
     </main>
