@@ -3,7 +3,7 @@ import { Briefcase, GraduationCap, Award, Trophy } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { experienceNodes, ExperienceNode } from "@/lib/data";
+import { ExperienceNode } from "@/lib/data";
 import {
   Card,
   CardContent,
@@ -20,7 +20,13 @@ gsap.registerPlugin(ScrollTrigger);
  * Visualizes professional journey using recursive tree animation
  * Matches blueprint aesthetic of the Tech Stack section
  */
-const ExperienceTreeSection = () => {
+interface ExperienceTreeSectionProps {
+  experienceNodes: ExperienceNode[];
+}
+
+const ExperienceTreeSection = ({
+  experienceNodes,
+}: ExperienceTreeSectionProps) => {
   const treeRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
