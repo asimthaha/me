@@ -14,12 +14,13 @@ import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
  */
 
 import { projects, Project } from "@/lib/data";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -45,17 +46,6 @@ const Projects = () => {
     }, 800); // Reduced from 1500ms for better UX
 
     return () => clearTimeout(timer);
-  }, []);
-
-  // Detect mobile/tablet for carousel
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 1024;
-      setIsMobile(mobile);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Scroll reveal animation

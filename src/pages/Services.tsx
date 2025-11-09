@@ -14,6 +14,8 @@ import {
 import { Link } from "react-router-dom";
 import { Clock, Star, ArrowRight, CheckCircle } from "lucide-react";
 import { services } from "@/lib/data";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ServiceCarousel } from "@/components/service-carousel";
 
 /**
  * Services Page
@@ -25,6 +27,7 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
   const [isSlimeAnimating, setIsSlimeAnimating] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Simulate loading time
@@ -120,88 +123,99 @@ const Services = () => {
           </div>
 
           {/* Services Grid */}
-          <div className="flex flex-wrap justify-center gap-8 mb-20">
-            {services.map((service, index) => (
+          <div className="mb-20">
+            {isMobile ? (
               <div
-                key={service.id}
-                className="w-full sm:w-[48%] lg:w-[30%] max-w-sm opacity-0 translate-y-8 transition-all duration-700"
+                className="opacity-0 translate-y-8 transition-all duration-700"
                 data-reveal
-                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <Card
-                  className={`relative h-full border-border/20 bg-card/50 backdrop-blur-sm hover:border-primary/20 transition-all duration-300 group ${
-                    service.popular ? "ring-2 ring-primary/20" : ""
-                  }`}
-                >
-                  {service.popular && (
-                    <Badge className="absolute -top-3 left-6 bg-primary text-primary-foreground">
-                      <Star className="w-3 h-3 mr-1" />
-                      Popular
-                    </Badge>
-                  )}
-
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className="p-2 rounded-lg bg-primary/10">
-                        <service.icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        <span>{service.duration}</span>
-                      </div>
-                    </div>
-                    <CardTitle className="text-xl font-bold">
-                      {service.title}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground leading-relaxed">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="pb-4">
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-sm text-foreground">
-                        What's Included:
-                      </h4>
-                      <ul className="space-y-2">
-                        {service.features.map((feature, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-start space-x-2 text-sm"
-                          >
-                            <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                            <span className="text-muted-foreground">
-                              {feature}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </CardContent>
-
-                  <CardFooter className="pt-0">
-                    <div className="w-full space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-muted-foreground">
-                          Starting at
-                        </span>
-                        <span className="text-lg font-bold text-primary">
-                          {service.startingPrice}
-                        </span>
-                      </div>
-                      <Button
-                        className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300"
-                        variant="outline"
-                        size="sm"
-                      >
-                        Get Started
-                        <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
+                <ServiceCarousel services={services} />
               </div>
-            ))}
+            ) : (
+              <div className="flex flex-wrap justify-center gap-8">
+                {services.map((service, index) => (
+                  <div
+                    key={service.id}
+                    className="w-full sm:w-[48%] lg:w-[30%] max-w-sm opacity-0 translate-y-8 transition-all duration-700"
+                    data-reveal
+                    style={{ transitionDelay: `${index * 100}ms` }}
+                  >
+                    <Card
+                      className={`relative h-full border-border/20 bg-card/50 backdrop-blur-sm hover:border-primary/20 transition-all duration-300 group ${
+                        service.popular ? "ring-2 ring-primary/20" : ""
+                      }`}
+                    >
+                      {service.popular && (
+                        <Badge className="absolute -top-3 left-6 bg-primary text-primary-foreground">
+                          <Star className="w-3 h-3 mr-1" />
+                          Popular
+                        </Badge>
+                      )}
+
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className="p-2 rounded-lg bg-primary/10">
+                            <service.icon className="w-6 h-6 text-primary" />
+                          </div>
+                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                            <Clock className="w-4 h-4" />
+                            <span>{service.duration}</span>
+                          </div>
+                        </div>
+                        <CardTitle className="text-xl font-bold">
+                          {service.title}
+                        </CardTitle>
+                        <CardDescription className="text-muted-foreground leading-relaxed">
+                          {service.description}
+                        </CardDescription>
+                      </CardHeader>
+
+                      <CardContent className="pb-4">
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-sm text-foreground">
+                            What's Included:
+                          </h4>
+                          <ul className="space-y-2">
+                            {service.features.map((feature, idx) => (
+                              <li
+                                key={idx}
+                                className="flex items-start space-x-2 text-sm"
+                              >
+                                <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                <span className="text-muted-foreground">
+                                  {feature}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+
+                      <CardFooter className="pt-0">
+                        <div className="w-full space-y-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-muted-foreground">
+                              Starting at
+                            </span>
+                            <span className="text-lg font-bold text-primary">
+                              {service.startingPrice}
+                            </span>
+                          </div>
+                          <Button
+                            className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300"
+                            variant="outline"
+                            size="sm"
+                          >
+                            Get Started
+                            <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Process Section */}
