@@ -570,7 +570,12 @@ export const PortfolioChatbot = () => {
 
       {/* Floating Chat Button */}
       {!isHidden && (
-        <div className="fixed bottom-24 right-4 md:bottom-6 z-50 group">
+        <div
+          className={cn(
+            "fixed right-4 md:bottom-6 z-50 group",
+            isMobile ? "top-4" : "bottom-24"
+          )}
+        >
           <Button
             onClick={hideChatIcon}
             className={cn(
@@ -578,7 +583,7 @@ export const PortfolioChatbot = () => {
               "bg-accent text-accent-foreground hover:bg-accent/90",
               "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
               isOpen && "scale-0",
-              isMobile && "opacity-0"
+              isMobile && "opacity-0" // Keep it hidden on mobile for a cleaner look
             )}
             aria-label="Hide chat icon permanently"
             size="sm"
@@ -607,11 +612,13 @@ export const PortfolioChatbot = () => {
         aria-label="Portfolio chat assistant"
         aria-modal="true"
         className={cn(
-          "fixed bottom-6 right-6 w-[380px] h-[600px] z-50",
-          "flex flex-col shadow-2xl transition-all duration-300",
-          "md:w-[420px] md:h-[650px]",
-          "bg-card border-border",
-          isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0"
+          "fixed z-50 flex flex-col shadow-2xl transition-all duration-300 bg-card border-border",
+          isMobile
+            ? "inset-0 w-full h-full rounded-none"
+            : "bottom-6 right-6 w-[380px] h-[600px] md:w-[420px] md:h-[650px] rounded-lg",
+          isOpen
+            ? "scale-100 opacity-100"
+            : "scale-0 opacity-0 pointer-events-none"
         )}
       >
         {/* Header */}
@@ -740,7 +747,12 @@ export const PortfolioChatbot = () => {
 
             {/* Suggested Questions */}
             {messages.length === 1 && (
-              <div className="grid grid-cols-2 gap-2 mt-4">
+              <div
+                className={cn(
+                  "grid gap-2 mt-4",
+                  isMobile ? "grid-cols-1" : "grid-cols-2"
+                )}
+              >
                 {SUGGESTED_QUESTIONS.map((q, i) => (
                   <Button
                     key={i}

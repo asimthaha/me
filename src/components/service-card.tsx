@@ -29,7 +29,7 @@ export const ServiceCard = ({ service, index }: ServiceCardProps) => {
         }`}
       >
         {service.popular && (
-          <Badge className="absolute -top-3 left-6 bg-primary text-primary-foreground">
+          <Badge className="absolute top-0 md:top-3 left-6 bg-primary text-primary-foreground">
             <Star className="w-3 h-3 mr-1" />
             Popular
           </Badge>

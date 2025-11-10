@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { SnakeLoader } from "@/components/snake-loader";
 import { PremiumCursor } from "@/components/premium-cursor";
+import { ClickSparkEffect } from "@/components/ClickSparkEffect";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useLoading } from "@/hooks/use-loading";
 
@@ -25,7 +26,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { isLoading, completeLoading } = useLoading(10000);
+  const { isLoading, completeLoading } = useLoading(2000);
 
   if (isLoading) {
     return <SnakeLoader isLoading={isLoading} onComplete={completeLoading} />;
@@ -35,6 +36,7 @@ const App = () => {
       <ThemeProvider>
         <TooltipProvider>
           <PremiumCursor />
+          <ClickSparkEffect />
           <ErrorBoundary>
             <Suspense fallback={null}>
               <PortfolioChatbot />

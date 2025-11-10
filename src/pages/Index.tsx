@@ -4,7 +4,6 @@ import AboutMeSection from "@/components/about-me-section";
 import { Navbar } from "@/components/navbar";
 import ProjectsSection from "@/components/projects-section";
 import ServicesSection from "@/components/services-section";
-import { ForwardTimer } from "@/components/forward-timer";
 import DevelopmentImpact from "@/components/development-impact";
 import Footer from "@/components/footer";
 
@@ -44,8 +43,6 @@ const Index = () => {
       <section id="footer" className="snap-start" data-snap-section>
         <Footer />
       </section>
-      {/* Forward Timer */}
-      <ForwardTimer />
     </main>
   );
 };

@@ -14,12 +14,14 @@ import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
  */
 
 import { projects, Project } from "@/lib/data";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { CTASection } from "@/components/cta-section";
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -45,17 +47,6 @@ const Projects = () => {
     }, 800); // Reduced from 1500ms for better UX
 
     return () => clearTimeout(timer);
-  }, []);
-
-  // Detect mobile/tablet for carousel
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 1024;
-      setIsMobile(mobile);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Scroll reveal animation
@@ -224,38 +215,20 @@ const Projects = () => {
               )}
             </div>
 
-            {/* CTA Section */}
-            <div
-              className="opacity-0 translate-y-8 transition-all duration-700 text-center"
-              data-reveal
-            >
-              <div className="space-y-6">
-                <h3 className="text-3xl font-bold text-foreground">
-                  Let's Build Something Together
-                </h3>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Have a project in mind? I'd love to hear about it and discuss
-                  how we can bring your vision to life.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center m-10">
-                  <Button
-                    size="lg"
-                    className="text-gradient bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
-                  >
-                    Get In Touch
-                  </Button>
-                  <Link to="/">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="border-border/20 bg-background/50 hover:bg-background"
-                    >
-                      Back to Home
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <CTASection
+              title="Let's Build Something Together"
+              description="Have a project in mind? I'd love to hear about it and discuss how we can bring your vision to life."
+              primaryCta={{
+                label: "Get In Touch",
+                href: "/contacts",
+                variant: "gradient",
+              }}
+              secondaryCta={{
+                label: "Back to Home",
+                href: "/",
+              }}
+              animated
+            />
           </div>
         </section>
 
