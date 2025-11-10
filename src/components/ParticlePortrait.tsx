@@ -376,45 +376,49 @@ const ParticlePortrait: React.FC = () => {
     imageRef.current = image; // Store image in ref
 
     image.onload = () => {
-      if (!canvas) return;
+      if (!canvas || !ctx) return; // Add ctx check // --- 1. GET DPR ---
+
+      const dpr = window.devicePixelRatio || 1;
+
       const newSize = canvas.parentElement
         ? canvas.parentElement.getBoundingClientRect().width
-        : 0; // Default to 0 if parentElement is not found
+        : 0; // --- 2. THIS IS THE *CSS* DISPLAY SIZE ---
 
-      const finalSize = Math.min(newSize, Particle.maxCanvasWidth);
-      if (finalSize <= 0) {
+      const finalCssSize = Math.min(newSize, Particle.maxCanvasWidth);
+
+      if (finalCssSize <= 0) {
         console.warn(
           `ParticlePortrait: Parent width is ${newSize}. Retrying in 100ms.`
         );
-        // Re-call this same onload function after a short delay
         setTimeout(image.onload, 100);
-        return; // Stop execution for this run
+        return;
       }
-      canvas.width = finalSize;
-      canvas.height = finalSize; // Square
+      const finalBitmapSize = finalCssSize * dpr; // Set the canvas internal resolution
 
-      // This helps maintain layout, though parent div's aspect ratio is key
-      canvas.style.aspectRatio = `1 / 1`;
+      canvas.width = finalBitmapSize;
+      canvas.height = finalBitmapSize; // Square // Set the canvas display size (CSS)
+
+      canvas.style.width = `${finalCssSize}px`;
+      canvas.style.height = `${finalCssSize}px`;
+      canvas.style.aspectRatio = `1 / 1`; // --- 4. CALCULATE "CONTAIN" USING BITMAP SIZE --- // All particle logic will now operate in the larger "bitmap" space.
 
       const imgAspectRatio = image.width / image.height;
       const canvasAspectRatio = 1; // canvas.width / canvas.height is 1
       let dWidth, dHeight, dx, dy;
 
+      // This logic now correctly uses canvas.width (which is finalBitmapSize)
       if (imgAspectRatio > canvasAspectRatio) {
-        // Image is wider than canvas
         dWidth = canvas.width;
         dHeight = dWidth / imgAspectRatio;
         dx = 0;
         dy = (canvas.height - dHeight) / 2;
       } else {
-        // Image is taller or same
         dHeight = canvas.height;
         dWidth = dHeight * imgAspectRatio;
         dy = 0;
         dx = (canvas.width - dWidth) / 2;
       }
 
-      // Store these for initParticles
       imageDrawDataRef.current = { dx, dy, dWidth, dHeight };
 
       console.log("Image loaded. Initializing particles...");

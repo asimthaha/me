@@ -137,7 +137,7 @@ export const Navbar = ({ scrollContainerRef }) => {
       </nav>
 
       {/* Mobile Top Theme Switcher */}
-      <div className="fixed top-4 left-4 z-50 md:hidden">
+      <div className="fixed top-4 left-4 z-10 md:hidden">
         <div className="backdrop-blur-md bg-background/90 border border-border/20 rounded-full p-2">
           <ThemeSwitcher />
         </div>

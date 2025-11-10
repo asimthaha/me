@@ -220,7 +220,7 @@ const Projects = () => {
               description="Have a project in mind? I'd love to hear about it and discuss how we can bring your vision to life."
               primaryCta={{
                 label: "Get In Touch",
-                href: "/#contact",
+                href: "/contacts",
                 variant: "gradient",
               }}
               secondaryCta={{

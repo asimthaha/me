@@ -25,7 +25,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { isLoading, completeLoading } = useLoading(10000);
+  const { isLoading, completeLoading } = useLoading(2000);
 
   if (isLoading) {
     return <SnakeLoader isLoading={isLoading} onComplete={completeLoading} />;

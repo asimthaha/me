@@ -573,7 +573,7 @@ export const PortfolioChatbot = () => {
         <div
           className={cn(
             "fixed right-4 md:bottom-6 z-50 group",
-            isMobile ? "bottom-4" : "bottom-24"
+            isMobile ? "top-4" : "bottom-24"
           )}
         >
           <Button

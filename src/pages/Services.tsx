@@ -278,7 +278,7 @@ const Services = () => {
             description="Let's discuss your vision and create something amazing together. Every project starts with a conversation."
             primaryCta={{
               label: "Start a Conversation",
-              href: "/#contact",
+              href: "/contacts",
               variant: "solid",
             }}
             secondaryCta={{

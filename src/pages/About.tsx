@@ -25,13 +25,13 @@ const About = () => {
       ) : (
         <ExperienceTreeSection experienceNodes={experienceNodes} />
       )}
-      <section className="snap-start relative z-10 bg-background py-20">
+      <section className="snap-start relative z-10 bg-background">
         <CTASection
           title="Let’s Build Something Together"
           description="I’m always open to new opportunities, collaborations, and interesting projects. If you’d like to chat, feel free to reach out."
           primaryCta={{
             label: "Get in Touch",
-            href: "/contact",
+            href: "/contacts",
             variant: "solid",
           }}
           variant="default"
