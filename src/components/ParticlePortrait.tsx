@@ -6,16 +6,15 @@ class Particle {
   // --- Configuration Variables ---
   // Moved static properties inside the class for TS
   static particleDensity: number = 3;
-  static particleSize: number = 1.3;
+  static particleSize: number = 1.5;
   static easeFactor: number = 0.04;
   static maxCanvasWidth: number = 320;
-  static swirlCenterConcentration: number = 0.95;
-  static swirlMaxRadius: number = 100;
-  static swirlRotationSpeed: number = 0.005;
+  static swirlCenterConcentration: number = 0.92;
+  static swirlMaxRadius: number = 125;
+  static swirlRotationSpeed: number = 0.0056;
   static swirlRandomWalkSpeed: number = 0.8;
   static swirlOscillation: number = 0.03;
-  static imageUrl: string =
-    "https://upload.wikimedia.org/wikipedia/commons/d/d3/Albert_Einstein_Head.jpg";
+  static imageUrl: string = "/public/images/portrait.png";
 
   // --- Instance Properties ---
   imageX: number;

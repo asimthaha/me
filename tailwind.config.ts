@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
-import tailwindcssAnimate from 'tailwindcss-animate';
-import tailwindScrollbarHide from 'tailwind-scrollbar-hide';
+import tailwindcssAnimate from "tailwindcss-animate";
+import tailwindScrollbarHide from "tailwind-scrollbar-hide";
 
 export default {
   darkMode: ["class"],

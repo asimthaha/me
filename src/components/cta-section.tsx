@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom"; // or next/link if using Next.js
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
+import { CubesBackground } from "@/components/ui/cubes-background";
 
 interface CTASectionProps {
   /** Main title */
@@ -36,7 +37,8 @@ export const CTASection = ({
   return (
     <section
       className={clsx(
-        "text-center px-6 py-20 flex flex-col items-center justify-center",
+        // Add 'relative' and 'overflow-hidden' to the container
+        "relative overflow-hidden text-center px-6 py-20 flex flex-col items-center justify-center",
         {
           "bg-gradient-to-b from-background to-muted": variant === "default",
           "bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-border/20 p-12 mx-4":
@@ -47,15 +49,28 @@ export const CTASection = ({
       )}
       data-reveal={animated ? true : undefined}
     >
-      <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+      {/* Add the CubesBackground component */}
+      {/* It will sit at z-0, behind all the other content */}
+      <CubesBackground
+        className="absolute inset-0"
+        color={
+          variant === "boxed"
+            ? "hsl(var(--primary))"
+            : "hsl(var(--muted-foreground))"
+        }
+        opacity={variant === "boxed" ? 0.5 : 0.5}
+      />
+
+      {/* Add 'relative z-10' to all content to ensure it's on top */}
+      <h2 className="relative z-10 text-3xl md:text-4xl font-bold text-foreground mb-4">
         {title}
       </h2>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+      <p className="relative z-10 text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
         {description}
       </p>
 
       {(primaryCta || secondaryCta) && (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="relative z-10 flex flex-col sm:flex-row gap-4 justify-center">
           {primaryCta && (
             <Link to={primaryCta.href}>
               <Button

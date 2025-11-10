@@ -40,3 +40,63 @@
 .read-the-docs {
   color: #888;
 }
+/* * Styles for the CubesBackground.tsx component.
+ * This file was missing, which caused the compilation error.
+ */
+
+.cubes-background-grid {
+  /* This is the container that sits behind the content */
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  /* Use CSS variables from the component */
+  display: grid;
+  grid-template-columns: repeat(var(--cube-cols, 10), 1fr);
+
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Crucial! Lets clicks pass through */
+  overflow: hidden;
+}
+
+.cube {
+  width: 100%;
+  /* Use aspect-ratio to ensure cubes are always square */
+  aspect-ratio: 1 / 1;
+
+  /* Use CSS variables for color */
+  background-color: var(--cube-color);
+
+  /* Start invisible */
+  opacity: 0;
+
+  /*
+   * Animation setup.
+   * The 'animation-delay' is applied inline by the React component.
+   */
+  animation-name: cube-animation;
+  animation-duration: var(--cube-animation-duration);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* * The animation keyframes that make the cubes pulse, move, and rotate.
+ */
+@keyframes cube-animation {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg) translate3d(0, 0, 0);
+  }
+
+  50% {
+    /* Use the opacity variable from the component */
+    opacity: var(--cube-opacity, 0.1);
+    transform: scale(1) rotate(180deg) translate3d(15px, 15px, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(360deg) translate3d(0, 0, 0);
+  }
+}

@@ -5,7 +5,6 @@ import { ProjectModal } from "@/components/project-modal";
 import { ProjectCarousel } from "@/components/project-carousel";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { Link } from "react-router-dom";
 import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
 
 /**
@@ -25,6 +24,7 @@ const Projects = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const projectGridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Simulate loading time for skeleton display
@@ -86,15 +86,13 @@ const Projects = () => {
 
     // Reset animation states when filter changes
     setTimeout(() => {
-      if (sectionRef.current) {
-        const elements = sectionRef.current.querySelectorAll("[data-reveal]");
+      if (projectGridRef.current) {
+        const elements =
+          projectGridRef.current.querySelectorAll("[data-reveal]");
         elements.forEach((el, index) => {
           if (el instanceof HTMLElement) {
-            // Remove existing animation class
             el.classList.remove("animate-fade-in");
-            // Force reflow by accessing a property
             void el.offsetHeight;
-            // Re-add animation class with delay
             setTimeout(() => {
               el.classList.add("animate-fade-in");
             }, index * 100);
@@ -173,7 +171,7 @@ const Projects = () => {
             </div>
 
             {/* Projects Grid */}
-            <div className="mb-20">
+            <div className="mb-20" ref={projectGridRef}>
               {isMobile ? (
                 <div className="opacity-0 translate-y-8" data-reveal>
                   <ProjectCarousel

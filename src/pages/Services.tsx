@@ -106,13 +106,6 @@ const Services = () => {
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Page Header */}
           <div className="text-center mb-20 space-y-6">
-            <h1
-              id="services-title"
-              className="opacity-0 translate-y-8 transition-all duration-700 text-4xl md:text-6xl font-bold text-gradient"
-              data-reveal
-            >
-              Professional Services
-            </h1>
             <p
               className="opacity-0 translate-y-8 transition-all duration-700 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
               data-reveal
