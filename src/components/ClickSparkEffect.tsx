@@ -1,37 +1,77 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Spark {
+  id: number;
+  x: number;
+  y: number;
+}
 
 /**
  * ClickSparkEffect Component
  * 
- * Adds sparkling particle effects on every click across the application.
- * Uses clickspark.js library for visual feedback on user interactions.
+ * Pure React implementation of click spark particle effects.
+ * Shows animated particles on every click using Framer Motion.
  */
 export const ClickSparkEffect = () => {
+  const [sparks, setSparks] = useState<Spark[]>([]);
+
   useEffect(() => {
-    // Dynamically import clickspark.js to avoid SSR issues
-    import('clickspark.js').then((module) => {
-      const clickSpark = module.default;
+    const handleClick = (e: MouseEvent) => {
+      const newSpark = {
+        id: Date.now(),
+        x: e.clientX,
+        y: e.clientY,
+      };
       
-      // Add click event listener to document
-      const handleClick = (e: MouseEvent) => {
-        clickSpark({
-          x: e.clientX,
-          y: e.clientY,
-          // Customize spark appearance using CSS variables for theming
-          color: 'hsl(var(--primary))',
-          count: 15,
-          size: 8,
-        });
-      };
+      setSparks((prev) => [...prev, newSpark]);
+      
+      // Remove spark after animation completes
+      setTimeout(() => {
+        setSparks((prev) => prev.filter((spark) => spark.id !== newSpark.id));
+      }, 800);
+    };
 
-      document.addEventListener('click', handleClick);
-
-      // Cleanup
-      return () => {
-        document.removeEventListener('click', handleClick);
-      };
-    });
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  return null;
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[9999]">
+      <AnimatePresence>
+        {sparks.map((spark) => (
+          <div key={spark.id} className="absolute" style={{ left: spark.x, top: spark.y }}>
+            {/* Create multiple particles in a radial pattern */}
+            {Array.from({ length: 12 }).map((_, i) => {
+              const angle = (i * 360) / 12;
+              const distance = 40 + Math.random() * 20;
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 rounded-full bg-primary"
+                  initial={{
+                    x: 0,
+                    y: 0,
+                    scale: 1,
+                    opacity: 1,
+                  }}
+                  animate={{
+                    x: Math.cos((angle * Math.PI) / 180) * distance,
+                    y: Math.sin((angle * Math.PI) / 180) * distance,
+                    scale: 0,
+                    opacity: 0,
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: 'easeOut',
+                  }}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
 };
