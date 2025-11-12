@@ -14,7 +14,9 @@ class Particle {
   static swirlRotationSpeed: number = 0.0056;
   static swirlRandomWalkSpeed: number = 0.8;
   static swirlOscillation: number = 0.03;
-  static imageUrl: string = "/public/images/portrait.png";
+  static imageUrl: string = `${
+    import.meta.env.BASE_URL
+  }images/profile-image.png`;
 
   // --- Instance Properties ---
   imageX: number;
