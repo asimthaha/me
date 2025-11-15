@@ -106,10 +106,7 @@ export const HeroSection = React.memo(function HeroSection({
           </div>
 
           {/* Profile Image Section with Animated Blob and Clouds */}
-          <div
-            className="order-1 lg:order-2 flex justify-center relative z-10"
-            title="click"
-          >
+          <div className="order-1 lg:order-2 flex justify-center relative z-10">
             {/* Profile image container */}
             <div className="z-10 w-64 h-64 sm:mt-10 sm:w-80 sm:h-80 rounded-full overflow-hidden hover:blob-shadow transition-smooth hover:scale-105 hover:cursor-pointer">
               {isMobile ? <StaticPortraitCarousel /> : <ParticlePortrait />}
