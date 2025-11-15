@@ -21,7 +21,9 @@ const About = () => {
       <Navbar scrollContainerRef={scrollContainerRef} />
       <SkillsSection />
       {isMobile ? (
-        <ExperienceCarousel nodes={experienceNodes} />
+        <section className="snap-start min-h-screen flex flex-col justify-center items-center py-24 px-4 sm:px-6 lg:px-8 relative">
+          <ExperienceCarousel nodes={experienceNodes} />
+        </section>
       ) : (
         <ExperienceTreeSection experienceNodes={experienceNodes} />
       )}

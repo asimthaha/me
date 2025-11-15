@@ -52,9 +52,9 @@ export const ExperienceCarousel = ({ nodes }: ExperienceCarouselProps) => {
           {nodes.map((node) => (
             <CarouselItem
               key={node.id}
-              className="pl-4 basis-full sm:basis-1/2"
+              className="pl-4 basis-full sm:basis-1/2 flex"
             >
-              <div className="p-1">
+              <div className="p-1 w-full">
                 <ExperienceCard node={node} />
               </div>
             </CarouselItem>
@@ -65,19 +65,8 @@ export const ExperienceCarousel = ({ nodes }: ExperienceCarouselProps) => {
             <CarouselPrevious className="relative inset-auto translate-y-0 bg-background/80 backdrop-blur-sm border-border/20 hover:bg-background" />
             <CarouselNext className="relative inset-auto translate-y-0 bg-background/80 backdrop-blur-sm border-border/20 hover:bg-background" />
           </div>
-          <div className="flex gap-2">
-            {nodes.map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === current
-                    ? "bg-primary w-6"
-                    : "bg-muted-foreground/90 hover:bg-muted-foreground/50"
-                }`}
-                onClick={() => api?.scrollTo(index)}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+          <div className="text-sm font-mono text-muted-foreground">
+            {current + 1} / {nodes.length}
           </div>
         </div>
       </Carousel>

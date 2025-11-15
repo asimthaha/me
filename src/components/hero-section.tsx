@@ -1,8 +1,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin } from "lucide-react";
-import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
+
 import ParticlePortrait from "./ParticlePortrait";
+import StaticPortraitCarousel from "./StaticPortraitCarousel";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useVisibilityAnimation } from "@/hooks/useIntersectionObserver";
 
 interface HeroSectionProps {
   className?: string;
@@ -23,6 +26,8 @@ export const HeroSection = React.memo(function HeroSection({
   const { ref: heroRef, shouldAnimate } = useVisibilityAnimation({
     threshold: 0.2,
   });
+
+  const isMobile = useIsMobile();
 
   return (
     <section
@@ -107,7 +112,7 @@ export const HeroSection = React.memo(function HeroSection({
           >
             {/* Profile image container */}
             <div className="z-10 w-64 h-64 sm:mt-10 sm:w-80 sm:h-80 rounded-full overflow-hidden hover:blob-shadow transition-smooth hover:scale-105 hover:cursor-pointer">
-              <ParticlePortrait />
+              {isMobile ? <StaticPortraitCarousel /> : <ParticlePortrait />}
             </div>
           </div>
         </div>

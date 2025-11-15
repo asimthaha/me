@@ -43,7 +43,7 @@ const App = () => {
             </Suspense>
           </ErrorBoundary>
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename="/me">
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
