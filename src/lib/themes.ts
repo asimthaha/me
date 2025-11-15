@@ -1,4 +1,10 @@
-export type ThemeType = "light" | "dark" | "ares" | "enterprise" | "terra";
+export type ThemeType =
+  | "light"
+  | "dark"
+  | "ares"
+  | "enterprise"
+  | "terra"
+  | "dune";
 
 export interface Theme {
   id: ThemeType;
@@ -197,10 +203,50 @@ export const themes: Record<ThemeType, Theme> = {
       textShadow: "0 2px 4px hsl(60 8% 22% / 0.25)",
     },
   },
+  dune: {
+    id: "dune",
+    name: "Dune",
+    icon: "🏜️",
+    colors: {
+      background: "60 6% 9%", // #1A1A17
+      foreground: "38 32% 74%", // #D4C2A4 (desert haze)
+
+      card: "60 6% 12%", // deeper matte charcoal
+      cardForeground: "38 32% 74%",
+
+      popover: "60 6% 12%",
+      popoverForeground: "38 32% 74%",
+
+      primary: "38 36% 62%", // desert sand
+      primaryForeground: "60 6% 9%",
+
+      secondary: "38 36% 46%", // bronze midtone
+      secondaryForeground: "38 55% 75%",
+
+      muted: "60 6% 18%",
+      mutedForeground: "210 14% 52%", // still-suit steel blue
+
+      accent: "28 58% 53%", // spice glow
+      accentForeground: "60 6% 9%",
+
+      destructive: "0 70% 58%",
+      destructiveForeground: "0 0% 98%",
+
+      border: "60 6% 18%",
+      input: "60 6% 18%",
+      ring: "38 36% 62%",
+
+      heroGradient:
+        "linear-gradient(135deg, hsl(60 6% 9%) 0%, hsl(38 36% 62%) 100%)",
+
+      blobShadow: "0 20px 40px -10px hsl(38 36% 62% / 0.25)",
+      textShadow: "0 2px 4px hsl(60 6% 9% / 0.25)",
+    },
+  },
 };
 
 export const getTheme = (themeId: ThemeType): Theme => {
-  return themes[themeId] || themes.light;
+  return themes[themeId] || themes.dune;
 };
 
 export const isDarkTheme = (themeId: ThemeType): boolean => {
