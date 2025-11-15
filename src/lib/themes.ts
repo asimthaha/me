@@ -1,9 +1,4 @@
-/**
- * Theme Configuration System
- * Centralized theme definitions for easy management and extension
- */
-
-export type ThemeType = "light" | "dark" | "netflix" | "ey" | "github";
+export type ThemeType = "light" | "dark" | "ares" | "enterprise" | "terra";
 
 export interface Theme {
   id: ThemeType;
@@ -29,7 +24,6 @@ export interface Theme {
     border: string;
     input: string;
     ring: string;
-    // Custom tokens
     heroGradient: string;
     blobShadow: string;
     textShadow: string;
@@ -67,6 +61,7 @@ export const themes: Record<ThemeType, Theme> = {
       textShadow: "0 2px 4px hsl(220 26% 14% / 0.1)",
     },
   },
+
   dark: {
     id: "dark",
     name: "Dark",
@@ -97,9 +92,10 @@ export const themes: Record<ThemeType, Theme> = {
       textShadow: "0 2px 4px hsl(220 13% 9% / 0.3)",
     },
   },
-  netflix: {
-    id: "netflix",
-    name: "Netflix",
+
+  ares: {
+    id: "ares",
+    name: "Ares",
     icon: "🎬",
     colors: {
       background: "0 0% 8%",
@@ -127,10 +123,11 @@ export const themes: Record<ThemeType, Theme> = {
       textShadow: "0 2px 4px hsl(0 0% 0% / 0.3)",
     },
   },
-  ey: {
-    id: "ey",
-    name: "EY",
-    icon: "💼",
+
+  enterprise: {
+    id: "enterprise",
+    name: "Enterprise",
+    icon: "🏢",
     colors: {
       background: "0 0% 98%",
       foreground: "0 0% 10%",
@@ -157,34 +154,47 @@ export const themes: Record<ThemeType, Theme> = {
       textShadow: "0 2px 4px hsl(0 0% 15% / 0.1)",
     },
   },
-  github: {
-    id: "github",
-    name: "GitHub",
-    icon: "⚡",
+
+  terra: {
+    id: "terra",
+    name: "Terra",
+    icon: "🌍",
     colors: {
-      background: "220 13% 9%",
-      foreground: "220 13% 85%",
-      card: "220 13% 12%",
-      cardForeground: "220 13% 85%",
-      popover: "220 13% 12%",
-      popoverForeground: "220 13% 85%",
-      primary: "220 13% 85%",
-      primaryForeground: "220 13% 9%",
-      secondary: "220 13% 16%",
-      secondaryForeground: "220 13% 85%",
-      muted: "220 13% 16%",
-      mutedForeground: "220 13% 65%",
-      accent: "213 93% 68%",
-      accentForeground: "220 13% 9%",
-      destructive: "0 84.2% 60.2%",
+      // Matte deep background
+      background: "60 8% 22%", // slightly softer #414137
+      foreground: "35 38% 72%", // softer sand
+
+      card: "60 8% 25%", // slight lift
+      cardForeground: "35 38% 72%",
+
+      popover: "60 8% 25%",
+      popoverForeground: "35 38% 72%",
+
+      primary: "36 32% 43%", // richer bronze
+      primaryForeground: "35 44% 90%",
+
+      secondary: "36 20% 28%", // muted warm olive-bronze
+      secondaryForeground: "35 44% 75%",
+
+      muted: "60 6% 28%", // matte olive-grey
+      mutedForeground: "35 30% 58%",
+
+      accent: "35 44% 76%", // sand accent
+      accentForeground: "60 8% 22%", // dark olive
+
+      destructive: "0 70% 58%",
       destructiveForeground: "0 0% 98%",
-      border: "220 13% 18%",
-      input: "220 13% 18%",
-      ring: "213 93% 68%",
+
+      border: "60 6% 27%",
+      input: "60 6% 27%",
+      ring: "36 32% 43%", // premium bronze highlight
+
       heroGradient:
-        "linear-gradient(135deg, hsl(220 13% 9%) 0%, hsl(213 93% 68%) 100%)",
-      blobShadow: "0 20px 40px -10px hsl(213 93% 68% / 0.25)",
-      textShadow: "0 2px 4px hsl(220 13% 9% / 0.3)",
+        "linear-gradient(135deg, hsl(60 8% 22%) 0%, hsl(36 32% 43%) 100%)",
+
+      blobShadow: "0 20px 40px -10px hsl(36 32% 43% / 0.23)",
+
+      textShadow: "0 2px 4px hsl(60 8% 22% / 0.25)",
     },
   },
 };
@@ -194,9 +204,7 @@ export const getTheme = (themeId: ThemeType): Theme => {
 };
 
 export const isDarkTheme = (themeId: ThemeType): boolean => {
-  return themeId === "dark" || themeId === "netflix" || themeId === "github";
+  return themeId === "dark" || themeId === "ares" || themeId === "terra";
 };
 
-export const getAllThemes = (): Theme[] => {
-  return Object.values(themes);
-};
+export const getAllThemes = (): Theme[] => Object.values(themes);

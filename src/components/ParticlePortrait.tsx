@@ -47,13 +47,13 @@ class Particle {
 
   constructor(
     imageTargets: { x: number; y: number; color: string }[],
-    color: string,
+    // color: string, // <-- This was a bug, it's removed
     type: "concentrated" | "scattered_swirl",
     canvasWidth: number,
     canvasHeight: number
   ) {
     this.imageTargets = imageTargets;
-    this.color = this.imageTargets[0].color;
+    this.color = this.imageTargets[0].color; // Sets initial color
     this.type = type;
     this.randomX = Math.random() * canvasWidth;
     this.randomY = Math.random() * canvasHeight;
@@ -99,20 +99,30 @@ class Particle {
     time: number,
     canvasWidth: number,
     canvasHeight: number,
-    animationState: ParticleAnimationState // MODIFIED
+    animationState: ParticleAnimationState
   ): void {
     if (animationState === "swirling") {
-      // --- This is the original "isSwirling" logic ---
       if (this.type === "concentrated") {
+        // 1. Calculate the *target* swirl position
         this.swirlAngle! += this.swirlAngularVelocity!;
         const currentSwirlRadius =
           this.swirlRadius! +
           Math.sin(time * 0.01 + this.swirlOscillationOffset!) *
             Particle.swirlOscillation *
             Particle.swirlMaxRadius;
-        this.x = centerX + Math.cos(this.swirlAngle!) * currentSwirlRadius;
-        this.y = centerY + Math.sin(this.swirlAngle!) * currentSwirlRadius;
+
+        // This is where the particle *should* be
+        const targetSwirlX =
+          centerX + Math.cos(this.swirlAngle!) * currentSwirlRadius;
+        const targetSwirlY =
+          centerY + Math.sin(this.swirlAngle!) * currentSwirlRadius;
+
+        // 2. Ease to that target position (THIS IS THE FIX)
+        // We use a slightly slower ease factor for a smoother swirl
+        this.x += (targetSwirlX - this.x) * (this.speed * 0.5);
+        this.y += (targetSwirlY - this.y) * (this.speed * 0.5);
       } else {
+        // This logic is already additive, so it will morph correctly
         this.x += this.vx!;
         this.y += this.vy!;
         this.vx! += (Math.random() - 0.5) * 0.1;
@@ -140,7 +150,7 @@ class Particle {
         }
       }
     } else {
-      // --- MODIFIED: This is the morphing logic ---
+      // --- This is the morphing-to-image logic ---
       // 'animationState' is the image index
       const target = this.imageTargets[animationState];
       if (target) {
@@ -302,7 +312,6 @@ const ParticlePortrait: React.FC = () => {
 
         const particle = new Particle(
           imageTargets,
-          pData0.color,
           type,
           canvas.width,
           canvas.height
