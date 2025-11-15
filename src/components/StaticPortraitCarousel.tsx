@@ -21,7 +21,7 @@ const StaticPortraitCarousel: React.FC<StaticPortraitCarouselProps> = ({
     // It cleanly transitions to the next image.
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-    }, 7000); // Change image every 7 seconds
+    }, 5000); // Change image every 5 seconds
 
     // Cleanup the interval on component unmount
     return () => clearInterval(timer);

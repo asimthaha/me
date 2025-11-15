@@ -11,12 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Link } from "react-router-dom";
 import { Clock, Star, ArrowRight, CheckCircle } from "lucide-react";
 import { services } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ServiceCarousel } from "@/components/service-carousel";
 import { CTASection } from "@/components/cta-section";
+import { GenericCarousel } from "@/components/GenericCarousel";
+import ServiceCard from "@/components/service-card";
 
 /**
  * Services Page
@@ -119,11 +119,16 @@ const Services = () => {
           {/* Services Grid */}
           <div className="mb-20">
             {isMobile ? (
-              <div
-                className="opacity-0 translate-y-8 transition-all duration-700"
-                data-reveal
-              >
-                <ServiceCarousel services={services} />
+              <div data-reveal>
+                <GenericCarousel
+                  items={services}
+                  getKey={(service) => service.id}
+                  itemClassName="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 flex"
+                  renderItem={(service, index) => (
+                    // Ensure your card component accepts h-full
+                    <ServiceCard service={service} index={index} />
+                  )}
+                />
               </div>
             ) : (
               <div className="flex flex-wrap justify-center gap-8">

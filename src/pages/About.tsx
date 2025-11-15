@@ -2,11 +2,12 @@ import { useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import SkillsSection from "@/components/skills-section";
 import ExperienceTreeSection from "@/components/experience-tree-section";
-import { ExperienceCarousel } from "@/components/experience-carousel";
 import { ForwardTimer } from "@/components/forward-timer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { experienceNodes } from "@/lib/data";
 import { CTASection } from "@/components/cta-section";
+import { GenericCarousel } from "@/components/GenericCarousel";
+import { ExperienceCard } from "@/components/experience-card";
 
 /**
  * About Page - Dedicated page for developer introduction and background
@@ -22,7 +23,15 @@ const About = () => {
       <SkillsSection />
       {isMobile ? (
         <section className="snap-start min-h-screen flex flex-col justify-center items-center py-24 px-4 sm:px-6 lg:px-8 relative">
-          <ExperienceCarousel nodes={experienceNodes} />
+          <GenericCarousel
+            items={experienceNodes}
+            getKey={(node) => node.id}
+            itemClassName="pl-4 basis-full sm:basis-1/2 flex"
+            renderItem={(node) => (
+              // Ensure your card component accepts h-full
+              <ExperienceCard node={node} />
+            )}
+          />
         </section>
       ) : (
         <ExperienceTreeSection experienceNodes={experienceNodes} />

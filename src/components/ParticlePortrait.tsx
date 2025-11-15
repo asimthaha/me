@@ -1,5 +1,8 @@
 import React, { useRef, useEffect } from "react";
 
+// Types for particle state
+type ParticleAnimationState = "swirling" | number; // number is the image index
+
 class Particle {
   // --- Configuration Variables ---
   static particleDensity: number = 3;
@@ -12,16 +15,16 @@ class Particle {
   static swirlRandomWalkSpeed: number = 0.8;
   static swirlOscillation: number = 0.03;
 
+  // --- MODIFIED: Now supports N images ---
   static imageUrls: string[] = [
     `${import.meta.env.BASE_URL}images/portrait.png`,
     `${import.meta.env.BASE_URL}images/portrait-1.png`,
+    // Add more images here and it will work
+    // `${import.meta.env.BASE_URL}images/portrait-2.png`,
   ];
 
   // --- Instance Properties ---
-  image0X: number; // NEW
-  image0Y: number; // NEW
-  image1X: number; // NEW
-  image1Y: number; // NEW
+  imageTargets: { x: number; y: number; color: string }[];
   randomX: number;
   randomY: number;
   targetX: number;
@@ -30,39 +33,35 @@ class Particle {
   y: number;
   color: string;
   speed: number;
-  type: "concentrated" | "scattered_swirl"; // Swirling properties
+  type: "concentrated" | "scattered_swirl";
 
+  // Swirling properties
   swirlRadius?: number;
   swirlAngle?: number;
   swirlAngularVelocity?: number;
-  swirlOscillationOffset?: number; // Scattered properties
+  swirlOscillationOffset?: number;
 
+  // Scattered properties
   vx?: number;
   vy?: number;
 
   constructor(
-    image0X: number, // MODIFIED
-    image0Y: number, // MODIFIED
-    image1X: number, // NEW
-    image1Y: number, // NEW
+    imageTargets: { x: number; y: number; color: string }[],
     color: string,
     type: "concentrated" | "scattered_swirl",
     canvasWidth: number,
     canvasHeight: number
   ) {
-    this.image0X = image0X;
-    this.image0Y = image0Y;
-    this.image1X = image1X;
-    this.image1Y = image1Y;
+    this.imageTargets = imageTargets;
+    this.color = this.imageTargets[0].color;
+    this.type = type;
     this.randomX = Math.random() * canvasWidth;
     this.randomY = Math.random() * canvasHeight;
     this.targetX = 0;
     this.targetY = 0;
     this.x = 0;
     this.y = 0;
-    this.color = color;
     this.speed = Math.random() * 0.05 + Particle.easeFactor;
-    this.type = type;
 
     if (this.type === "concentrated") {
       this.swirlRadius = Math.random() * Particle.swirlMaxRadius;
@@ -100,7 +99,7 @@ class Particle {
     time: number,
     canvasWidth: number,
     canvasHeight: number,
-    animationState: "swirling" | "image0" | "image1" // MODIFIED
+    animationState: ParticleAnimationState // MODIFIED
   ): void {
     if (animationState === "swirling") {
       // --- This is the original "isSwirling" logic ---
@@ -142,13 +141,12 @@ class Particle {
       }
     } else {
       // --- MODIFIED: This is the morphing logic ---
-      if (animationState === "image0") {
-        this.targetX = this.image0X;
-        this.targetY = this.image0Y;
-      } else {
-        // animationState === "image1"
-        this.targetX = this.image1X;
-        this.targetY = this.image1Y;
+      // 'animationState' is the image index
+      const target = this.imageTargets[animationState];
+      if (target) {
+        this.targetX = target.x;
+        this.targetY = target.y;
+        this.color = target.color;
       }
       this.x += (this.targetX - this.x) * this.speed;
       this.y += (this.targetY - this.y) * this.speed;
@@ -167,10 +165,9 @@ const ParticlePortrait: React.FC = () => {
   const particlesArrayRef = useRef<Particle[]>([]);
   const animationFrameIdRef = useRef<number | null>(null);
   const carouselTimerRef = useRef<NodeJS.Timeout | null>(null);
-  // --- NEW: Simplified state ref ---
-  const animationStateRef = useRef<"swirling" | "image0" | "image1">(
-    "swirling"
-  );
+
+  // --- MODIFIED: State is "swirling" or an image index ---
+  const animationStateRef = useRef<ParticleAnimationState>("swirling");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -178,7 +175,7 @@ const ParticlePortrait: React.FC = () => {
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
-    // --- NEW: Helper to load an image and get its data ---
+    // --- Helper to load an image and get its data ---
     const loadImageData = (
       src: string
     ): Promise<{
@@ -225,11 +222,12 @@ const ParticlePortrait: React.FC = () => {
       });
     };
 
-    // --- NEW: Helper to extract particles from image data ---
+    // --- Helper to extract particles from image data ---
+    type PotentialParticle = { x: number; y: number; color: string };
     const getPotentialParticles = (
       imageData: ImageData
-    ): { x: number; y: number; color: string }[] => {
-      const particles: { x: number; y: number; color: string }[] = [];
+    ): PotentialParticle[] => {
+      const particles: PotentialParticle[] = [];
       const data = imageData.data;
       const width = imageData.width;
       const height = imageData.height;
@@ -252,58 +250,58 @@ const ParticlePortrait: React.FC = () => {
       return particles;
     };
 
-    // --- MODIFIED: initParticles now maps two images ---
     const initParticles = (
-      imageData0: ImageData,
-      imageData1: ImageData,
+      allImageData: ImageData[],
       drawData: { dx: number; dy: number; dWidth: number; dHeight: number }
     ) => {
       if (!canvas) return;
-      imageDrawDataRef.current = drawData; // Store draw data
+      imageDrawDataRef.current = drawData; // Store draw data (from first image)
 
-      const potentialParticles0 = getPotentialParticles(imageData0);
-      const potentialParticles1 = getPotentialParticles(imageData1);
+      // 1. Get particle arrays for all images
+      const allPotentialParticles: PotentialParticle[][] = [];
+      for (const imgData of allImageData) {
+        const particles = getPotentialParticles(imgData);
+        particles.sort(() => 0.5 - Math.random()); // Shuffle each array
+        allPotentialParticles.push(particles);
+      }
 
-      if (
-        potentialParticles0.length === 0 ||
-        potentialParticles1.length === 0
-      ) {
-        console.error("Could not extract particles from one or both images.");
+      if (allPotentialParticles.some((arr) => arr.length === 0)) {
+        console.error("Could not extract particles from one or more images.");
         return;
       }
 
+      // 2. Find the max particle count
+      const particleCounts = allPotentialParticles.map((arr) => arr.length);
+      const maxParticles = Math.max(...particleCounts);
+      console.log(`Particle counts: ${particleCounts.join(", ")}`);
+      console.log(`Creating ${maxParticles} total particles.`);
+
       particlesArrayRef.current = [];
-      const count0 = potentialParticles0.length;
-      const count1 = potentialParticles1.length;
-      const particleCount = Math.max(count0, count1);
-
-      console.log(`Image 0 particles: ${count0}`);
-      console.log(`Image 1 particles: ${count1}`);
-      console.log(`Creating ${particleCount} total particles.`);
-
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
 
-      // Shuffle both arrays to make the mapping more random
-      potentialParticles0.sort(() => 0.5 - Math.random());
-      potentialParticles1.sort(() => 0.5 - Math.random());
+      // 3. Create particles
+      for (let i = 0; i < maxParticles; i++) {
+        const imageTargets: { x: number; y: number; color: string }[] = [];
 
-      for (let i = 0; i < particleCount; i++) {
-        // Use modulo to loop over the smaller array
-        const pData0 = potentialParticles0[i % count0];
-        const pData1 = potentialParticles1[i % count1];
+        for (let j = 0; j < allPotentialParticles.length; j++) {
+          const currentImageParticles = allPotentialParticles[j];
+          const pData = currentImageParticles[i % currentImageParticles.length];
+          // Store color along with x and y
+          imageTargets.push({ x: pData.x, y: pData.y, color: pData.color });
+        }
+
+        // Use color from the *first* image's particle map
+        const pData0 =
+          allPotentialParticles[0][i % allPotentialParticles[0].length];
 
         const type =
-          i < particleCount * Particle.swirlCenterConcentration
+          i < maxParticles * Particle.swirlCenterConcentration
             ? "concentrated"
             : "scattered_swirl";
 
-        // Use color from the first image
         const particle = new Particle(
-          pData0.x,
-          pData0.y,
-          pData1.x,
-          pData1.y,
+          imageTargets,
           pData0.color,
           type,
           canvas.width,
@@ -351,33 +349,38 @@ const ParticlePortrait: React.FC = () => {
       animationFrameIdRef.current = requestAnimationFrame(animate);
     };
 
-    // --- MODIFIED: New state machine logic ---
+    // --- MODIFIED: New state machine logic for N images ---
     const transitionToNextState = () => {
       if (carouselTimerRef.current) {
         clearTimeout(carouselTimerRef.current);
       }
 
       const currentState = animationStateRef.current;
-      let nextState: "swirling" | "image0" | "image1";
+      let nextState: ParticleAnimationState;
       let nextDuration: number;
+      const lastImageIndex = Particle.imageUrls.length - 1;
 
-      switch (currentState) {
-        case "swirling":
-          nextState = "image0";
-          nextDuration = 7000; // View time for image 0
-          console.log("Carousel: Assembling Image 0");
-          break;
-        case "image0":
-          nextState = "image1";
-          nextDuration = 7000; // View time for image 1
-          console.log("Carousel: Morphing to Image 1");
-          break;
-        case "image1":
-        default:
-          nextState = "image0"; // Loop back to image 0
-          nextDuration = 7000; // View time for image 0
-          console.log("Carousel: Morphing back to Image 0");
-          break;
+      if (currentState === "swirling") {
+        // --- From SWIRL, go to IMAGE 0 ---
+        nextState = 0;
+        nextDuration = 7000; // View time for image
+        console.log(`Carousel: Assembling Image 0`);
+      } else if (typeof currentState === "number") {
+        if (currentState === lastImageIndex) {
+          // --- From LAST IMAGE, go to SWIRL ---
+          nextState = "swirling";
+          nextDuration = 5000; // Swirl time
+          console.log("Carousel: Returning to Swirl");
+        } else {
+          // --- From IMAGE N, go to IMAGE N+1 ---
+          nextState = currentState + 1;
+          nextDuration = 7000; // View time for image
+          console.log(`Carousel: Morphing to Image ${nextState}`);
+        }
+      } else {
+        // Fallback
+        nextState = "swirling";
+        nextDuration = 5000;
       }
 
       animationStateRef.current = nextState;
@@ -425,16 +428,17 @@ const ParticlePortrait: React.FC = () => {
 
       // 3. Load ALL images
       try {
-        console.log("Loading images...");
-        // This logic requires canvas to be sized FIRST
-        const [data0, data1] = await Promise.all([
-          loadImageData(Particle.imageUrls[0]),
-          loadImageData(Particle.imageUrls[1]),
-        ]);
-        console.log("Images loaded successfully.");
+        console.log("Loading all images...");
+        const allLoadedData = await Promise.all(
+          Particle.imageUrls.map(loadImageData)
+        );
+        console.log("All images loaded successfully.");
 
-        // 4. Initialize particles (using first image's draw data)
-        initParticles(data0.imageData, data1.imageData, data0.drawData);
+        // 4. Initialize particles (using first image's draw data for canvas centering)
+        initParticles(
+          allLoadedData.map((d) => d.imageData),
+          allLoadedData[0].drawData
+        );
 
         // 5. Start animation loop
         animationStateRef.current = "swirling"; // Start in swirl state
@@ -443,7 +447,6 @@ const ParticlePortrait: React.FC = () => {
         }
 
         // 6. Start state machine timer
-        // On resize/retry, swirl for less time.
         const initialSwirlTime = isRetry ? 100 : 2000; // 2s for first load
         console.log(`Carousel: Swirling for ${initialSwirlTime}ms`);
         carouselTimerRef.current = setTimeout(

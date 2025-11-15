@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/navbar";
 import { InteractiveProjectCard } from "@/components/interactive-project-card";
 import { ProjectModal } from "@/components/project-modal";
-import { ProjectCarousel } from "@/components/project-carousel";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
@@ -15,6 +14,7 @@ import { SkeletonProjectCard } from "@/components/ui/skeleton-project-card";
 import { projects, Project } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CTASection } from "@/components/cta-section";
+import { GenericCarousel } from "@/components/GenericCarousel";
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -173,10 +173,19 @@ const Projects = () => {
             {/* Projects Grid */}
             <div className="mb-20" ref={projectGridRef}>
               {isMobile ? (
-                <div className="opacity-0 translate-y-8" data-reveal>
-                  <ProjectCarousel
-                    projects={filteredProjects}
-                    onProjectExpand={handleProjectExpand}
+                <div data-reveal>
+                  <GenericCarousel
+                    items={filteredProjects}
+                    getKey={(project) => project.id}
+                    itemClassName="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 flex"
+                    renderItem={(project, index) => (
+                      // InteractiveProjectCard needs to accept a className
+                      <InteractiveProjectCard
+                        project={project}
+                        index={index}
+                        onExpand={handleProjectExpand}
+                      />
+                    )}
                   />
                 </div>
               ) : (
