@@ -121,8 +121,14 @@ export const skills = [
   "SQL",
 ];
 
-export const themes: ThemeType[] = ["light", "dark", "netflix", "ey", "github"];
-
+export const themes: ThemeType[] = [
+  "light",
+  "dark",
+  "ares",
+  "dune",
+  "terra",
+  "enterprise",
+];
 export interface NavItem {
   id: string;
   label: string;
@@ -133,11 +139,31 @@ export interface NavItem {
 
 // Navigation items for desktop and mobile
 export const navItems: NavItem[] = [
-  { id: "home", label: "Home", icon: Home, type: "page" },
-  { id: "about", label: "About", icon: User, type: "page" },
-  { id: "projects", label: "Projects", icon: Code2, type: "page" },
-  { id: "services", label: "Services", icon: Briefcase, type: "page" },
-  { id: "contact", label: "Contact", icon: Mail, type: "page" },
+  { id: "home", label: "Home", icon: Home, type: "page", href: "/" },
+  { id: "about", label: "About", icon: User, type: "page", href: "/about" },
+  {
+    id: "projects",
+    label: "Projects",
+    icon: Code2,
+    type: "page",
+    href: "/projects",
+  },
+  {
+    id: "services",
+    label: "Services",
+    icon: Briefcase,
+    type: "page",
+    href: "/services",
+  },
+  {
+    id: "contact",
+    label: "Contact",
+    icon: Mail,
+    type: "page",
+    href: "/contacts",
+  },
+  // Add external links here too, if you want
+  // { id: "blog", label: "Blog", icon: Rss, type: "external", href: "https://my-blog.com" }
 ];
 
 // Personal/Professional Information
@@ -308,7 +334,7 @@ export const services: Service[] = [
     id: 3,
     title: "Technical Consulting",
     description:
-      "Strategic guidance on architecture, technology choices, and development best practices.",
+      "Strategic guidance on architecture, technology choices, and development best practices execution support.",
     icon: Users,
     features: [
       "Architecture Planning",
@@ -699,4 +725,19 @@ export const experienceNodes: ExperienceNode[] = [
       "MySQL",
     ],
   },
+];
+
+export const profileLinks = {
+  portfolio: "https://yourportfolio.com",
+  linkedin: "https://www.linkedin.com/in/asimthaha/",
+  github: "https://github.com/asimthaha",
+  stackOverflow: "https://stackoverflow.com/users/16229133/asim-thaha-azeez",
+  gmailEncoded: "YXNpbS50aGFoYWF6ZWV6QGdtYWlsLmNvbQ==",
+};
+
+export const resourceLinks = [
+  { name: "Documentation", href: "#" },
+  { name: "Blog", href: "#" },
+  { name: "FAQ", href: "#" },
+  { name: "Support", href: "#" },
 ];

@@ -1,5 +1,6 @@
-import { Heart, Github, Linkedin, Twitter, Mail, ArrowUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { Heart, Github, Linkedin, Mail } from "lucide-react";
+import { navItems, profileLinks, resourceLinks } from "@/lib/data";
 
 /**
  * Premium Footer Component
@@ -7,46 +8,49 @@ import { Button } from "@/components/ui/button";
  * Includes gradient effects, animations, and responsive design
  */
 const Footer = () => {
+  const [emailHref, setEmailHref] = useState("");
+
+  useEffect(() => {
+    const decodedEmail = atob(profileLinks.gmailEncoded);
+    setEmailHref(`mailto:${decodedEmail}`);
+  }, []);
+
+  const StackOverflowIcon = (props) => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props} // Pass through any props like className
+    >
+      <path d="M15.725 0l-1.72 1.277 6.39 8.588 1.716-1.277L15.725 0zm-3.94 3.418l-1.369 1.644 8.225 6.85 1.369-1.644-8.225-6.85zm-3.15 4.465l-.905 1.94 9.702 4.517.904-1.94-9.701-4.517zm-1.85 4.86l-.44 2.093 10.473 2.201.44-2.092-10.473-2.203zM1.89 15.47V24h19.19v-8.53h-2.133v6.397H4.021v-6.396H1.89zm4.265 2.133v2.13h10.66v-2.13H6.154Z" />
+    </svg>
+  );
+
   const socialLinks = [
     {
       icon: Github,
-      href: "https://github.com",
+      href: profileLinks.github,
       label: "GitHub",
       color: "hover:text-[#333] dark:hover:text-white",
     },
     {
       icon: Linkedin,
-      href: "https://linkedin.com",
+      href: profileLinks.linkedin,
       label: "LinkedIn",
       color: "hover:text-[#0A66C2]",
     },
     {
-      icon: Twitter,
-      href: "https://twitter.com",
-      label: "Twitter",
-      color: "hover:text-[#1DA1F2]",
+      icon: StackOverflowIcon,
+      href: profileLinks.stackOverflow,
+      label: "Stack Overflow",
+      color: "hover:text-[#F48024]",
     },
     {
       icon: Mail,
-      href: "mailto:contact@example.com",
+      href: emailHref,
       label: "Email",
-      color: "hover:text-accent",
+      color: "hover:text-[#EA4335]",
     },
-  ];
-
-  const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Projects", href: "#projects" },
-    { name: "Skills", href: "#skills" },
-    { name: "Contact", href: "#development-impact" },
-  ];
-
-  const resourceLinks = [
-    { name: "Documentation", href: "#" },
-    { name: "Blog", href: "#" },
-    { name: "FAQ", href: "#" },
-    { name: "Support", href: "#" },
   ];
 
   return (
@@ -86,14 +90,14 @@ const Footer = () => {
                 Navigation
               </h4>
               <nav className="flex flex-col space-y-3">
-                {navLinks.map((link) => (
+                {navItems.map((link) => (
                   <a
-                    key={link.name}
+                    key={link.label}
                     href={link.href}
                     className="text-sm text-muted-foreground hover:text-accent transition-colors duration-300 inline-flex items-center group"
                   >
                     <span className="w-0 group-hover:w-4 h-px bg-accent transition-all duration-300 mr-0 group-hover:mr-2" />
-                    {link.name}
+                    {link.label}
                   </a>
                 ))}
               </nav>
@@ -174,16 +178,6 @@ const Footer = () => {
               Terms of Service
             </a>
           </div>
-
-          {/* Scroll to top button */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="group border-border/50 bg-background/50 hover:bg-accent hover:border-accent hover:text-accent-foreground transition-all duration-300"
-          >
-            <ArrowUp className="w-4 h-4 mr-2 transition-transform group-hover:-translate-y-1" />
-            Back to Top
-          </Button>
         </div>
       </div>
 
