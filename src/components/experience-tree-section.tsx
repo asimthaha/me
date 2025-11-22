@@ -34,24 +34,26 @@ const ExperienceTreeSection = ({
   useEffect(() => {
     if (!treeRef.current || !sectionRef.current) return;
 
+    // Force GSAP to recalculate start/end positions because the DOM size changed
+    // immediately after the new nodes render
+    ScrollTrigger.refresh();
+
     const ctx = gsap.context(() => {
-      // {/** CHANGED: Updated GSAP logic to grow trunk from top to bottom */}
-      // Animate tree "trunk" growing from top to bottom
       gsap.from(treeRef.current, {
-        scaleY: 0, // Start from 0 scale
-        transformOrigin: "top center", // Grow from the top
+        scaleY: 0,
+        transformOrigin: "top center",
         ease: "none",
         scrollTrigger: {
-          trigger: sectionRef.current, // The whole section
-          start: "top 50%", // Start when the top of the section hits the middle of the screen
-          end: "bottom 80%", // End when the bottom of the section hits 80% from the top
-          scrub: 1, // Link animation progress to scroll progress
+          trigger: sectionRef.current,
+          start: "top 50%",
+          end: "bottom 80%",
+          scrub: 1,
         },
       });
-    }, sectionRef); // Scope context to the section
+    }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [experienceNodes]);
 
   // Get icon based on experience type
   const getTypeIcon = (type: ExperienceNode["type"]) => {
