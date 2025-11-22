@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import PacManIntroOverlay from "./pacman-intro-overlay";
 import { Progress } from "./ui/progress";
 import { skills } from "@/lib/data";
-import SkillsSection from "./skills-section";
+import { personalInfo } from "@/lib/data";
 
 const AboutMeSection = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -26,7 +26,8 @@ const AboutMeSection = () => {
           <div className="snap-start h-screen flex items-center justify-center px-4">
             <div className="max-w-5xl w-full space-y-6 text-center">
               <h1 className="font-mono text-4xl md:text-6xl lg:text-7xl text-foreground">
-                Hey, I'm Alex<span className="blinking-cursor">_</span>
+                Hey, I'm {personalInfo.name}
+                <span className="blinking-cursor">_</span>
               </h1>
             </div>
           </div>
@@ -38,8 +39,8 @@ const AboutMeSection = () => {
                 first try.
               </p>
               <p className="font-mono text-sm md:text-base text-muted-foreground">
-                With over 5 years in the game, I've journeyed through the full
-                stack...
+                With over {personalInfo.yearsOfExperience} years in the game,
+                I've journeyed through the full stack...
               </p>
             </div>
           </div>
@@ -73,7 +74,7 @@ const AboutMeSection = () => {
                         // LEVEL:
                       </h3>
                       <p className="font-mono text-sm text-card-foreground">
-                        "Junior Software Developer"
+                        "{personalInfo.jobTitle}"
                       </p>
                     </div>
 

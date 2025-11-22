@@ -430,80 +430,77 @@ export const PortfolioChatbot = () => {
         throw new Error("Response body is null");
       }
       const reader = response.body.getReader();
-      const decoder = new TextDecoder();
       let assistantMessage = "";
 
-      let buffer = "";
-
       const processStream = async (assistantMsgId: string) => {
+        const decoder = new TextDecoder();
+        let buffer = "";
+
         while (true) {
           const { done, value } = await reader.read();
 
           if (value) {
             buffer += decoder.decode(value, { stream: true });
-          }
 
-          if (done) {
-            // Stream finished. Process the entire buffer.
-            if (buffer.trim()) {
-              try {
-                // The buffer contains the full "[ {chunk1}, {chunk2} ]"
-                const jsonArray = JSON.parse(buffer);
+            // --- ROBUST PARSING LOGIC ---
+            // We ignore '[' ']' and ',' and look strictly for
+            // complete JSON objects enclosed in '{ }'
+            let startIndex = 0;
+            let braceCount = 0;
+            let jsonStartIndex = -1;
 
-                // [FIX 1] Iterate over the array of chunks
-                if (Array.isArray(jsonArray)) {
-                  for (const chunk of jsonArray) {
-                    const content =
-                      chunk.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (content) {
-                      assistantMessage += content;
+            for (let i = 0; i < buffer.length; i++) {
+              const char = buffer[i];
+
+              if (char === "{") {
+                // Found start of an object
+                if (braceCount === 0) jsonStartIndex = i;
+                braceCount++;
+              } else if (char === "}") {
+                braceCount--;
+
+                // Found end of an object
+                if (braceCount === 0 && jsonStartIndex !== -1) {
+                  const jsonStr = buffer.substring(jsonStartIndex, i + 1);
+
+                  try {
+                    const parsed = JSON.parse(jsonStr);
+
+                    // Extract text from Gemini candidate structure
+                    const text =
+                      parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (text) {
+                      assistantMessage += text;
+
+                      // Update UI
+                      setMessages((prev) =>
+                        prev.map((m) =>
+                          m.id === assistantMsgId
+                            ? { ...m, content: assistantMessage }
+                            : m
+                        )
+                      );
                     }
+                  } catch (e) {
+                    // Silently fail on bad chunks so we don't trigger a retry
+                    console.warn("Skipping unparseable chunk");
                   }
-                }
-              } catch (e) {
-                console.error(
-                  "Failed to parse final stream chunk:",
-                  e,
-                  "Chunk:",
-                  buffer
-                );
-              }
-            }
-            break; // Exit the loop
-          }
 
-          // This part will likely be skipped if the server isn't streaming,
-          // but we leave it for safety.
-          let boundary = buffer.indexOf("]\n");
-          while (boundary !== -1) {
-            const jsonString = buffer.substring(0, boundary + 1);
-            buffer = buffer.substring(boundary + 2);
-            try {
-              const jsonChunk = JSON.parse(jsonString);
-              if (Array.isArray(jsonChunk) && jsonChunk.length > 0) {
-                const content =
-                  jsonChunk[0].candidates?.[0]?.content?.parts?.[0]?.text;
-                if (content) {
-                  assistantMessage += content;
+                  // Move start index past this object
+                  startIndex = i + 1;
+                  jsonStartIndex = -1;
                 }
               }
-            } catch (e) {
-              console.error(
-                "Failed to parse stream chunk:",
-                e,
-                "Chunk:",
-                jsonString
-              );
             }
-            boundary = buffer.indexOf("]\n");
+
+            // Clean up buffer to keep memory usage low
+            if (startIndex > 0) {
+              buffer = buffer.substring(startIndex);
+            }
           }
 
-          // Update UI on each chunk (won't hurt)
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === assistantMsgId ? { ...m, content: assistantMessage } : m
-            )
-          );
+          if (done) break;
         }
       };
 

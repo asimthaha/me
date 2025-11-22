@@ -169,7 +169,9 @@ export const navItems: NavItem[] = [
 // Personal/Professional Information
 export interface PersonalInfo {
   name: string;
+  shortName?: string;
   title: string;
+  jobTitle?: string;
   location: string;
   email: string;
   bio: string;
@@ -186,7 +188,9 @@ export interface PersonalInfo {
 
 export const personalInfo: PersonalInfo = {
   name: "Asim Thaha Azeez",
+  shortName: "asim thaha",
   title: "Full-Stack Developer & Creative Technologist",
+  jobTitle: "Associate Software Engineer",
   location: "Remote / Global",
   email: "asim.thahaazeez@gmail.com",
   bio: "Passionate full-stack developer specializing in creating immersive web experiences with modern technologies. I combine technical expertise with creative problem-solving to build scalable, user-centric applications.",
