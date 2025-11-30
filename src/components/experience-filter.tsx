@@ -56,7 +56,7 @@ export const ExperienceFilter = ({
               {isActive && (
                 <motion.div
                   layoutId="active-pill"
-                  className="absolute inset-0 rounded-full bg-current opacity-[0.08]"
+                  className="absolute inset-0 rounded-full opacity-[0.08]"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
