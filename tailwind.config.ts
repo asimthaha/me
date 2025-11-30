@@ -163,6 +163,31 @@ export default {
             width: "100%",
           },
         },
+        wave: {
+          "0%": {
+            transform: "translateX(-100%)",
+          },
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
+        aurora: {
+          from: {
+            backgroundPosition: "50% 50%, 50% 50%",
+          },
+          to: {
+            backgroundPosition: "350% 50%, 350% 50%",
+          },
+        },
+
+        meteor: {
+          "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform: "rotate(215deg) translateX(-500px)",
+            opacity: "0",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -175,6 +200,9 @@ export default {
         glow: "glow 2s ease-in-out infinite",
         magnetic: "magnetic 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         typewriter: "typewriter 2s steps(20) forwards",
+        wave: "wave 10s ease-in-out infinite",
+        "wave-delayed": "wave-delayed 12s ease-in-out infinite",
+        aurora: "aurora 60s linear infinite",
       },
     },
   },

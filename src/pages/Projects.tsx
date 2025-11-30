@@ -235,6 +235,7 @@ const Projects = () => {
                 href: "/",
               }}
               animated
+              background="meteors"
             />
           </div>
         </section>

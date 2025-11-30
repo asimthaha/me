@@ -120,6 +120,10 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  .theme {
+    --animate-aurora: aurora 60s linear infinite;
+    --animate-meteor-effect: meteor 5s linear infinite;
+  }
 }
 
 /* =========================================
@@ -639,6 +643,30 @@
 
     .scanlines {
       display: none;
+    }
+  }
+}
+
+@theme inline {
+  @keyframes aurora {
+  from {
+    backgroundPosition: 50% 50%, 50% 50%;
+    }
+  to {
+    backgroundPosition: 350% 50%, 350% 50%;
+    }
+  }
+  @keyframes meteor {
+  0% {
+    transform: rotate(215deg) translateX(0);
+    opacity: 1;
+    }
+  70% {
+    opacity: 1;
+    }
+  100% {
+    transform: rotate(215deg) translateX(-500px);
+    opacity: 0;
     }
   }
 }

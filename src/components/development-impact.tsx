@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { StatsCard } from "./ui/stats-card";
 import { Briefcase, Star, Code2, Calendar } from "lucide-react";
+import { CTASection } from "./cta-section";
 
 /**
  * Development Impact Section
@@ -79,48 +80,23 @@ const DevelopmentImpact = () => {
             <StatsCard key={stat.label} {...stat} />
           ))}
         </div>
-
-        {/* Enhanced CTA Section */}
-        <div
-          className="opacity-0 translate-y-8 transition-all duration-700 relative"
-          data-reveal
-        >
-          {/* Gradient mesh background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 rounded-3xl blur-xl" />
-
-          {/* Main CTA content */}
-          <div className="relative bg-background/40 backdrop-blur-xl border border-border/20 rounded-3xl p-10 md:p-16 text-center overflow-hidden">
-            {/* Animated gradient border */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary opacity-10 blur-2xl" />
-
-            <div className="relative z-10 space-y-1">
-              <h3 className="text-xl md:text-2xl font-bold text-foreground">
-                Ready to Build Something Amazing?
-              </h3>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Let's collaborate on your next project and create something
-                extraordinary together.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-                <Button
-                  size="lg"
-                  className="btn-gradient hover:opacity-90 text-white shadow-lg hover-lift group"
-                >
-                  <span className="relative z-10">Start a Project</span>
-                </Button>
-                <Link to="/projects">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="hover:bg-background hover:border-accent/50 hover:text-accent shadow-lg hover-lift transition-all duration-300"
-                  >
-                    View All Work
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CTASection
+          title="Ready to Build Something Amazing?"
+          description="Let's collaborate on your next project and create something
+                extraordinary together."
+          primaryCta={{
+            label: "Start a Project",
+            href: "/contacts",
+            variant: "gradient",
+          }}
+          secondaryCta={{
+            label: "View All Work",
+            href: "/projects",
+          }}
+          animated
+          variant="default"
+          background="aurora"
+        />
       </div>
     </div>
   );

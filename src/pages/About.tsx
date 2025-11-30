@@ -101,6 +101,7 @@ const About = () => {
           }}
           variant="default"
           animated={false}
+          background="flickering-grid"
         />
       </section>
       <ForwardTimer />

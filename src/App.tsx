@@ -10,18 +10,20 @@ import { ClickSparkEffect } from "@/components/ClickSparkEffect";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useLoading } from "@/hooks/use-loading";
 
-// Lazy load chatbot for better initial page load performance
+// Lazy load chatbot
 const PortfolioChatbot = lazy(() =>
   import("@/components/PortfolioChatbot").then((module) => ({
     default: module.PortfolioChatbot,
   }))
 );
-import Index from "./pages/Index";
-import About from "./pages/About";
-import Projects from "./pages/Projects";
-import Services from "./pages/Services";
-import Contacts from "./pages/Contacts";
-import NotFound from "./pages/NotFound";
+
+// --- CHANGED: Lazy load all pages ---
+const Index = lazy(() => import("./pages/Index"));
+const About = lazy(() => import("./pages/About"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Services = lazy(() => import("./pages/Services"));
+const Contacts = lazy(() => import("./pages/Contacts"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,7 @@ const App = () => {
   if (isLoading) {
     return <SnakeLoader isLoading={isLoading} onComplete={completeLoading} />;
   }
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -38,21 +41,33 @@ const App = () => {
           <PremiumCursor />
           <ClickSparkEffect />
           <ErrorBoundary>
+            {/* Suspense for the Chatbot */}
             <Suspense fallback={null}>
               <PortfolioChatbot />
             </Suspense>
           </ErrorBoundary>
           <Sonner />
+
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contacts" element={<Contacts />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            {/* --- ADDED: Suspense wrapper for Page Routes --- */}
+            {/* The fallback is what shows briefly while switching pages */}
+            <Suspense
+              fallback={
+                <div className="min-h-screen flex items-center justify-center bg-background text-muted-foreground">
+                  INITIALIZING_CORE...
+                </div>
+              }
+            >
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/contacts" element={<Contacts />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>

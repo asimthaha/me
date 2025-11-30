@@ -255,7 +255,7 @@ const Services = () => {
                 },
               ].map((phase, index) => (
                 <div key={index} className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto rounded-full btn-gradient hover:opacity-90 text-white shadow-lg flex items-center justify-center font-bold text-lg">
+                  <div className="w-16 h-16 mx-auto rounded-full btn-gradient hover:opacity-90 text-primary shadow-lg flex items-center justify-center font-bold text-lg">
                     {phase.step}
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">
@@ -282,6 +282,7 @@ const Services = () => {
               href: "/",
             }}
             variant="boxed"
+            background="wavy"
           />
         </div>
       </section>
