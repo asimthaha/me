@@ -127,7 +127,7 @@ const ProjectsSection = () => {
                 <Link to="/projects">
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto btn-gradient hover:opacity-90 text-white shadow-lg"
+                    className="w-full sm:w-auto btn-gradient hover:opacity-90 text-primary-foreground shadow-lg"
                   >
                     View All Projects
                     <ArrowRight className="w-4 h-4 ml-2" />

@@ -83,7 +83,7 @@ const ServicesSection = () => {
           <Link to="/services">
             <Button
               size="lg"
-              className="btn-gradient hover:opacity-90 text-white shadow-lg"
+              className="btn-gradient hover:opacity-90 text-primary-foreground shadow-lg"
             >
               Explore All Services
               <ArrowRight className="w-4 h-4 ml-2" />
