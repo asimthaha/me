@@ -93,14 +93,6 @@ const Services = () => {
         className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
         aria-labelledby="services-title"
       >
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div
-            className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float z-10"
-            style={{ animationDelay: "2s" }}
-          />
-        </div>
-
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Page Header */}
           <div className="text-center mb-20 space-y-6">
@@ -255,7 +247,7 @@ const Services = () => {
                 },
               ].map((phase, index) => (
                 <div key={index} className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto rounded-full btn-gradient hover:opacity-90 text-white shadow-lg flex items-center justify-center font-bold text-lg">
+                  <div className="w-16 h-16 mx-auto rounded-full btn-gradient hover:opacity-90 text-primary bg-card shadow-lg flex items-center justify-center font-bold text-lg">
                     {phase.step}
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">

@@ -48,13 +48,6 @@ export const StatsCard = ({
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
     >
-      {/* Gradient border effect */}
-      <div
-        className={`absolute -inset-0.5 bg-gradient-to-r from-primary via-accent to-primary rounded-2xl opacity-0 blur-sm transition-opacity duration-500 ${
-          isHovered ? "opacity-50" : ""
-        }`}
-      />
-
       {/* Main card */}
       <div className="relative bg-background/60 backdrop-blur-xl border border-border/20 rounded-2xl p-6 sm:p-8 hover-lift transition-all duration-300 text-center">
         {/* Icon container */}
@@ -71,13 +64,6 @@ export const StatsCard = ({
         <div className="text-sm md:text-base text-muted-foreground uppercase tracking-wider font-medium">
           {label}
         </div>
-
-        {/* Glow effect on hover */}
-        <div
-          className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 transition-opacity duration-300 pointer-events-none ${
-            isHovered ? "opacity-100" : ""
-          }`}
-        />
       </div>
     </div>
   );

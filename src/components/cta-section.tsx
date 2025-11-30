@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
-import { CubesBackground } from "@/components/ui/cubes-background";
 
 interface CTASectionProps {
   /** Main title */
@@ -49,18 +48,6 @@ export const CTASection = ({
       )}
       data-reveal={animated ? true : undefined}
     >
-      {/* Add the CubesBackground component */}
-      {/* It will sit at z-0, behind all the other content */}
-      <CubesBackground
-        className="absolute inset-0"
-        color={
-          variant === "boxed"
-            ? "hsl(var(--primary))"
-            : "hsl(var(--muted-foreground))"
-        }
-        opacity={variant === "boxed" ? 0.5 : 0.5}
-      />
-
       {/* Add 'relative z-10' to all content to ensure it's on top */}
       <h2 className="relative z-10 text-3xl md:text-4xl font-bold text-foreground mb-4">
         {title}

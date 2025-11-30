@@ -123,15 +123,6 @@ const Projects = () => {
           className="py-24 px-4 bg-gradient-to-br from-background via-background to-background/90 relative overflow-hidden"
           aria-labelledby="all-projects-title"
         >
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
-            <div
-              className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float"
-              style={{ animationDelay: "2s" }}
-            />
-          </div>
-
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Page Header */}
             <div className="text-center mb-20 space-y-6">
@@ -228,12 +219,13 @@ const Projects = () => {
               primaryCta={{
                 label: "Get In Touch",
                 href: "/contacts",
-                variant: "gradient",
+                variant: "solid",
               }}
               secondaryCta={{
                 label: "Back to Home",
                 href: "/",
               }}
+              variant="boxed"
               animated
             />
           </div>
