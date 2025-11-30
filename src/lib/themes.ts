@@ -3,7 +3,7 @@ export type ThemeType =
   | "dark"
   | "ares"
   | "enterprise"
-  | "terra"
+  | "slate"
   | "dune";
 
 export interface Theme {
@@ -160,47 +160,51 @@ export const themes: Record<ThemeType, Theme> = {
       textShadow: "0 2px 4px hsl(0 0% 15% / 0.1)",
     },
   },
-
-  terra: {
-    id: "terra",
-    name: "Terra",
-    icon: "🌍",
+  slate: {
+    id: "slate",
+    name: "Slate",
+    icon: "🪶", // Changed from "feather" text to emoji to match other themes
     colors: {
-      // Matte deep background
-      background: "60 8% 22%", // slightly softer #414137
-      foreground: "35 38% 72%", // softer sand
+      // Base Colors
+      background: "0 0% 100%", // #ffffff
+      foreground: "220 4% 15%", // #242527 (Charcoal)
 
-      card: "60 8% 25%", // slight lift
-      cardForeground: "35 38% 72%",
+      // Surfaces
+      card: "0 0% 100%",
+      cardForeground: "220 4% 15%",
+      popover: "0 0% 100%",
+      popoverForeground: "220 4% 15%",
 
-      popover: "60 8% 25%",
-      popoverForeground: "35 38% 72%",
+      // Primary Brand Color (Dark Slate)
+      primary: "208 35% 28%", // #2F4A61
+      primaryForeground: "0 0% 100%",
 
-      primary: "36 32% 43%", // richer bronze
-      primaryForeground: "35 44% 90%",
+      // Secondary Brand Color (Muted Blue)
+      secondary: "201 23% 48%", // #5F8396
+      secondaryForeground: "0 0% 100%",
 
-      secondary: "36 20% 28%", // muted warm olive-bronze
-      secondaryForeground: "35 44% 75%",
+      // Muted/Neutral Elements (Beige)
+      muted: "48 10% 71%", // #BCB9AC
+      mutedForeground: "34 12% 39%", // #6F6558 (Taupe used for contrast)
 
-      muted: "60 6% 28%", // matte olive-grey
-      mutedForeground: "35 30% 58%",
+      // Accent Color (Taupe/Brown)
+      accent: "34 12% 39%", // #6F6558
+      accentForeground: "0 0% 100%",
 
-      accent: "35 44% 76%", // sand accent
-      accentForeground: "60 8% 22%", // dark olive
-
-      destructive: "0 70% 58%",
+      // Destructive
+      destructive: "0 84.2% 60.2%",
       destructiveForeground: "0 0% 98%",
 
-      border: "60 6% 27%",
-      input: "60 6% 27%",
-      ring: "36 32% 43%", // premium bronze highlight
+      // Borders & Inputs
+      border: "48 10% 71%", // #BCB9AC
+      input: "48 10% 71%",
+      ring: "201 23% 48%", // Focus ring uses secondary blue
 
+      // Special Effects
       heroGradient:
-        "linear-gradient(135deg, hsl(60 8% 22%) 0%, hsl(36 32% 43%) 100%)",
-
-      blobShadow: "0 20px 40px -10px hsl(36 32% 43% / 0.23)",
-
-      textShadow: "0 2px 4px hsl(60 8% 22% / 0.25)",
+        "linear-gradient(135deg, hsl(208 35% 28%) 0%, hsl(201 23% 48%) 100%)",
+      blobShadow: "0 20px 40px -10px hsl(201 23% 48% / 0.2)",
+      textShadow: "0 1px 2px hsl(220 4% 15% / 0.1)",
     },
   },
   dune: {
@@ -254,76 +258,3 @@ export const isDarkTheme = (themeId: ThemeType): boolean => {
 };
 
 export const getAllThemes = (): Theme[] => Object.values(themes);
-
-export const getWaveColors = (themeId: ThemeType): string[] => {
-  const t = themes[themeId].colors;
-
-  // Helper to wrap the raw numbers in hsl()
-  const hsl = (color: string) => `hsl(${color})`;
-
-  switch (themeId) {
-    case "light":
-      return [
-        hsl(t.primary), // Dark Blue
-        hsl(t.accent), // Blue
-        hsl(t.secondary), // Light Grey
-        hsl(t.ring), // Blue Glow
-        hsl(t.muted), // Pale
-      ];
-
-    case "dark":
-      return [
-        hsl(t.primary), // White/Grey
-        hsl(t.accent), // Blue
-        hsl(t.secondary), // Dark Grey
-        hsl(t.muted), // Muted Grey
-        hsl(t.ring), // Blue
-      ];
-
-    case "ares":
-      return [
-        hsl(t.primary), // Red
-        hsl(t.destructive), // Light Red
-        hsl(t.ring), // Red Glow
-        hsl(t.secondary), // Dark Grey
-        hsl(t.muted), // Darker Grey
-      ];
-
-    case "enterprise":
-      return [
-        hsl(t.accent), // Yellow
-        hsl(t.primary), // Dark Grey
-        hsl(t.primaryForeground), // Yellow Bright
-        hsl(t.secondary), // Light Grey
-        hsl(t.muted), // Muted
-      ];
-
-    case "terra":
-      return [
-        hsl(t.primary), // Bronze
-        hsl(t.accent), // Sand
-        hsl(t.secondary), // Olive-Bronze
-        hsl(t.ring), // Bronze Highlight
-        hsl(t.muted), // Matte Olive
-      ];
-
-    case "dune":
-      return [
-        hsl(t.accent), // Spice (Orange)
-        hsl(t.primary), // Desert Sand
-        hsl(t.secondary), // Bronze Midtone
-        hsl(t.foreground), // Desert Haze
-        hsl(t.ring), // Sand Glow
-      ];
-
-    default:
-      // Fallback (Dune or Light)
-      return [
-        hsl(t.primary),
-        hsl(t.accent),
-        hsl(t.secondary),
-        hsl(t.muted),
-        hsl(t.ring),
-      ];
-  }
-};
