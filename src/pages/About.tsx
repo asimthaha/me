@@ -90,7 +90,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="snap-start relative z-10 bg-background px-20">
+      <section className="snap-start relative z-10 bg-background px-40">
         <CTASection
           title="Let’s Build Something Together"
           description="I’m always open to new opportunities..."

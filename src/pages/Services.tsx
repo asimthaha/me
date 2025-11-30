@@ -269,10 +269,6 @@ const Services = () => {
               href: "/contacts",
               variant: "solid",
             }}
-            secondaryCta={{
-              label: "View Portfolio",
-              href: "/",
-            }}
             variant="boxed"
           />
         </div>

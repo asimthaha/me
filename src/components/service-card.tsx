@@ -78,7 +78,7 @@ export const ServiceCard = ({ service, index }: ServiceCardProps) => {
               </span>
             </div>
             <Button
-              className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300"
+              className="w-full bg-primary text-primary-foreground group-hover:bg-background group-hover:text-primary transition-all duration-300"
               variant="outline"
               size="sm"
             >
