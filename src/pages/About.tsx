@@ -40,7 +40,11 @@ const About = () => {
 
       <section className="snap-start min-h-screen flex flex-col relative pt-24">
         {/* Sticky Filter Bar */}
-        <div className="sticky top-20 z-30 bg-background/80 backdrop-blur-md border-b border-border/40 mb-8">
+        <div
+          className={`${
+            isMobile ? "" : "sticky"
+          } top-20 z-30 bg-background/80 backdrop-blur-md border-b border-border/40 mb-8`}
+        >
           <div className="max-w-7xl mx-auto w-full">
             <ExperienceFilter
               activeFilter={filter}
@@ -90,7 +94,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="snap-start relative z-10 bg-background px-40">
+      <section className="snap-start relative z-10 bg-background sm:px-40">
         <CTASection
           title="Let’s Build Something Together"
           description="I’m always open to new opportunities..."

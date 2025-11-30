@@ -8,7 +8,7 @@ interface StaticPortraitCarouselProps {
 // You might need to pass them in from your .env file as props.
 const STATIC_IMAGE_URLS = [
   `${import.meta.env.BASE_URL}images/portrait.png`,
-  `${import.meta.env.BASE_URL}images/portrait-1.png`,
+  // `${import.meta.env.BASE_URL}images/portrait-1.png`,
 ];
 
 const StaticPortraitCarousel: React.FC<StaticPortraitCarouselProps> = ({

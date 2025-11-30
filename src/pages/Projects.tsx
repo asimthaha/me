@@ -154,7 +154,6 @@ const Projects = () => {
                         : "border-border/20 bg-background/50 hover:bg-accent hover:text-accent-foreground"
                     }`}
                   >
-                    <Filter className="w-4 h-4 mr-2" />
                     {category === "webgl" ? "WebGL" : category}
                   </Button>
                 ))}
