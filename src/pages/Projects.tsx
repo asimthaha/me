@@ -227,6 +227,7 @@ const Projects = () => {
               }}
               variant="boxed"
               animated
+              backgroundEffect="meteor"
             />
           </div>
         </section>

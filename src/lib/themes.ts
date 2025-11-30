@@ -254,3 +254,76 @@ export const isDarkTheme = (themeId: ThemeType): boolean => {
 };
 
 export const getAllThemes = (): Theme[] => Object.values(themes);
+
+export const getWaveColors = (themeId: ThemeType): string[] => {
+  const t = themes[themeId].colors;
+
+  // Helper to wrap the raw numbers in hsl()
+  const hsl = (color: string) => `hsl(${color})`;
+
+  switch (themeId) {
+    case "light":
+      return [
+        hsl(t.primary), // Dark Blue
+        hsl(t.accent), // Blue
+        hsl(t.secondary), // Light Grey
+        hsl(t.ring), // Blue Glow
+        hsl(t.muted), // Pale
+      ];
+
+    case "dark":
+      return [
+        hsl(t.primary), // White/Grey
+        hsl(t.accent), // Blue
+        hsl(t.secondary), // Dark Grey
+        hsl(t.muted), // Muted Grey
+        hsl(t.ring), // Blue
+      ];
+
+    case "ares":
+      return [
+        hsl(t.primary), // Red
+        hsl(t.destructive), // Light Red
+        hsl(t.ring), // Red Glow
+        hsl(t.secondary), // Dark Grey
+        hsl(t.muted), // Darker Grey
+      ];
+
+    case "enterprise":
+      return [
+        hsl(t.accent), // Yellow
+        hsl(t.primary), // Dark Grey
+        hsl(t.primaryForeground), // Yellow Bright
+        hsl(t.secondary), // Light Grey
+        hsl(t.muted), // Muted
+      ];
+
+    case "terra":
+      return [
+        hsl(t.primary), // Bronze
+        hsl(t.accent), // Sand
+        hsl(t.secondary), // Olive-Bronze
+        hsl(t.ring), // Bronze Highlight
+        hsl(t.muted), // Matte Olive
+      ];
+
+    case "dune":
+      return [
+        hsl(t.accent), // Spice (Orange)
+        hsl(t.primary), // Desert Sand
+        hsl(t.secondary), // Bronze Midtone
+        hsl(t.foreground), // Desert Haze
+        hsl(t.ring), // Sand Glow
+      ];
+
+    default:
+      // Fallback (Dune or Light)
+      return [
+        hsl(t.primary),
+        hsl(t.accent),
+        hsl(t.secondary),
+        hsl(t.muted),
+        hsl(t.ring),
+      ];
+  }
+};

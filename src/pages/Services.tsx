@@ -86,7 +86,7 @@ const Services = () => {
   }, []);
 
   return (
-    <main className="relative bg-background min-h-screen">
+    <section className="relative bg-background min-h-screen">
       <Navbar scrollContainerRef={scrollContainerRef} />
       <section
         ref={sectionRef}
@@ -270,10 +270,11 @@ const Services = () => {
               variant: "solid",
             }}
             variant="boxed"
+            backgroundEffect="meteor"
           />
         </div>
       </section>
-    </main>
+    </section>
   );
 };
 

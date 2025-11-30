@@ -101,6 +101,7 @@ const About = () => {
           }}
           variant="boxed"
           animated={false}
+          backgroundEffect="aurora"
         />
       </section>
       <ForwardTimer />

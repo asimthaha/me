@@ -163,6 +163,33 @@ export default {
             width: "100%",
           },
         },
+        "meteor-effect": {
+          "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform: "rotate(215deg) translateX(-500px)",
+            opacity: "0",
+          },
+        },
+        flicker: {
+          "0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%": {
+            opacity: "0.99",
+            filter:
+              "drop-shadow(0 0 1px rgba(252, 211, 77)) drop-shadow(0 0 15px rgba(245, 158, 11)) drop-shadow(0 0 1px rgba(252, 211, 77))",
+          },
+          "20%, 21.999%, 63%, 63.999%, 65%, 69.999%": {
+            opacity: "0.4",
+            filter: "none",
+          },
+        },
+        aurora: {
+          from: {
+            backgroundPosition: "50% 50%, 50% 50%",
+          },
+          to: {
+            backgroundPosition: "350% 50%, 350% 50%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -175,6 +202,9 @@ export default {
         glow: "glow 2s ease-in-out infinite",
         magnetic: "magnetic 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         typewriter: "typewriter 2s steps(20) forwards",
+        "meteor-effect": "meteor-effect 10s linear infinite",
+        flicker: "flicker 5s linear infinite",
+        aurora: "aurora 60s ease infinite",
       },
     },
   },

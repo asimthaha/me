@@ -93,9 +93,8 @@ const DevelopmentImpact = () => {
             label: "View All Work",
             href: "/projects",
           }}
-          animated
           variant="boxed"
-          // background="aurora"
+          backgroundEffect="aurora"
         />
       </div>
     </div>
