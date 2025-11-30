@@ -93,7 +93,7 @@ const Footer = () => {
                 {navItems.map((link) => (
                   <a
                     key={link.label}
-                    href={link.href}
+                    href={`/me${link.href}`}
                     className="text-sm text-muted-foreground hover:text-accent transition-colors duration-300 inline-flex items-center group"
                   >
                     <span className="w-0 group-hover:w-4 h-px bg-accent transition-all duration-300 mr-0 group-hover:mr-2" />
