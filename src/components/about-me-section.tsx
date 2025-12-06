@@ -3,6 +3,7 @@ import PacManIntroOverlay from "./pacman-intro-overlay";
 import { Progress } from "./ui/progress";
 import { skills } from "@/lib/data";
 import { personalInfo } from "@/lib/data";
+import { Link } from "react-router-dom";
 
 const AboutMeSection = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -33,12 +34,12 @@ const AboutMeSection = () => {
           </div>
 
           <div className="snap-start h-screen flex items-center justify-center px-4">
-            <div className="max-w-2xl w-full space-y-4 text-center">
-              <p className="font-mon text-sm md:text-base text-muted-foreground">
+            <div className="max-w-2xl w-full space-y-6 text-center">
+              <p className="font-mono text-base md:text-lg text-muted-foreground">
                 I build things for the web. Sometimes they even work on the
                 first try.
               </p>
-              <p className="font-mono text-sm md:text-base text-muted-foreground">
+              <p className="font-mono text-base md:text-lg text-muted-foreground">
                 With over {personalInfo.yearsOfExperience} years in the game,
                 I've journeyed through the full stack...
               </p>
@@ -62,7 +63,7 @@ const AboutMeSection = () => {
                       <h3 className="font-mono text-xs text-primary">
                         // CURRENT MISSION:
                       </h3>
-                      <p className="font-body text-sm text-card-foreground">
+                      <p className="font-body text-base md:text-lg text-card-foreground">
                         "Solving real-world problems with clean, efficient
                         code."
                       </p>
@@ -119,11 +120,13 @@ const AboutMeSection = () => {
           </div>
           <div className="snap-start h-screen flex flex-col justify-center items-center px-4">
             <p className="font-mono text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed text-center">
-              Think we could build something great together?
+              Do you wanna know more about me?
             </p>
-            <button className="mt-6 pixelated-border-button font-mono text-sm px-6 py-3 hover:bg-primary hover:text-primary-foreground transition-colors">
-              START
-            </button>
+            <Link to="/about">
+              <button className="mt-6 pixelated-border-button font-mono text-sm px-6 py-3 hover:bg-primary hover:text-primary-foreground transition-colors">
+                START
+              </button>
+            </Link>
           </div>
         </div>
       </section>

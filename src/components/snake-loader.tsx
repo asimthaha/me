@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { personalInfo } from "@/lib/data";
 
 // The list of messages to cycle through
 const LOADING_MESSAGES = [
@@ -222,7 +223,7 @@ export const SnakeLoader = ({ isLoading, onComplete }: SnakeLoaderProps) => {
         {/* Foreground: Centered Text */}
         <div className="relative z-20 text-center space-y-4">
           <h1 className="text-3xl font-bold text-primary tracking-wider md:text-4xl neon-text">
-            ASIM.DEV
+            {personalInfo.shortName}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground tracking-wide">
             CRAFTING CODE WITH PRECISION

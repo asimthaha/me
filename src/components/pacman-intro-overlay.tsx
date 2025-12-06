@@ -59,6 +59,14 @@ const PacManIntroOverlay = ({ onComplete }: PacManIntroOverlayProps) => {
         !showOverlay && "opacity-0 pointer-events-none"
       )}
     >
+      <div
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{
+          backgroundImage:
+            "radial-gradient(hsl(var(--foreground)) 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        }}
+      ></div>
       <div className="relative w-full max-w-2xl mx-auto px-6 z-10 flex flex-col items-center">
         {/* GAME TRACK 
             Fixed height ensuring enough room for Pacman
